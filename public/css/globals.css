@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Aeonik";
+  src: url("../fonts/Aeonik/AeonikTRIAL-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "blogh";
+  src: url("../fonts/Blogh/Blogh.otf") format("opentype");
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateZ(0);
+  }
+  100% {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
+
+*::-webkit-scrollbar {
+  width: 0.5rem;
+  /* display: none; */
+}
+
+*::-webkit-scrollbar-thumb {
+  @apply bg-primary rounded-2xl border-2 border-white;
+}
+*::-webkit-scrollbar-track {
+  @apply bg-white rounded-2xl w-2;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  @apply rounded-2xl bg-gray-400;
+}
+*::-webkit-scrollbar-thumb:active {
+  @apply bg-gray-500 rounded-2xl;
+}
+
+.animate-marquee {
+  animation: marquee 15s linear infinite;
+  animation-direction: alternate;
+}
+
+.rank-tile-shadow {
+  box-shadow: 5px 5px 0px 0px rgb(0, 0, 0);
+}
+
+@layer utilities {
+  :root {
+    --primary: #fb923c;
+    --body: #fff;
+  }
+
+  .bg-primary {
+    background-color: var(--primary);
+  }
+}
+
+@layer base {
+  * {
+    @apply box-border;
+    scrollbar-width: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -moz-user-select: none;
+    -moz-user-drag: none;
+    position: relative;
+    /* border: 1px solid red; */
+  }
+
+  ::-webkit-scrollbar {
+    appearance: none;
+    width: 0;
+    height: 0;
+  }
+
+  html {
+    @apply text-gray-800;
+    font-family: "Poppins";
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-body;
+  }
+
+  img {
+    @apply object-cover w-full h-full;
+  }
+}
+
+.inset-notification {
+  /* inset: 0; */
+}
+
+.active {
+  /* background-color: green; */
+}
+
+._main-nav_::before {
+  content: "";
+  @apply absolute border-primary border-4 h-[90%] -translate-x-2 rounded-full transition-all duration-300;
+}
+
+.sub-nav::after {
+  content: "";
+  @apply w-0;
+}
+
+.active::after {
+  content: "";
+  @apply absolute inset-0 bg-primary h-[4px] w-1/2 top-full mx-auto rounded-full transition-all duration-500;
+}
+
+button:focus,
+a:focus {
+  @apply outline-primary outline-offset-2;
+}
+
+button:active {
+  @apply opacity-50;
+}
+
+button:hover {
+  @apply outline outline-1 outline-transparent -outline-offset-2;
+  /* rounded-md_ */
+}
