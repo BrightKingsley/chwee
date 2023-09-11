@@ -72,27 +72,21 @@ import { Poppins } from "next/font/google";
 //   },
 // };
 
-type ProviderProps = {
-  children: React.ReactNode;
-  session?: null;
-};
 
-export default function RootLayout({ children, session }: ProviderProps) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="">
         <div id="modal" />
         <div id="notification" />
-        {/* <Notification /> */}
-        {/* <Modal /> */}
         <AuthContextProvider>
           <ThemeContextProvider>
             <NotificationContextProvider>
               <ModalContextProvider>
-                <ChatContextProvider>
+                <ChatContextProvider> 
                   <main className="flex">
                     <Navbar />
-                    <div className="w-full flex-1">{children}</div>
+                    <div className="flex-1 w-full">{children}</div>
                   </main>
                 </ChatContextProvider>
               </ModalContextProvider>

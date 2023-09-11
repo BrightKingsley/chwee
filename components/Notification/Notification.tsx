@@ -14,6 +14,12 @@ export default function Notification() {
   const { showNotification, notificationMessage } =
     useContext(NotificationContext);
 
+    
+    useEffect(()=>{
+  console.log("NOTIF", showNotification)
+
+},[showNotification])
+
     const [domReady, setDomReady] = React.useState(false);
 
     useEffect(() => {

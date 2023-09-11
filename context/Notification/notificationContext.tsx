@@ -1,10 +1,11 @@
 "use client"
 
 import { ReactNode, createContext, useEffect, useState } from "react";
-import { NotificationContextType } from "../types";
+import {Notification} from "@/components"
+
 
 const NotificationContext = createContext<NotificationContextType>({
-  showNotification: !null,
+  showNotification: false,
   triggerNotification: () => {},
   notificationMessage: "",
 });
@@ -20,7 +21,6 @@ export const NotificationContextProvider = ({
   >("");
 
   const triggerNotification = (message: string | ReactNode) => {
-    console.log("SHOWING_NOTIFICATION");
     setShowNotification(true);
     setNotificationMessage(message);
   };
@@ -36,7 +36,10 @@ export const NotificationContextProvider = ({
     <NotificationContext.Provider
       value={{ showNotification, triggerNotification, notificationMessage }}
     >
+      <>
+      <Notification/>
       {children}
+      </>
     </NotificationContext.Provider>
   );
 };

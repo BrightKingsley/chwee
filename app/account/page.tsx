@@ -1,3 +1,5 @@
+"use client"
+
 import { AUTH } from "@/constants/routes";
 import { useContext } from "react";
 import {  ModalContext, NotificationContext } from "@/context";
@@ -8,31 +10,32 @@ export default function Account() {
   // const navigate = useNavigate();
   const { triggerModal } = useContext(ModalContext);
   const { triggerNotification } = useContext(NotificationContext);
-  // const { user, logoutUser } = useContext(AuthContext);
+
+  console.log()
 
   return (
     <>
-        <div className="h-screen flex flex-col">
+        <div className="flex flex-col h-screen">
           <Header title="My Account" />
           <div className="h-full py-4">
             <div className="space-y-4">
-              <div className="w-32 h-32 relative rounded-full overflow-clip mx-auto">
+              <div className="relative w-32 h-32 mx-auto rounded-full overflow-clip">
                 <Image src={""} alt="" />
               </div>
-              <div className="mx-auto w-fit text-center">
-                <p className="font-bold text-3xl">{"user.username"}</p>
+              <div className="mx-auto text-center w-fit">
+                <p className="text-3xl font-bold">{"user.username"}</p>
                 <p className="tetx-2xl">@{"user.tag"}</p>
               </div>
             </div>
-            <div className="space-y-2 px-2">
+            <div className="px-2 space-y-2">
               <small className="font-bold">account actions</small>
               <div>
-                <button className="bg-primary/10 p-2 rounded-md w-full active:scale-90 active:shadow-none duration-100 transition-all hover:shadow-md   hover:shadow-primary/20 ">
+                <button className="w-full p-2 transition-all duration-100 rounded-md bg-primary/10 active:scale-90 active:shadow-none hover:shadow-md hover:shadow-primary/20 ">
                   change username
                 </button>
               </div>
               <div>
-                <button className="bg-primary/10 p-2 rounded-md w-full active:scale-90 active:shadow-none duration-100 transition-all hover:shadow-md   hover:shadow-primary/20 ">
+                <button className="w-full p-2 transition-all duration-100 rounded-md bg-primary/10 active:scale-90 active:shadow-none hover:shadow-md hover:shadow-primary/20 ">
                   change password
                 </button>
               </div>
@@ -40,6 +43,7 @@ export default function Account() {
             <div className="mx-2 mt-[80px]">
               <button
                 onClick={() => {
+                  console.log("logout clicked")
                   triggerModal({
                     cancel: () => triggerModal,
                     confirm: () => () => {
@@ -49,7 +53,7 @@ export default function Account() {
                     message: "Are you sure you want to logout?",
                   });
                 }}
-                className="bg-primary text-white font-bold p-2 rounded-md w-full active:scale-90 active:shadow-none duration-100 transition-all hover:shadow-md hover:shadow-primary/20 "
+                className="w-full p-2 font-bold text-white transition-all duration-100 rounded-md bg-primary active:scale-90 active:shadow-none hover:shadow-md hover:shadow-primary/20 "
               >
                 log out
               </button>

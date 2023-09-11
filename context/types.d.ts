@@ -1,7 +1,3 @@
-import { UserModel } from "@/models";
-import { ReactNode } from "react";
-import { MessageModel, UserModel } from "@/models";
-import { ReactNode } from "react";
 
 // AUTH
 type signUpWithEmailAndPassword = {
@@ -39,7 +35,7 @@ type AuthContextType = {
 // CHAT
 
 type ChatContextProviderType = {
-  children: ReactNode;
+  children: React.ReactNode;
 };
 
 type ChatContextType = {
@@ -75,12 +71,12 @@ type ModalContextType = {
 type NotificationContextType = {
   showNotification: boolean;
   triggerNotification: Function;
-  notificationMessage: string | ReactNode;
+  notificationMessage: string | React.ReactNode;
 };
 
 // THEME
 type ThemeContextProviderProps = {
-  children: React.ReactNode;
+  children: React.React.ReactNode;
 };
 
 type ThemeContextType = {

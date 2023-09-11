@@ -1,9 +1,10 @@
 "use client"
 
 import { createContext, useState } from "react";
+import {Modal} from "@/components"
 
 const ModalContext = createContext<ModalContextType>({
-  showModal: !null,
+  showModal: false,
   triggerModal: () => {},
   modalMessage: "",
   actionConfirm: () => {},
@@ -54,7 +55,10 @@ export const ModalContextProvider = ({
         disableOnClick,
       }}
     >
+      <>
+<Modal/>
       {children}
+      </>
     </ModalContext.Provider>
   );
 };
