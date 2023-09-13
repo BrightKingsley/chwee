@@ -1,53 +1,57 @@
 import {
-  ModelOptions,
   getModelForClass,
-  prop,
+  ModelOptions,
   Severity,
+  prop,
   post,
   type Ref,
 } from "@typegoose/typegoose";
 import mongoose from "mongoose";
-import { User } from "@/models";
+import { User, UserClass } from "./User";
 
-@post<TransactionClass>("save", (doc) => {
+@post<EventClass>("save", (doc) => {
   if (doc) {
     doc.id = doc._id.toString();
     doc._id = doc.id;
   }
 })
-@post<TransactionClass[]>(/^find/, (docs) => {
+@post<EventClass[]>(/^find/, (docs) => {
   // @ts-ignore
   if (this.op === "find") {
     docs.forEach((doc) => {
-      doc.id = doc._id.toString();
-      doc._id = doc.id;
+      if (doc) {
+        doc.id = doc._id.toString();
+        doc._id = doc.id;
+      }
     });
   }
 })
 @ModelOptions({
   schemaOptions: {
     timestamps: true,
-    collection: "transactions",
+    collection: "events",
   },
   options: {
     allowMixed: Severity.ALLOW,
   },
 })
-class TransactionClass {
+class EventClass {
   @prop({ required: true })
-  public amount: number;
+  public name: string;
 
-  @prop({ required: true })
-  public date: Date;
+  @prop({ required: true, ref: () => UserClass })
+  public owner: Ref<UserClass>;
 
   @prop({ enum: ["deposit", "withdrawal", "transfer"] })
   public type: string;
+  start: Date;
 
-  _id: mongoose.Types.ObjectId | string;
+  end: Date;
 
   id: string;
+
+  _id: mongoose.Types.ObjectId | string;
 }
 
-const Transaction = getModelForClass(TransactionClass);
-
-export { Transaction, TransactionClass };
+const Event = getModelForClass(EventClass);
+export { Event, EventClass };

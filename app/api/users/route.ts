@@ -20,8 +20,8 @@ export async function GET(request: Request) {
     const users = await getUsers({ page, limit });
     if (!users) return NextResponse.json({ error: "Could not get users" });
 
-    return NextResponse.json({ users });
+    return NextResponse.json(users);
   } catch (error) {
-    return NextResponse.json({ error });
+    return NextResponse.json({error});
   }
 }

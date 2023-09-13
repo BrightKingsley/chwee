@@ -28,7 +28,7 @@ import { GroupClass } from "./Group";
 @ModelOptions({
   schemaOptions: {
     timestamps: true,
-    collection: "Users",
+    collection: "users",
   },
   options: {
     allowMixed: Severity.ALLOW,

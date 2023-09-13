@@ -38,24 +38,50 @@ import {
   ArrowRightIcon,
   ArrowsUpDownIcon,
 } from "@heroicons/react/20/solid";
+import {Session} from "next-auth"
+import {useSession} from "next-auth/react"
 
 export default function Wallet() {
   const { triggerModal } = useContext(ModalContext);
+
+  const {data}= useSession()
+  const session:Session | any= data
+
+
+  //TODO set Types
+  const [walletData, setWalletData] = useState<any|null>(null)
 ;
 
+useEffect(()=>{
+  (async()=>{
+try {
+  const    res = await fetch("/api/wallet")
+
+  const {wallet} =await res.json()
+  console.log("WALLETRESPONSE",wallet)
+  setWalletData(wallet);
+
+} catch (error) {
+  console.log(error)
+} 
+
+  })()
+},[session])
   // const navigate = useNavigate();
 
   const [showBalance, setShowBalance] = useState(false);
 
+  // if(!walletData) return <Loading/>
+
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="flex flex-col h-screen">
       <Header title="wallet" imgShown location={WALLET} />
       <div className="h-full py-4 space-y-6">
         <div className="mx-2">
-          <div className="w-full h-48_ text-white bg-primary rounded-2xl p-4 overflow-clip mx-auto space-y-4 ">
+          <div className="w-full p-4 mx-auto space-y-4 text-white h-48_ bg-primary rounded-2xl overflow-clip ">
             <div className="flex items-center justify-between">
-              <div className="flex items- gap-1 font-semibold">
+              <div className="flex gap-1 font-semibold items-">
                 <small>Available Balance</small>
                 <span
                   className="text-xl cursor-pointer active:scale-90"
@@ -80,10 +106,10 @@ export default function Wallet() {
             <div>
               {showBalance ? (
                 <p className="text-3xl font-bold">
-                  <span className="text-sm">₦</span>7.83
+                  <span className="text-sm">₦</span>{walletData.balance.toFixed(2)}
                 </p>
               ) : (
-                <p className="text-3xl font-bold space-x-1">
+                <p className="space-x-1 text-3xl font-bold">
                   <span>*</span>
                   <span>*</span>
                   <span>*</span>
@@ -95,7 +121,7 @@ export default function Wallet() {
               <div className="flex flex-col items-center justify-center gap-1">
                 <Link
                   href={`${WALLET}/add-money`}
-                  className="rounded-xl p-1 bg-white text-primary text-3xl"
+                  className="p-1 text-3xl bg-white rounded-xl text-primary"
                 >
                   <PlusIcon className="w-6 h-6" />
                 </Link>
@@ -104,7 +130,7 @@ export default function Wallet() {
               <div className="flex flex-col items-center justify-center gap-1">
                 <Link
                   href={`${WALLET}/transfer`}
-                  className="rounded-xl p-1 bg-white text-primary text-3xl"
+                  className="p-1 text-3xl bg-white rounded-xl text-primary"
                 >
                   <ArrowPathRoundedSquareIcon className="w-6 h-6" />
                 </Link>
@@ -113,7 +139,7 @@ export default function Wallet() {
               <div className="flex flex-col items-center justify-center gap-1">
                 <Link
                   href={`${WALLET}/withdraw`}
-                  className="rounded-xl p-1 bg-white text-primary text-3xl"
+                  className="p-1 text-3xl bg-white rounded-xl text-primary"
                 >
                   <BanknotesIcon className="w-6 h-6" />
                 </Link>
@@ -127,7 +153,7 @@ export default function Wallet() {
             <div className="flex flex-col items-center justify-center">
               <Link
                 href={`${WALLET}/buy-airtime`}
-                className="bg-primary/10 text-2xl rounded-full p-4 text-primary"
+                className="p-4 text-2xl rounded-full bg-primary/10 text-primary"
               >
                 <ArrowsUpDownIcon className="w-6 h-6" />
               </Link>
@@ -136,7 +162,7 @@ export default function Wallet() {
             <div className="flex flex-col items-center justify-center">
               <Link
                 href={`${WALLET}/buy-data`}
-                className="bg-primary/10 text-2xl rounded-full p-4 text-primary"
+                className="p-4 text-2xl rounded-full bg-primary/10 text-primary"
               >
                 <ArrowsRightLeftIcon className="w-6 h-6" />
               </Link>
@@ -145,7 +171,7 @@ export default function Wallet() {
             <div className="flex flex-col items-center justify-center">
               <Link
                 href={`${WALLET}/more`}
-                className="bg-primary/10 text-2xl rounded-full p-4 text-primary"
+                className="p-4 text-2xl rounded-full bg-primary/10 text-primary"
               >
                 <ArrowRightIcon className="w-6 h-6" />
               </Link>

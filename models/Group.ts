@@ -17,17 +17,17 @@ import { User, UserClass } from "./User";
 })
 @post<GroupClass[]>(/^find/, (docs) => {
   // @ts-ignore
-  if (docs.op === "find") {
-    docs.forEach((doc) => {
-      doc.id = doc._id.toString();
-      doc._id = doc.id;
-    });
-  }
+  // if (docs.op === "find") {
+  // docs.forEach((doc) => {
+  //   doc.id = doc._id.toString();
+  //   doc._id = doc.id;
+  // });
+  // }
 })
 @ModelOptions({
   schemaOptions: {
     timestamps: true,
-    collection: "Groups",
+    collection: "groups",
   },
   options: {
     allowMixed: Severity.ALLOW,
@@ -41,14 +41,28 @@ class GroupClass {
   @prop({ required: true })
   public name: string;
 
+  @prop({ required: true })
+  public owner: string;
+
   @prop({ required: true, default: "" })
   public description: string;
+
+  @prop({required:false, default:""})
+  public password: string;
 
   // @prop({ required: true, type: () => [Member] })
   // public members: Member[];
 
   //   @prop({ required: true, ref: () => UserClass() })
   // public members: Ref<UserClass>[];
+
+  @prop({
+    required: true,
+    default: [],
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+  })
+  public admins: mongoose.Types.ObjectId[];
 
   @prop({
     required: true,

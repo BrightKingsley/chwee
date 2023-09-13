@@ -1,7 +1,12 @@
 import NextAuth, { Session } from "next-auth";
 import GoogleProvider, { GoogleProfile } from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { connectDB, createUser, createWallet } from "@/lib/db";
+import {
+  addMemberToGroup,
+  connectDB,
+  createUser,
+  createWallet,
+} from "@/lib/db";
 import { UserClass } from "@/models/User";
 import { User } from "@/models";
 import { JWT } from "next-auth/jwt";
@@ -68,6 +73,8 @@ const handler = NextAuth({
           if (!newUser) return false;
           const newUserWallet = await createWallet({ ownerID: newUser.id });
 
+          addMemberToGroup({ name: "general chat", userID: newUser.id });
+
           console.log("NEW_USER: ", newUser, "NEWUSERWALLET: ", newUserWallet);
         }
 
@@ -78,13 +85,31 @@ const handler = NextAuth({
       }
     },
     async jwt({ token, user }) {
-      console.log("TOKEN, USER", token, user);
-      if (user) {
-        token.email = user.email;
-        token.id = user.id;
-      }
+      try {
+        await connectDB();
+        const userFromDB = await User.findOne({
+          email: token?.email,
+        });
+        console.log("USERFROMDB", userFromDB);
+        console.log("TOKEN, USER", token, user);
 
-      return token;
+        if (!userFromDB) {
+          token.id = null;
+          token.email = null;
+
+          return token;
+        }
+        // if (user) {
+        token.email = userFromDB.email;
+        token.id = userFromDB.id;
+        // }
+
+        return token;
+      } catch (error) {
+        token.id = null;
+        token.email = null;
+        return token;
+      }
     },
     async session({ session, token }: { session: Session | any; token: JWT }) {
       if (session.user?.email) {

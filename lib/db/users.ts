@@ -67,8 +67,8 @@ export async function getUsers(filter: UserFilter = {}) {
 
     const users = await User.find().skip(skip).limit(limit).lean().exec();
 
-    return { users };
+    return users;
   } catch (error) {
-    return error;
+    return {error};
   }
 }

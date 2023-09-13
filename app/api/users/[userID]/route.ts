@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params: { userID } }: Props) {
   try {
     const user = await getUser({ userID });
     console.log(user);
-    return NextResponse.json({ user });
+    return NextResponse.json(user );
   } catch (error) {
     return NextResponse.json({ error: "Could not get user" });
   }

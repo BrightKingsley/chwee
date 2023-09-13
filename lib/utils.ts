@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 // REPLACE_ELEMENT_IN_STRING
 export const replaceWith = ({
   string,
@@ -63,6 +62,17 @@ export const getItemFromLocalStorage = (name: string) => {
 export const removeItemFromLocalStorage = (name: string) => {
   console.log("removing");
   return localStorage.clear();
+};
+
+export const generatePassword = () => {
+  let result = "";
+
+  for (let i = 0; i < 8; i++) {
+    let char = Math.floor(Math.random() * 62).toString();
+
+    result += char;
+  }
+  return result;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

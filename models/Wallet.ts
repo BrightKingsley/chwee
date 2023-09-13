@@ -16,19 +16,19 @@ import { TransactionClass } from "./Transaction";
     doc._id = doc.id;
   }
 })
-@post<WalletClass[]>(/^find/, (docs) => {
-  // @ts-ignore
-  // if (this.op === "find") {
-    docs.forEach((doc) => {
-      doc.id = doc._id.toString();
-      doc._id = doc.id;
-    });
-  // }
-})
+// @post<WalletClass[]>(/^find/, (docs) => {
+//   // @ts-ignore
+//   // if (this.op === "find") {
+//     docs.forEach((doc) => {
+//       doc.id = doc._id.toString();
+//       doc._id = doc.id;
+//     });
+//   // }
+// })
 @ModelOptions({
   schemaOptions: {
     timestamps: true,
-    collection: "Wallets",
+    collection: "wallets",
   },
   options: {
     allowMixed: Severity.ALLOW,
