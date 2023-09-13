@@ -42,8 +42,15 @@ class EventClass {
   @prop({ required: true, ref: () => UserClass })
   public owner: Ref<UserClass>;
 
-  @prop({ enum: ["deposit", "withdrawal", "transfer"] })
+  @prop({ required: true, default: "" })
+  public description: string;
+
+  @prop({ required: false, default: "" })
+  public password: string;
+
+  @prop({ enum: ["raffle"] })
   public type: string;
+
   start: Date;
 
   end: Date;

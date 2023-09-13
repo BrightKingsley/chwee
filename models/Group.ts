@@ -8,6 +8,7 @@ import {
 } from "@typegoose/typegoose";
 import mongoose from "mongoose";
 import { User, UserClass } from "./User";
+import { MessageClass } from "./Message";
 
 @post<GroupClass>("save", (doc) => {
   if (doc) {
@@ -47,7 +48,7 @@ class GroupClass {
   @prop({ required: true, default: "" })
   public description: string;
 
-  @prop({required:false, default:""})
+  @prop({ required: false, default: "" })
   public password: string;
 
   // @prop({ required: true, type: () => [Member] })
@@ -72,6 +73,9 @@ class GroupClass {
   })
   public members: mongoose.Types.ObjectId[];
 
+  @prop({ ref: () => MessageClass })
+  public messages: Ref<MessageClass>[];
+
   id: string;
 
   _id: mongoose.Types.ObjectId | string;
@@ -79,3 +83,4 @@ class GroupClass {
 
 const Group = getModelForClass(GroupClass);
 export { Group, GroupClass };
+

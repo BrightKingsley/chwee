@@ -1,13 +1,13 @@
-// import {
-//   getModelForClass,
-//   ModelOptions,
-//   Severity,
-//   post,
-//   prop,
-//   type Ref,
-// } from "@typegoose/typegoose";
-// import mongoose from "mongoose";
-// import { UserClass } from "./User";
+import {
+  getModelForClass,
+  ModelOptions,
+  Severity,
+  post,
+  prop,
+  type Ref,
+} from "@typegoose/typegoose";
+import mongoose from "mongoose";
+import { UserClass } from "./User";
 
 // @post<MessageClass>("save", (doc) => {
 //   if (doc) {
@@ -33,26 +33,25 @@
 //     allowMixed: Severity.ALLOW,
 //   },
 // })
-// class MessageClass {
-//   @prop({ required: true, ref: () => UserClass })
-//   public sender: Ref<UserClass>;
+class MessageClass {
+  @prop({ required: true, ref: () => UserClass })
+  public sender: Ref<UserClass>;
 
-//   @prop({})
-//   public imageContent: string;
+  @prop({})
+  public imageContent: string;
 
-//   @prop({})
-//   public textContent: string;
+  @prop({})
+  public textContent: string;
 
-//   @prop({ ref: () => MessageClass })
-//   public replyTo: Ref<MessageClass>;
+  @prop({ ref: () => MessageClass })
+  public replyTo: Ref<MessageClass>;
 
-//   @prop({ required: true })
-//   public sendDate: Date;
+  @prop({ required: true })
+  public sendDate: Date;
 
-//   id: string;
+  id: string;
 
-//   _id: mongoose.Types.ObjectId | string;
-// }
+  _id: mongoose.Types.ObjectId | string;
+}
 
-// const Message = getModelForClass(MessageClass);
-// export { Message, MessageClass };
+export {  MessageClass };
