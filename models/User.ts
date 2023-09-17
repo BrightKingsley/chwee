@@ -42,25 +42,27 @@ class UserClass {
   @prop({ required: true, unique: true })
   public email: string;
 
-  // @prop({ required: true })
-  // public password: string;
+  @prop({ required:false})
+  public password?: string;
 
   @prop({ required: true, unique: true })
   public tag: string;
 
-  // @prop({
-  // public   required: true,
-  //   default: [],
-  //   type: mongoose.Types.ObjectId,
-  //   ref: "User",
-  // })
-  // connections : mongoose.Types.ObjectId[];
+  @prop({
+    required: true,
+    default: [],
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+  })
+  public connections: mongoose.Types.ObjectId[];
 
-  @prop({ required: true, ref: () => UserClass })
-  public connections: Ref<UserClass>[];
+  // @prop({ required: true, ref: () => UserClass })
+  // // public connections: Ref<UserClass>[];
+  // public connections: mongoose.Types.ObjectId[];
 
   @prop({ required: true, ref: () => GroupClass })
   public groups: Ref<GroupClass>[];
+
 
   @prop()
   public photoURL: string;

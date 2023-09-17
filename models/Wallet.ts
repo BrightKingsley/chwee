@@ -35,8 +35,11 @@ import { TransactionClass } from "./Transaction";
   },
 })
 class WalletClass {
-  @prop({ required: true, ref: () => UserClass })
-  public owner: Ref<UserClass>;
+  // @prop({ required: true, ref: () => UserClass })
+  // public owner: mongoose.Types.ObjectId;
+
+  @prop({ required: true })
+  public owner: mongoose.Types.ObjectId;
 
   @prop({ required: true, default: 0 })
   public balance: number;

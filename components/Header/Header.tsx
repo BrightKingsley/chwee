@@ -22,7 +22,7 @@ export default function Header({ imgShown, title }: HeaderType) {
 
   useEffect(() => {
     console.log("SESSION==>",session);
-  }, []);
+  }, [session]);
 
   //functions
   const navigateToAccount = () => {

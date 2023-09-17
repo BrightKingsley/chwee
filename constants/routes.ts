@@ -1,3 +1,5 @@
+export const URL = process.env.NODE_ENV === "development"? "http://localhost:3000" : "https://chwee.vercel.app"
+
 export const AUTH = "/auth";
 export const LOGIN = `${AUTH}/login`;
 export const REGISTER = `${AUTH}/register`;

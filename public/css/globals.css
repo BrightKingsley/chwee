@@ -134,3 +134,16 @@ button:hover {
   @apply outline outline-1 outline-transparent -outline-offset-2;
   /* rounded-md_ */
 }
+
+.animate-loader {
+  animation: loader-gradient 1s ease-in-out alternate infinite;
+}
+
+@keyframes loader-gradient {
+  0% {
+    opacity:0.2
+  }
+  100%{
+    opacity:1
+  }
+}

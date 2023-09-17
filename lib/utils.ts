@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+// import bcrypt from "bcrypt";
 // REPLACE_ELEMENT_IN_STRING
 export const replaceWith = ({
   string,
@@ -63,16 +64,36 @@ export const removeItemFromLocalStorage = (name: string) => {
   console.log("removing");
   return localStorage.clear();
 };
+export const generatePassword = (length: number): string => {
+  const lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+  const upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const numbers = "0123456789";
 
-export const generatePassword = () => {
-  let result = "";
+  const allCharacters = lowerCaseLetters + upperCaseLetters + numbers;
 
-  for (let i = 0; i < 8; i++) {
-    let char = Math.floor(Math.random() * 62).toString();
+  let password = "";
 
-    result += char;
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * allCharacters.length);
+    password += allCharacters.charAt(randomIndex);
   }
-  return result;
+
+  return password;
+};
+
+export const comparePasswords = async ({
+  password,
+  compareWith,
+}: {
+  password?: string;
+  compareWith?: string;
+}): Promise<boolean> => {
+  if (!password || !compareWith) return false;
+
+  // const match = await bcrypt.compare(password, compareWith);
+
+  // return match;
+  return true
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

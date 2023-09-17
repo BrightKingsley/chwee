@@ -45,7 +45,9 @@ export async function deleteEvent({ eventID }: { eventID: string }) {
   try {
     await connectDB();
 
-    await Event.findByIdAndDelete(eventID);
+    const parsedID = stringToObjectId(eventID);
+
+    await Event.findByIdAndDelete(parsedID);
     return true;
   } catch (error) {
     return false;

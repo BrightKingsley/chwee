@@ -23,27 +23,29 @@ import {
 } from "@heroicons/react/20/solid";
 import NavLink from "../NavLink";
 
+const iconClassNames = "w-6 h-6"
+
 const navLinks = [
   {
     link: CHAT,
-    icon: <ChatBubbleBottomCenterIcon className="w-8 h-8" />,
+    icon: <ChatBubbleBottomCenterIcon className={iconClassNames} />,
     name: "chat",
   },
-  { link: WALLET, icon: <WalletIcon className="w-8 h-8" />, name: "wallet" },
+  { link: WALLET, icon: <WalletIcon className={iconClassNames} />, name: "wallet" },
   {
     link: NOTIFICATIONS,
-    icon: <BellIcon className="w-8 h-8" />,
+    icon: <BellIcon className={iconClassNames} />,
     name: "notifications",
   },
-  { link: EVENTS, icon: <CakeIcon className="w-8 h-8" />, name: "events" },
+  { link: EVENTS, icon: <CakeIcon className={iconClassNames} />, name: "events" },
   {
     link: CONNECT,
-    icon: <UserGroupIcon className="w-8 h-8" />,
+    icon: <UserGroupIcon className={iconClassNames} />,
     name: "connect",
   },
   {
     link: SETTINGS,
-    icon: <Cog8ToothIcon className="w-8 h-8" />,
+    icon: <Cog8ToothIcon className={iconClassNames} />,
     name: "settings",
   },
 ];
@@ -56,7 +58,7 @@ export default function Navbar() {
     //     onClick={() => setShowMenu(true)}
     //     className="text-3xl active:scale-75 active:opacity-50"
     //   >
-    //     <Bars3Icon className="w-8 h-8 text-gray-700" />
+    //     <Bars3Icon className={iconClassNames}text-gray-700" />
     //   </button> */}
 
     <motion.div
@@ -64,7 +66,7 @@ export default function Navbar() {
       //   translateX: showMenu ? 100 : 0,
       //   opacity: showMenu ? 1 : 0,
       // }}
-      className="flex h-screen flex-col -left-[100px]_ w-[calc(100vw/0.5)]_ w-16 z-10 bg-white border-r-2"
+      className="flex h-screen flex-col -left-[100px]_ w-[calc(100vw/0.5)]_ w-14 z-10 bg-white border-r-2"
     >
       <div className="relative flex items-center justify-center w-full h-auto pt-4">
         <Close close={() => setShowMenu(false)} />

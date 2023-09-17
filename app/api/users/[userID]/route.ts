@@ -1,4 +1,4 @@
-import { deleteUser, getUser } from "@/lib/db";
+import { deleteUser, getUserByID } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 export async function GET(request: NextRequest, { params: { userID } }: Props) {
   // const id = request.url.slice(request.url.lastIndexOf("/") + 1)
   try {
-    const user = await getUser({ userID });
+    const user = await getUserByID({ userID });
     console.log(user);
     return NextResponse.json(user );
   } catch (error) {

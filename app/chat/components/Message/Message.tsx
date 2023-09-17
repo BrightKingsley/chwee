@@ -7,17 +7,22 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { MEMBER_INFO } from "@/constants/routes";
+import { MessageClass } from "@/models/Message";
+
+
+
+interface ClientMessage extends MessageClass{
+  setReplyMessage: Function
+  userID:string
+}
 
 export default function Message({
-  photoURL,
-  name,
-  text,
-  image,
-  senderId,
+  textContent,
+  imageContent,
+  sender,
   setReplyMessage,
-
-  //TODO typecheck
-}: any) {
+userID  //TODO typecheck
+}: ClientMessage) {
   const [showOptions, setShowOptions] = useState(false);
 
   const messageRef = useRef<HTMLDivElement>();
@@ -25,10 +30,8 @@ export default function Message({
 
   useEffect(() => {
     messageRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [photoURL, name, text, image, senderId, setReplyMessage]);
-
-  const myMessage = senderId ===" user?.uid";
-
+  }, [sender]);
+  
   return (
     <motion.div
       ref={messageRef as Ref<HTMLDivElement>}
@@ -39,30 +42,28 @@ export default function Message({
       dragDirectionLock={true}
       dragConstraints={{ left: 0, right: 0 }}
       onDragEnd={(e: PointerEvent) => {
-        e.offsetX > 200 && setReplyMessage(text);
+        e.offsetX > 200 && setReplyMessage(textContent);
       }}
-      className={`flex ${
-        myMessage && "flex-row-reverse self-end"
-      } gap-2 w-[90%]`}
+      className={`flex ${sender === userID && "flex-row-reverse self-end"} gap-2 w-fit`}
     >
-      {senderId != "user?.uid" && (
+      {/* {sender != "user?.uid" && (
         <Link
-          href={`${MEMBER_INFO}/${senderId}`}
-          className="w-10 h-10 rounded-full overflow-clip shrink-0 translate-y-5"
+          href={`${MEMBER_INFO}/${sender}`}
+          className="w-10 h-10 translate-y-5 rounded-full overflow-clip shrink-0"
         >
           <Image src={photoURL} alt="{user}" draggable={false} />
         </Link>
-      )}
+      )} */}
       <div className="relative flex flex-col">
         <div
-          className={`absolute ${myMessage ? "-left-10" : "-right-10"} ${
-            image ? "top-5" : ""
+          className={`absolute ${true ? "-left-10" : "-right-10"} ${
+            imageContent?.length > 0 ? "top-5" : ""
           }  text-2xl`}
         >
           {
             <button
               onClick={() => setShowOptions((prev) => !prev)}
-              className="p-3 rounded-full md:hover:bg-white/30 active:bg-white/50 text-gray-700"
+              className="p-3 text-gray-700 rounded-full md:hover:bg-white/30 active:bg-white/50"
             >
               {showOptions ? <XMarkIcon /> : <EllipsisVerticalIcon />}
             </button>
@@ -82,23 +83,25 @@ export default function Message({
             ]}
           />
         </div>
-        <div className={myMessage ? "text-end" : ""}>
-          <small>{name}</small>
+        <div className={true ? "text-end" : ""}>
+          {/* <small>{name}</small> */}
         </div>
         <div className="mb-1">
           <p
             className={`${
-              myMessage ? "rounded-l-md" : "rounded-r-md"
-            } bg-white p-2 rounded-b-md`}
+              sender === userID ? "rounded-l-2xl" : "rounded-r-2xl"
+            } bg-white p-2 rounded-b-2xl`}
           >
-            {text}
+            {textContent}
           </p>
         </div>
-        {image && (
-          <div className="w-40 h-32 overflow-clip rounded-md self-end_">
-            <Image src={image} alt="sent by {user}" fill draggable={false} />
+        {/* {imageContent?.length > 0 && (
+          <div className="w-40 h-32 rounded-md overflow-clip self-end_">
+            {imageContent.map((image) => (
+              <Image key={image} src={image} alt="sent by {user}" fill draggable={false} />
+            ))}
           </div>
-        )}
+        )} */}
       </div>
     </motion.div>
   );

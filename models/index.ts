@@ -1,6 +1,7 @@
-export { Event } from "./Event";
-export { Group } from "./Group";
+export { Chat ,ChatClass} from "./Chat";
+export { Event, EventClass } from "./Event";
+export { Group, GroupClass } from "./Group";
 // export { Message } from "./Message";
-export { Transaction } from "./Transaction";
-export { User } from "./User";
-export { Wallet } from "./Wallet";
+export { Transaction ,TransactionClass } from "./Transaction";
+export { User , UserClass} from "./User";
+export { Wallet, WalletClass } from "./Wallet";

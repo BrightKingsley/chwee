@@ -6,10 +6,15 @@ import {
   connectDB,
   createUser,
   createWallet,
+  getUserByEmail,
+  getUserByTag,
 } from "@/lib/db";
+import { comparePasswords } from "@/lib/utils";
 import { UserClass } from "@/models/User";
 import { User } from "@/models";
 import { JWT } from "next-auth/jwt";
+import bcrypt from "bcrypt";
+
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
@@ -17,14 +22,17 @@ const handler = NextAuth({
     GoogleProvider({
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
+      httpOptions: {
+        timeout: 40000,
+      },
     }),
-    /* CredentialsProvider({
+    CredentialsProvider({
       name: "Credentials",
       credentials: {
-        username: {
-          label: "Username:",
-          type: "text",
-          placeholder: "your cool username",
+        email: {
+          label: "email:",
+          type: "email",
+          placeholder: "your email",
         },
         password: {
           label: "Pasword",
@@ -37,19 +45,73 @@ const handler = NextAuth({
       async authorize(credentials) {
         // retrieve user data to verify with credentials
         // Docs: https://next-auth.js.org/configuration/providers/credentials
-        const user = { id: 12, name: "King", password: "test1234" };
 
-        if (
-          credentials?.username === user.name &&
-          credentials?.password === user.password
-        ) {
-          return user;
+        console.log("CREDENTIALS==>", credentials);
+
+        if (!credentials || !(credentials.email && credentials?.password))
+          return;
+
+        const user = (await getUserByEmail({
+          email: credentials.email,
+        })) as UserClass | null;
+
+        console.log("USER_FROM_DB", user);
+
+        if (user) {
+
+          console.log("REACHED_YES_USER")
+
+          const passwordsMatch = await bcrypt.compare(credentials.password, user.password as string)
+
+          console.log("Passwords", passwordsMatch)
+
+          if (credentials.email === user.email && passwordsMatch) {
+            console.log("uSer should be logged in now", {
+              name: user.username,
+              email: user.email,
+              id: user._id,
+              image: user.photoURL || null,
+            });
+            return {
+              name: user.username,
+              email: user.email,
+              id: user.id,
+              image: user.photoURL || null,
+            };
+          }
         } else {
-          return null;
+          console.log("USER_DOESN'T_EXIST => ", user);
+
+          const generatedUsername = credentials?.email
+            .split("@")[0]
+            .toString()
+            .trim();
+
+          const newUser = await createUser({
+            email: credentials.email.toString().trim(),
+            username: generatedUsername,
+            password: credentials.password,
+            tag: `@${generatedUsername}${Date.now()}${Math.random().toFixed(
+              2
+            )}`,
+          });
+
+          console.log("NEW_USER => ", newUser, generatedUsername);
+
+          if (!newUser) return null;
+
+          console.log("uSer should be logged in now");
+          return {
+            name: newUser.username,
+            email: newUser.email,
+            id: newUser.id,
+            image: newUser.photoURL || null,
+          };
         }
+
+        return null;
       },
     }),
-    */
   ],
   callbacks: {
     async signIn({ profile }) {
@@ -65,10 +127,12 @@ const handler = NextAuth({
 
         if (!userExists && profile?.email && profile?.name) {
           const newUser = await createUser({
-            email: profile.email.toString(),
-            username: profile.name.toString(),
+            email: profile.email.toString().trim(),
+            username: profile.name.toString().trim(),
             photoURL: googleProfile.picture,
-            tag: `@${profile.name}${Date.now()}${Math.random().toFixed(2)}`,
+            tag: `@${
+              profile.name.split(" ")[0]
+            }${Date.now()}${Math.random().toFixed(2)}`,
           });
           if (!newUser) return false;
           const newUserWallet = await createWallet({ ownerID: newUser.id });

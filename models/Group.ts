@@ -9,6 +9,7 @@ import {
 import mongoose from "mongoose";
 import { User, UserClass } from "./User";
 import { MessageClass } from "./Message";
+import { ConversationClass } from "./Conversation";
 
 @post<GroupClass>("save", (doc) => {
   if (doc) {
@@ -51,30 +52,33 @@ class GroupClass {
   @prop({ required: false, default: "" })
   public password: string;
 
-  // @prop({ required: true, type: () => [Member] })
-  // public members: Member[];
-
-  //   @prop({ required: true, ref: () => UserClass() })
-  // public members: Ref<UserClass>[];
-
   @prop({
     required: true,
     default: [],
     type: mongoose.Types.ObjectId,
-    ref: "User",
+    ref: "user",
   })
   public admins: mongoose.Types.ObjectId[];
 
   @prop({
     required: true,
-    default: [],
-    type: mongoose.Types.ObjectId,
-    ref: "User",
+    default: new Set(),
+    // ref: () => UserClass,
   })
-  public members: mongoose.Types.ObjectId[];
+  // public members: Set<Ref<UserClass>>;
+  public members: Set<mongoose.Types.ObjectId>;
 
-  @prop({ ref: () => MessageClass })
-  public messages: Ref<MessageClass>[];
+  // @prop({
+  //   required: true,
+  //   ref: () => ConversationClass,
+  // })
+  // public conversation: mongoose.Types.ObjectId;
+
+  // @prop({ ref: () => UserClass })
+  // public members: Ref<UserClass>[];
+
+  // @prop({ required: true, ref: () => ConversationClass })
+  // conversation: Ref<ConversationClass>;
 
   id: string;
 
@@ -83,4 +87,3 @@ class GroupClass {
 
 const Group = getModelForClass(GroupClass);
 export { Group, GroupClass };
-

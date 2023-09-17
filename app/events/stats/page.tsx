@@ -14,7 +14,7 @@ export default function Stats() {
       if (!messages) return;
       // const mostFrequent = findMostFrequentInObject(messages, "senderId");
       // if (!mostFrequent) return;
-      // const top = await getUser(mostFrequent);
+      // const top = await getUserByID(mostFrequent);
       // if (!top) return;
       // setTopContributor(top);
     })();

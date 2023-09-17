@@ -13,7 +13,7 @@ export default function MemberInfo() {
   //   if (!id) return;
 
   //   (async () => {
-  //     const user = await getUser(id);
+  //     const user = await getUserByID(id);
   //     if (!user) return;
   //     setMember(user);
   //   })();

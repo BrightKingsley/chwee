@@ -1,14 +1,19 @@
 import Message from "../Message";
-import { MessagesType } from "./types";
+import { MessageClass } from "@/models/Message";
 import poor from "@/assets/images/poor.png";
 import nft from "@/assets/images/nft.jpg";
 import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "@/context";
-
+import { useParams } from "next/navigation";
+import { pusherClient } from "@/lib/config";
+import {URL} from "@/constants/routes"
+import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
+import LoadingMessages from "../LoadingMessages"
 // const messages: MessageModel[] = [];
 
 // for (let i = 0; i < 10; i++) {
-//   messages.push({
+// app/api/route.ts//   messages.push({
 //     id: `msgID${i}chkDSk`,
 //     photoURL: nft,
 //     name: `my Name - ${i}`,
@@ -19,49 +24,80 @@ import { ChatContext } from "@/context";
 //   });
 // }
 
-  //TODO typecheck
-export default function Messages({ setReplyMessage }: any) {
-  const [messages, setMessages] = useState<any[] | []>([]);
-  const [chatId, setChatId] = useState("");
+const getMessages = async () => {
+  await fetch(`${URL}/api/`);
+};
 
-  const { getChatId } = useContext(ChatContext);
+//TODO typecheck
+export default function Messages({ setReplyMessage }: any) {
+  const [messages, setMessages] = useState<MessageClass[] | null>(null);
+  const [loading, setLoading] = useState(false)
+
+
+
+  const { data } = useSession();
+  const session: Session | any = data;
+  const params = useParams();
+
+  const chatID = params.chatID as string;
+
+  console.log("PARAMS =>", params, chatID);
 
   useEffect(() => {
-    (async () => {
-      setChatId(await getChatId());
-    })();
+    if (!chatID) return;
+    pusherClient.subscribe(chatID);
+
+    pusherClient.bind("incoming-message", (message: MessageClass) => {
+      setMessages((prev) => [...prev, message]);
+    });
+
+    return () => pusherClient.unsubscribe(chatID);
   }, []);
 
   useEffect(() => {
-    // if (chatId) {
-    //   const unsub = onSnapshot(doc(db, "chats", chatId), (doc) => {
-    //   console.log("CHATS==>",doc.data(),doc.data().messages )
-    //     doc.exists() && doc.data().messages && setMessages(doc.data().messages);
-    //   });
+    (async () => {
+      setLoading(true)
+      const response = await fetch(
+        `${URL}/api/messaging/${chatID}`,
+        { cache: "no-cache" }
+      );
 
-    //   return () => {
-    //     unsub();
-    //   };
-    // } else return;
-  }, [chatId]);
 
-  return (
-    <div className="flex flex-col flex-1 space-y-2 overflow-y-auto m-2 ">
-      {messages.map(
-        ({ id, photoURL, image, name, text, createdAt, senderId }, i) => (
+      const {messages} = await response.json();
+
+      console.log("RESPONSE =>", response,"MSGS", messages)
+
+      if(!messages)return
+
+      setMessages(messages);
+      setLoading(false)
+    })();
+  }, [chatID]);
+
+  return  (
+    <div className="flex flex-col flex-1 m-2 space-y-2 overflow-y-auto ">
+
+      { loading || !session || !session.user.id ? <LoadingMessages/> : messages.map(
+        ({ id, imageContent, textContent, sendDate, sender }, i) => (
           <Message
             key={i}
             id={id}
-            photoURL={photoURL}
-            image={image}
-            name={name}
-            text={text}
-            createdAt={createdAt}
-            senderId={senderId}
+            // photoURL={photoURL}
+            imageContent={imageContent}
+            // name={name}
+            textContent={textContent}
+            sendDate={sendDate}
+            sender={sender}
+            userID={session.user.id}
             setReplyMessage={setReplyMessage}
           />
         )
       )}
     </div>
-  );
+  ) 
+  // : (
+  //   <div className="flex items-center justify-center w-full h-full">
+  //     <h1>No Messages Available</h1>
+  //   </div>
+  // );
 }

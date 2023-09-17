@@ -84,9 +84,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <NotificationContextProvider>
               <ModalContextProvider>
                 <ChatContextProvider> 
-                  <main className="flex">
+                  <main className="flex w-screen">
                     <Navbar />
-                    <div className="flex-1 w-full">{children}</div>
+                    <div className="flex-1 w-full_">{children}</div>
                   </main>
                 </ChatContextProvider>
               </ModalContextProvider>

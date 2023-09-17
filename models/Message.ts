@@ -34,24 +34,27 @@ import { UserClass } from "./User";
 //   },
 // })
 class MessageClass {
-  @prop({ required: true, ref: () => UserClass })
-  public sender: Ref<UserClass>;
+  // @prop({ required: true, ref: () => UserClass })
+  // public sender: mongoose.Types.ObjectId;
 
-  @prop({})
-  public imageContent: string;
+  @prop({ required: true,})
+  public sender: mongoose.Types.ObjectId | string;
 
-  @prop({})
+  @prop({default:""})
+  public imageContent: string[];
+
+  @prop({default:"",})
   public textContent: string;
 
   @prop({ ref: () => MessageClass })
-  public replyTo: Ref<MessageClass>;
+  public replyTo?: mongoose.Types.ObjectId;
 
   @prop({ required: true })
   public sendDate: Date;
 
   id: string;
 
-  _id: mongoose.Types.ObjectId | string;
+  _id?: mongoose.Types.ObjectId | string;
 }
 
 export {  MessageClass };
