@@ -1,13 +1,14 @@
 "ue client"
 
 import {XMarkIcon, EllipsisVerticalIcon  } from "@heroicons/react/20/solid";
-import { OptionsMenu } from "@/components";
+import { AnimateInOut,OptionsMenu } from "@/components";
 import { Ref, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { MEMBER_INFO } from "@/constants/routes";
 import { MessageClass } from "@/models/Message";
+import {useLongPress} from "@/hooks"
 
 
 
@@ -28,12 +29,17 @@ userID  //TODO typecheck
   const messageRef = useRef<HTMLDivElement>();
 
 
+
+
+const gestures = useLongPress({callback:()=>setShowOptions(true),duration:800})
+
   useEffect(() => {
     messageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [sender]);
   
   return (
     <motion.div
+    {...gestures}
       ref={messageRef as Ref<HTMLDivElement>}
       initial={{ scale: 0.8, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
@@ -44,8 +50,9 @@ userID  //TODO typecheck
       onDragEnd={(e: PointerEvent) => {
         e.offsetX > 200 && setReplyMessage(textContent);
       }}
-      className={`flex ${sender === userID && "flex-row-reverse self-end"} gap-2 w-fit`}
+      className={`relative cursor-pointer flex ${sender === userID && "flex-row-reverse self-end"} gap-2 w-fit`}
     >
+      <AnimateInOut show={showOptions} animate={{scale:1, rotate:0, opacity:1}}  init={{scale:0.5, rotate:-15,opacity:0}} out={{scale:0.5, rotate:-15,opacity:0}} className="absolute flex gap-2 items-center rounded-full bg-white -top-8 -right-0 z-10 text-xl px-1"><span onClick={()=>setShowOptions(false)} className="p-1 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12 transition-all duration-200">😂</span><span onClick={()=>setShowOptions(false)} className="p-1 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12 transition-all duration-200">💩</span><span onClick={()=>setShowOptions(false)} className="p-1 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12 transition-all duration-200">😢</span><span onClick={()=>setShowOptions(false)} className="p-1 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12 transition-all duration-200">😭</span><span onClick={()=>setShowOptions(false)} className="p-1 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12 transition-all duration-200">💔</span></AnimateInOut>
       {/* {sender != "user?.uid" && (
         <Link
           href={`${MEMBER_INFO}/${sender}`}

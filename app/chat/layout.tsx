@@ -41,6 +41,7 @@ export default function ChatLayout({
         </>
       )}
       {/* <div className="mx-2">{page}</div> */}
+      <div className="absolute p-4 bg-gradient rounded-xl">New</div>
       <div className="mx-2">{children}</div>
     </div>
   );
