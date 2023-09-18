@@ -47,11 +47,17 @@ export async function POST(request: NextRequest, {params:{chatID}}:PostProps) {
       });
 
     if (roomType === "group") {
+      console.log("ROOM_TYPE", roomType)
       // Find the group by its ID
       const group = await Group.findById(parsedChatID);
 
       // Check if the group exists and if the members Set includes the memberIdToCheck
-      if (group && group.members.has(parsedSenderID)) {
+      if (
+        group &&
+        group.members.includes(parsedSenderID || group.owner === parsedSenderID)
+      ) {
+        console.log("<==========REACHED=========>");
+
         pusherServer.trigger(chatID, "incoming-message", message);
 
         await sendMessage({ chatID, message });
@@ -88,7 +94,13 @@ export async function POST(request: NextRequest, {params:{chatID}}:PostProps) {
 
 export async function GET(request:NextRequest,{params:{chatID}}:GetProps){
 
-const {messages} = await getMessages({chatID})
+  console.log("CHAT_ID", chatID)
+
+const result = await getMessages({ chatID });
+
+if(!result) return {error:{message:"Could not get messages for this chat"}}
+
+const messages = result.messages
 
 if(!messages) return {error:{message:"Could not get messages for this chat"}}
 

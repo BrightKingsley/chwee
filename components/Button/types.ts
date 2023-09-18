@@ -1,5 +1,5 @@
 export type ButtonProps = {
-  children: React.ReactNode;
+  children: React.ReactNode | string;
   onClick?: Function;
   full?: boolean;
   color?: "primary" | "accent" | "error" | "gray";

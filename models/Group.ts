@@ -60,13 +60,22 @@ class GroupClass {
   })
   public admins: mongoose.Types.ObjectId[];
 
+  /*
   @prop({
     required: true,
-    default: new Set(),
+    type:()=>Set,
     // ref: () => UserClass,
   })
   // public members: Set<Ref<UserClass>>;
-  public members: Set<mongoose.Types.ObjectId>;
+  public members: Set<mongoose.Types.ObjectId | string>;
+  */
+
+  @prop({
+    required: true,
+    // ref: () => UserClass,
+    default:[]
+  })
+  public members: (mongoose.Types.ObjectId | string)[];
 
   // @prop({
   //   required: true,

@@ -127,7 +127,7 @@ a:focus {
 }
 
 button:active {
-  @apply opacity-50;
+  @apply opacity-50 scale-90;
 }
 
 button:hover {

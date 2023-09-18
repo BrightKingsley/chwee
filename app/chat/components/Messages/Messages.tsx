@@ -24,24 +24,16 @@ import LoadingMessages from "../LoadingMessages"
 //   });
 // }
 
-const getMessages = async () => {
-  await fetch(`${URL}/api/`);
-};
-
 //TODO typecheck
-export default function Messages({ setReplyMessage }: any) {
-  const [messages, setMessages] = useState<MessageClass[] | null>(null);
-  const [loading, setLoading] = useState(false)
+export default function Messages({ setReplyMessage, chatID }: any) {
+  const [messages, setMessages] = useState<MessageClass[]>([]);
+  const [loading, setLoading] = useState(false);
 
-
+  // password: b3xF2yRB | q7b5KYV6 | V6XBvBjX
 
   const { data } = useSession();
   const session: Session | any = data;
   const params = useParams();
-
-  const chatID = params.chatID as string;
-
-  console.log("PARAMS =>", params, chatID);
 
   useEffect(() => {
     if (!chatID) return;
@@ -56,45 +48,60 @@ export default function Messages({ setReplyMessage }: any) {
 
   useEffect(() => {
     (async () => {
-      setLoading(true)
+      setLoading(true);
+
+      //TODO remove hard-coded password
       const response = await fetch(
-        `${URL}/api/messaging/${chatID}`,
-        { cache: "no-cache" }
+        `${URL}/api/messaging/${chatID}?password=V6XBvBjX`,
+        {
+          cache: "no-cache",
+        }
       );
 
+      console.log("FIRST_RES", response);
 
-      const {messages} = await response.json();
+      if (!response.ok) return;
 
-      console.log("RESPONSE =>", response,"MSGS", messages)
+      const data = await response.json();
+      if (!data) return;
 
-      if(!messages)return
+      const { messages: msgs } = data;
 
-      setMessages(messages);
-      setLoading(false)
+      console.log("RESPONSE =>", response, "MSGS", messages);
+
+      if (!msgs) return;
+
+      setMessages(msgs);
+      setLoading(false);
     })();
   }, [chatID]);
 
-  return  (
+  return (
     <div className="flex flex-col flex-1 m-2 space-y-2 overflow-y-auto ">
-
-      { loading || !session || !session.user.id ? <LoadingMessages/> : messages.map(
-        ({ id, imageContent, textContent, sendDate, sender }, i) => (
-          <Message
-            key={i}
-            id={id}
-            // photoURL={photoURL}
-            imageContent={imageContent}
-            // name={name}
-            textContent={textContent}
-            sendDate={sendDate}
-            sender={sender}
-            userID={session.user.id}
-            setReplyMessage={setReplyMessage}
-          />
+      {loading ? (
+        <LoadingMessages />
+      ) : !messages || !session || !session.user.id ? (
+        <h1>NO MESSAGES AVAILABLE</h1>
+      ) : (
+        messages.map(
+          ({ id, imageContent, textContent, sendDate, sender }, i) => (
+            <Message
+              key={i}
+              id={id}
+              // photoURL={photoURL}
+              imageContent={imageContent}
+              // name={name}
+              textContent={textContent}
+              sendDate={sendDate}
+              sender={sender}
+              userID={session.user.id}
+              setReplyMessage={setReplyMessage}
+            />
+          )
         )
       )}
     </div>
-  ) 
+  );
   // : (
   //   <div className="flex items-center justify-center w-full h-full">
   //     <h1>No Messages Available</h1>

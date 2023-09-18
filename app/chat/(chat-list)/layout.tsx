@@ -2,8 +2,8 @@
 import { SubHeader, Header } from "@/components";
 import { CHATS, GROUPS, CHAT } from "@/constants/routes";
 import { replaceWith, formatLink } from "@/lib/utils";
-
 import { usePathname } from "next/navigation";
+import {FloatingActionButton} from "../components"
 
 export default function ChatLayout({
   children,
@@ -13,9 +13,9 @@ export default function ChatLayout({
   const pathname = usePathname();
 
   return (
-    <div>
-      {!pathname.includes(`${CHATS}/` || `${GROUPS}/`) && (
-        <>
+    <div className="relative w-full h-full">
+      {/* {!pathname.includes(`${CHATS}/` || `${GROUPS}/`) && (
+        <> */}
           <Header imgShown={false} title="Chat" />
 
           <SubHeader
@@ -38,10 +38,10 @@ export default function ChatLayout({
               },
             ]}
           />
-        </>
-      )}
+        {/* </>
+      )} */}
       {/* <div className="mx-2">{page}</div> */}
-      <div className="absolute p-4 bg-gradient rounded-xl">New</div>
+      <FloatingActionButton pathname={pathname}/>
       <div className="mx-2">{children}</div>
     </div>
   );

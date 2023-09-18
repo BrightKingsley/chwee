@@ -40,8 +40,6 @@ export async function createGroup({
     // Parse the owner's ID
     const parsedID = stringToObjectId(ownerID.trimEnd());
 
-    
-
     if (password) {
       // Generate a random password
       const genPass = generatePassword(8);
@@ -60,6 +58,7 @@ export async function createGroup({
         name: name.trimEnd(),
         description: description.trimEnd(),
         password: hashedPassword,
+        members: [parsedID],
       });
 
       if (!group) return null;
@@ -83,7 +82,19 @@ export async function createGroup({
       owner: parsedID,
       name: name.trimEnd(),
       description: description.trimEnd(),
+      members: [parsedID],
     });
+
+    // Create a conversation for the group
+    const conversation: ConversationClass | any = await createConversation({
+      chatID: group._id,
+    });
+
+    // Check if the conversation was created successfully
+    if (!conversation.id)
+      return { error: { message: "Couldn't Create Group Conversation" } };
+
+    console.log("CREATED_CONVO", conversation);
 
     return { group };
   } catch (error) {

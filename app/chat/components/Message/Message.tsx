@@ -1,20 +1,18 @@
-"ue client"
+"ue client";
 
-import {XMarkIcon, EllipsisVerticalIcon  } from "@heroicons/react/20/solid";
-import { AnimateInOut,OptionsMenu } from "@/components";
+import { XMarkIcon, EllipsisVerticalIcon } from "@heroicons/react/20/solid";
+import { AnimateInOut, OptionsMenu } from "@/components";
 import { Ref, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { MEMBER_INFO } from "@/constants/routes";
 import { MessageClass } from "@/models/Message";
-import {useLongPress} from "@/hooks"
+import { useLongPress } from "@/hooks";
 
-
-
-interface ClientMessage extends MessageClass{
-  setReplyMessage: Function
-  userID:string
+interface ClientMessage extends MessageClass {
+  setReplyMessage: Function;
+  userID: string;
 }
 
 export default function Message({
@@ -22,37 +20,106 @@ export default function Message({
   imageContent,
   sender,
   setReplyMessage,
-userID  //TODO typecheck
+  userID, //TODO typecheck
 }: ClientMessage) {
-  const [showOptions, setShowOptions] = useState(false);
+  const [showMore, setShowMore] = useState({options:false, emojis:false});
 
   const messageRef = useRef<HTMLDivElement>();
 
+  const gestures = useLongPress({
+    callback: () => setShowMore(prev=>({...prev,emojis:true})),
+    duration: 800,
+  });
 
 
+  useEffect(() => {
+    if(!showMore)return
+   const timeout= setTimeout(()=>{
+setShowMore(prev=>({...prev,emojis:false}))
+    },2000)
 
-const gestures = useLongPress({callback:()=>setShowOptions(true),duration:800})
+    return ()=>clearTimeout(timeout)
+  }, [showMore]);
 
   useEffect(() => {
     messageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [sender]);
-  
+
   return (
+    // @ts-ignore TODO
     <motion.div
-    {...gestures}
+      {...gestures}
       ref={messageRef as Ref<HTMLDivElement>}
       initial={{ scale: 0.8, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.5 }}
+      transition={{  duration: 0.02 }}
       drag="x"
-      dragDirectionLock={true}
-      dragConstraints={{ left: 0, right: 0 }}
-      onDragEnd={(e: PointerEvent) => {
-        e.offsetX > 200 && setReplyMessage(textContent);
+      dragElastic={{
+        left: sender === userID ? 0.5 : 0,
+        right: sender === userID ? 0 : 0.5,
       }}
-      className={`relative cursor-pointer flex ${sender === userID && "flex-row-reverse self-end"} gap-2 w-fit`}
+      dragDirectionLock={true}
+      dragConstraints={{ left: 0, right: 0, }}
+      onDragEnd={(e:PointerEvent, info) => {
+        const offset =  info.offset.x
+        console.log(offset)
+        // setReplyMessage(textContent);
+        sender !== userID &&
+          offset > 200 &&
+          setReplyMessage(textContent);
+        sender === userID &&
+          offset < -100 &&
+          setReplyMessage(textContent);
+      }}
+
+      // dragDirectionLock={true}
+      // dragConstraints={{ left: 0, right: 0 }}
+      // onDragEnd={(e: PointerEvent) => {
+      //   console.log("replying");
+      //   e.offsetX > 50 && setReplyMessage(textContent);
+      // }}
+      className={`relative cursor-pointer flex max-w-[90%] ${
+        sender === userID && "flex-row-reverse self-end"
+      } gap-2 w-fit`}
     >
-      <AnimateInOut show={showOptions} animate={{scale:1, rotate:0, opacity:1}}  init={{scale:0.5, rotate:-15,opacity:0}} out={{scale:0.5, rotate:-15,opacity:0}} className="absolute flex gap-2 items-center rounded-full bg-white -top-8 -right-0 z-10 text-xl px-1"><span onClick={()=>setShowOptions(false)} className="p-1 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12 transition-all duration-200">😂</span><span onClick={()=>setShowOptions(false)} className="p-1 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12 transition-all duration-200">💩</span><span onClick={()=>setShowOptions(false)} className="p-1 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12 transition-all duration-200">😢</span><span onClick={()=>setShowOptions(false)} className="p-1 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12 transition-all duration-200">😭</span><span onClick={()=>setShowOptions(false)} className="p-1 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12 transition-all duration-200">💔</span></AnimateInOut>
+      <AnimateInOut
+        show={showMore.emojis}
+        animate={{ scale: 1, rotate: 0, opacity: 1 }}
+        init={{ scale: 0.5, rotate: -15, opacity: 0 }}
+        out={{ scale: 0.5, rotate: -15, opacity: 0 }}
+        className="absolute z-10 flex items-center gap-2 px-1 text-xl bg-white rounded-full -top-8 -right-0"
+      >
+        <span
+          onClick={() => setShowMore(prev=>({...prev,emojis:false}))}
+          className="p-1 transition-all duration-200 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12"
+        >
+          😂
+        </span>
+        <span
+          onClick={() => setShowMore(prev=>({...prev,emojis:false}))}
+          className="p-1 transition-all duration-200 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12"
+        >
+          💩
+        </span>
+        <span
+          onClick={() => setShowMore(prev=>({...prev,emojis:false}))}
+          className="p-1 transition-all duration-200 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12"
+        >
+          😢
+        </span>
+        <span
+          onClick={() => setShowMore(prev=>({...prev,emojis:false}))}
+          className="p-1 transition-all duration-200 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12"
+        >
+          😭
+        </span>
+        <span
+          onClick={() => setShowMore(prev=>({...prev,emojis:false}))}
+          className="p-1 transition-all duration-200 rounded-full active:scale-95 hover:scale-125 hover:-rotate-12"
+        >
+          💔
+        </span>
+      </AnimateInOut>
       {/* {sender != "user?.uid" && (
         <Link
           href={`${MEMBER_INFO}/${sender}`}
@@ -63,24 +130,28 @@ const gestures = useLongPress({callback:()=>setShowOptions(true),duration:800})
       )} */}
       <div className="relative flex flex-col">
         <div
-          className={`absolute ${true ? "-left-10" : "-right-10"} ${
-            imageContent?.length > 0 ? "top-5" : ""
-          }  text-2xl`}
+          className={`absolute ${sender === userID ? "-left-10" : "-right-10"}
+           ${
+            imageContent?.length > 0 ? "top-5_" : ""
+          }
+            text-2xl`}
         >
           {
             <button
-              onClick={() => setShowOptions((prev) => !prev)}
-              className="p-3 text-gray-700 rounded-full md:hover:bg-white/30 active:bg-white/50"
+              onClick={() => setShowMore(prev=> ({...prev,options:!prev.options}))}
+              className="p-3 text-gray-700 rounded-full hover:bg-white/20 active:scale-75 transition-all duration-200"
             >
-              {showOptions ? <XMarkIcon /> : <EllipsisVerticalIcon />}
+              {showMore.options ? <XMarkIcon  className="w-6 h-6 text-gray-600" /> : <EllipsisVerticalIcon className="w-6 h-6 text-gray-600" />}
             </button>
-          }
+          } 
           <OptionsMenu
-            show={showOptions}
+            show={showMore.options}
             options={[
               {
                 label: "reply",
-                onClick: () => {},
+                onClick: () => {
+                  setReplyMessage(textContent)
+                },
               },
               {
                 label: "start",
