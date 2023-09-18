@@ -16,7 +16,7 @@ for (let i = 0; i < 10; i++) {
   actions.push(i);
 }
 
-const getChats = async():Promise<ChatClass[]> =>{
+const getChats = async():Promise<ChatClass[] | null> =>{
 const res = await fetch(`${URL}/api/chats`, {cache:"no-cache"})
 console.log("RES=>",res)
 
@@ -35,7 +35,7 @@ console.log("DATA", data)
 export default async function Chats() {
 
   // const res = await fetch("http://localhost:3000/api/chats")
-  const chats:ChatClass[] = await getChats() 
+  const chats:ChatClass[] | null = await getChats() 
 
   // const res = await fetch("http://localhost:3000/api/chats")
   console.log("works", chats)
@@ -44,7 +44,7 @@ export default async function Chats() {
   if(!chats) return null
 
   return (
-    <>{chats.length > 0 ?
+    <>{chats?.length > 0 ?
       chats.map((chat, i) => (
         <SlideIn key={Math.random()} index={i}>
           <Link

@@ -33,7 +33,7 @@ console.log("DATA", data)
 
 export default async function Groups() {
   // const res = await fetch("http://localhost:3000/api/groups")
-  const groups: GroupClass[] = await getGroups();
+  const groups: GroupClass[] | null = await getGroups();
 
   // const res = await fetch("http://localhost:3000/api/groups")
   console.log("works", groups);
@@ -43,7 +43,7 @@ export default async function Groups() {
 
   return (
     <>
-      {groups.length > 0 ? (
+      {groups?.length > 0 ? (
         groups.map((group, i) => (
           <SlideIn key={Math.random()} index={i}>
             <Link
