@@ -18,9 +18,18 @@ for (let i = 0; i < 10; i++) {
 
 const getChats = async():Promise<ChatClass[]> =>{
 const res = await fetch(`${URL}/api/chats`, {cache:"no-cache"})
-const {chats} = await res.json()
+console.log("RES=>",res)
 
-return chats
+const data = await res.json()
+
+  if(!data) return null
+console.log("DATA", data)
+
+  const { chats } = await res.json();
+
+  if(!chats) return null
+
+  return chats;
 } 
 
 export default async function Chats() {

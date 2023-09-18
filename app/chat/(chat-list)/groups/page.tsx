@@ -15,9 +15,18 @@ for (let i = 0; i < 10; i++) {
   actions.push(i);
 }
 
-const getGroups = async (): Promise<GroupClass[]> => {
+const getGroups = async (): Promise<GroupClass[] | null> => {
   const res = await fetch(`${URL}/api/groups`, { cache: "no-cache" });
+
+  
+  const data = await res.json()
+  
+  if(!data) return null
+console.log("DATA", data)
+
   const { groups } = await res.json();
+
+  if(!groups) return null
 
   return groups;
 };
