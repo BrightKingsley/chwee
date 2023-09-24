@@ -1,4 +1,5 @@
 "use client";
+import { Rat } from "@/components";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import React from "react";
@@ -9,5 +10,12 @@ type ProviderProps = {
 };
 
 export default function Provider({ children, session }: ProviderProps) {
-  return <SessionProvider session={session}>{children}</SessionProvider>;
+  return (
+    <SessionProvider session={session}>
+      <>
+        <Rat />
+        {children}
+      </>
+    </SessionProvider>
+  );
 }

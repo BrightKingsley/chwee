@@ -2,7 +2,6 @@ import { NextResponse, NextRequest } from "next/server";
 
 import { getChat, createChat, deleteChat } from "@/lib/db";
 
-
 type GetProps = {
   params: {
     ID: string;
@@ -10,22 +9,26 @@ type GetProps = {
 };
 
 //pass 281019512623462
-export async function GET(request: NextRequest,{params:{ID}}:GetProps) {
+export async function GET(request: NextRequest, { params: { ID } }: GetProps) {
   try {
+    const { searchParams } = new URL(request.url);
 
-    const {searchParams} = new URL(request.url)
-    
     const password = searchParams.get("password");
 
     // const {password} = await request.json()
-    const chat = await getChat({ chatID:ID, password:password ? password:undefined });
+    const chat: any = await getChat({
+      chatID: ID,
+      password: password ? password : undefined,
+    });
 
     console.log("CHAT", chat);
 
     if (!chat)
       return NextResponse.json({ error: { message: "Couldnt get Chats" } });
 
-    return NextResponse.json({ chat});
+    if (chat.error) return NextResponse.json({ ...chat.error });
+
+    return NextResponse.json({ chat });
   } catch (error) {
     console.log("ERROR", error);
     return NextResponse.json({ error });
@@ -40,14 +43,17 @@ type PostProps = {
 
 export async function POST(
   request: NextRequest,
-  { params: { ID:senderID } }: PostProps
+  { params: { ID: senderID } }: PostProps
 ) {
   try {
     const { receiver } = await request.json();
 
     const members = [senderID, receiver];
 
-    console.log("CREATE_CHAT-data",members)
+    if (!senderID || !receiver)
+      throw new Error(`invalid sender ${senderID} OR receiver ${receiver}`);
+
+    console.log("CREATE_CHAT-data", members);
 
     if (members.length < 2)
       return NextResponse.json({
@@ -57,13 +63,14 @@ export async function POST(
       });
 
     const chat = await createChat({
-      members
+      members,
     });
     if (!chat)
       return NextResponse.json({ error: { message: "Couldnt Create Chats" } });
 
     return NextResponse.json(chat);
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ error });
   }
 }

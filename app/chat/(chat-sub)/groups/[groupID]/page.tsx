@@ -1,21 +1,22 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import { Header } from "@/components";
 import { Messages, SendMessage } from "../../../components";
 
-export default function Group({params}:{params:{groupID:string}}) {
+export default function Group({ params }: { params: { groupID: string } }) {
   const [replyMessage, setReplyMessage] = useState("");
 
   return (
-    <main className="flex flex-col w-screen h-screen bg-primary/50">
-      <Header title="chats" imgShown />
+    <main className="flex flex-col w-full h-screen bg-primary/50">
+      <Header title="Group" imgShown />
       <Messages chatID={params.groupID} setReplyMessage={setReplyMessage} />
       <SendMessage
         replyMessage={replyMessage}
         setReplyMessage={setReplyMessage}
         chatID={params.groupID}
-        roomType="group"      />
+        roomType="group"
+      />
     </main>
   );
 }

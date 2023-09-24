@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
@@ -13,6 +13,7 @@ export default function AnimateInOut({
   drag,
   handleDragEnd,
   className,
+  transition,
 }: AnimateInOutType) {
   return (
     <AnimatePresence>
@@ -23,6 +24,7 @@ export default function AnimateInOut({
           exit={out}
           drag={drag}
           onDragEnd={() => handleDragEnd && handleDragEnd()}
+          transition={transition}
           className={className}
         >
           {children}

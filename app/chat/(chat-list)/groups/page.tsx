@@ -1,13 +1,15 @@
 // "use client"
 
-import { SlideIn } from "@/components";
+import { ListTile } from "@/components";
 import Image from "next/image";
 import nft from "@/assets/images/nft.jpg";
 import Link from "next/link";
 import { GROUPS } from "@/constants/routes";
 import { Suspense } from "react";
 import { GroupClass } from "@/models";
-import { URL } from "@/constants/routes";
+import { BASE_URL } from "@/constants/routes";
+import { Session, getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 const actions: number[] = [];
 
@@ -15,29 +17,31 @@ for (let i = 0; i < 10; i++) {
   actions.push(i);
 }
 
-const getGroups = async (): Promise<GroupClass[] | null> => {
-  const res = await fetch(`${URL}/api/groups`, { cache: "no-cache" });
+const getGroups = async (session: Session): Promise<GroupClass[] | null> => {
+  if (!session.user.id) return null;
+  const res = await fetch(`${BASE_URL}/api/groups`, {
+    cache: "no-cache",
+    headers: {
+      user_id: session.user.id,
+    },
+  });
 
-  
-  const data = await res.json()
-  
-  if(!data) return null
-console.log("DATA", data)
+  const data = await res.json();
 
-  const { groups } = await res.json();
+  if (!data) return null;
 
-  if(!groups) return null
+  const { groups } = data;
+
+  if (!groups) return null;
 
   return groups;
 };
 
 export default async function Groups() {
-  // const res = await fetch("http://localhost:3000/api/groups")
-  const groups: GroupClass[] | null = await getGroups();
+  const serverSession = await getServerSession(authOptions);
+  if (!serverSession) return null;
 
-  // const res = await fetch("http://localhost:3000/api/groups")
-  console.log("works", groups);
-  // console.log("GROUPS FETCH RES =>",res)
+  const groups: GroupClass[] | null = await getGroups(serverSession);
 
   if (!groups) return null;
 
@@ -45,7 +49,7 @@ export default async function Groups() {
     <>
       {groups?.length > 0 ? (
         groups.map((group, i) => (
-          <SlideIn key={Math.random()} index={i}>
+          <ListTile key={Math.random()} index={i}>
             <Link
               href={`${GROUPS}/${group._id}`}
               className="flex items-center w-full gap-2 p-2 bg-white rounded-md bg-primary/10_"
@@ -54,13 +58,13 @@ export default async function Groups() {
                 <Image src={nft} alt="" fill sizes="" priority />
               </div>
               <div className="w-full text-left ">
-                <p className="font-semibold">king__ deleted this message</p>
+                <p className="font-semibold">{group.name}</p>
                 <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[17rem] m-0 p-0">
-                  king deleted this message for some reason
+                  {group.description}
                 </p>
               </div>
             </Link>
-          </SlideIn>
+          </ListTile>
         ))
       ) : (
         <div className="flex items-center justify-center w-full h-full bg-red-400">

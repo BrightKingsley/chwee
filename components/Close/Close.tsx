@@ -1,12 +1,12 @@
-import { CloseType } from "./types";
-import { XMarkIcon} from "@heroicons/react/20/solid";
+"use client";
 
-const Close = ({ close }: CloseType) => {
+import { CloseType } from "./types";
+import { XMarkIcon } from "@heroicons/react/20/solid";
+
+const Close = ({ close, className }: CloseType) => {
   return (
     <button
-      className={
-        "bg-body rounded-full text-3xl  active:scale-90 transition-all duration-150 hover:scale-110"
-      }
+      className={`bg-body rounded-full text-3xl  active:scale-90 transition-all duration-150 hover:scale-110 ${className}`}
       onClick={() => close()}
       title="close"
     >

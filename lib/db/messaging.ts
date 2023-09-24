@@ -4,6 +4,7 @@ import { Group } from "@/models";
 import { Chat } from "@/models/Chat";
 import { GroupClass } from "@/models/Group";
 import { Conversation, ConversationClass } from "@/models/Conversation";
+import { stringToObjectId } from "../utils";
 
 export async function sendMessage({
   chatID,
@@ -15,12 +16,12 @@ export async function sendMessage({
   try {
     await connectDB();
 
+    const parsedChatID = stringToObjectId(chatID);
 
-    console.log("SEND_MESSAGE_FUNC", message)
-
+    console.log("SEND_MESSAGE_FUNC", message);
 
     const updatedConversation = await Conversation.findOneAndUpdate(
-      { chatID },
+      { chatID: parsedChatID },
       {
         $push: {
           messages: message,
@@ -28,7 +29,6 @@ export async function sendMessage({
       },
       {
         new: true, // Return the updated document
-        upsert: true, // Create the conversation if it doesn't exist
       }
     );
 
@@ -38,6 +38,7 @@ export async function sendMessage({
 
     return updatedConversation;
   } catch (err) {
+    console.error(err);
     const error = err as Error;
     return { error };
   }
@@ -47,17 +48,17 @@ export async function getMessages({
   chatID,
 }: {
   chatID: string;
-}):Promise<ConversationClass | any> {
+}): Promise<ConversationClass | any> {
   try {
     await connectDB();
 
     const conversation = await Conversation.findOne({ chatID });
     if (!conversation) return null;
 
-    console.log("GET_CONVOS_FUNC", conversation)
+    console.log("GET_CONVOS_FUNC", conversation);
 
-    return conversation
+    return conversation;
   } catch (error) {
-    return {error}
+    return { error };
   }
 }

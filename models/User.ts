@@ -9,6 +9,7 @@ import {
 } from "@typegoose/typegoose";
 import mongoose from "mongoose";
 import { GroupClass } from "./Group";
+import { ChatClass } from ".";
 
 @post<UserClass>("save", function (doc) {
   if (doc) {
@@ -42,7 +43,7 @@ class UserClass {
   @prop({ required: true, unique: true })
   public email: string;
 
-  @prop({ required:false})
+  @prop({ required: false })
   public password?: string;
 
   @prop({ required: true, unique: true })
@@ -63,13 +64,15 @@ class UserClass {
   @prop({ required: true, ref: () => GroupClass })
   public groups: Ref<GroupClass>[];
 
+  @prop({ required: true, ref: () => ChatClass, default: [] })
+  public chats: Ref<ChatClass>[];
 
-  @prop()
-  public photoURL: string;
+  @prop({ required: true, default: "" })
+  public photo: string;
 
   _id: mongoose.Types.ObjectId | string;
 
-  id: string;
+  public id: string;
 }
 
 const User = getModelForClass(UserClass);

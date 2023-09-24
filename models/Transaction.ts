@@ -35,7 +35,13 @@ import { User } from "@/models";
 })
 class TransactionClass {
   @prop({ required: true })
-  public amount: number;
+  public amount!: number;
+
+  @prop({ required: true, ref: "User" })
+  public sender!: mongoose.Types.ObjectId;
+
+  @prop({ required: true, ref: "User" })
+  public receiver!: mongoose.Types.ObjectId;
 
   @prop({ required: true })
   public date: Date;

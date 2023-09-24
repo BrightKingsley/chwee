@@ -1,7 +1,6 @@
-import { SlideIn } from "@/components";
+import { ListTile } from "@/components";
 import Image from "next/image";
-import nft from "@/assets/images/nft.jpg"
-
+import nft from "@/assets/images/nft.jpg";
 
 const members: number[] = [];
 
@@ -11,26 +10,29 @@ for (let i = 0; i < 10; i++) {
 
 export default function MemberInfo() {
   return (
-    <>
+    <div className="w-full overflow-hidden space-y-2">
       {members.map((_, i) => (
-        <SlideIn
+        <ListTile
+          slide
           key={Math.random()}
           index={i}
-          className="flex items-center w-full gap-2 p-2 bg-white rounded-md bg-primary/10_"
+          className="w-full gap-2 bg-white rounded-xl"
         >
-          <div className="w-12 h-12 rounded-full overflow-clip shrink-0">
-            <Image src={nft} alt="" fill />
-          </div>
-          <div className="w-full text-left ">
-            <p className="font-semibold">king left the Group</p>
+          <div className="flex items-center w-full gap-2 p-2 bg-white rounded-lg bg-primary/10_">
+            <div className="w-12 h-12 rounded-full overflow-clip shrink-0">
+              <Image src={nft} alt="" fill />
+            </div>
+            <div className="w-full text-left ">
+              <p className="font-semibold">king deleted this message</p>
 
-            {/* TODO COMEBACK check how to use three dots to indicate overflowing text */}
-            <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[17rem] m-0 p-0">
-              king left the group for some reason
-            </p>
+              {/* TODO COMEBACK check how to use three dots to indicate overflowing text */}
+              <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[17rem] m-0 p-0">
+                king deleted this message for some reason
+              </p>
+            </div>
           </div>
-        </SlideIn>
+        </ListTile>
       ))}
-    </>
+    </div>
   );
 }

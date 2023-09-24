@@ -1,0 +1,39 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { ListTileType } from "./types";
+export default function ListTile({
+  children,
+  className,
+  index = 1,
+  onClick,
+  trailing = [],
+  slide = false,
+}: ListTileType) {
+  return (
+    <motion.div
+      key={Math.random()}
+      initial={{ x: slide ? 100 : undefined }}
+      animate={{ x: slide ? 0 : undefined }}
+      transition={{
+        delay: slide ? index / 10 : undefined,
+        duration: slide ? (index + 3) / 10 : undefined,
+      }}
+      className={`cursor-pointer active:scale-90 flex items-center w-full rounded-lg ${className}`}
+    >
+      <div
+        onClick={(e) => onClick && onClick(e)}
+        className="flex-1 active:opacity-50"
+      >
+        {children}
+      </div>
+      {trailing.length > 0 && (
+        <div className="ml-auto_">
+          {trailing.map((item, i) => (
+            <div key={i}>{item}</div>
+          ))}
+        </div>
+      )}
+    </motion.div>
+  );
+}

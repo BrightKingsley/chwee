@@ -1,4 +1,4 @@
-import NextAuth, { Session } from "next-auth";
+import NextAuth, { Session, NextAuthOptions } from "next-auth";
 import GoogleProvider, { GoogleProfile } from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import {
@@ -14,9 +14,11 @@ import { UserClass } from "@/models/User";
 import { User } from "@/models";
 import { JWT } from "next-auth/jwt";
 import bcrypt from "bcrypt";
+import { signJwtAccessToken } from "@/lib/jwt";
+import { BASE_URL } from "@/constants/routes";
+import { Jwt, JwtPayload } from "jsonwebtoken";
 
-
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
@@ -42,151 +44,78 @@ const handler = NextAuth({
       },
       // TODO
       // @ts-ignore
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         // retrieve user data to verify with credentials
         // Docs: https://next-auth.js.org/configuration/providers/credentials
 
-        console.log("CREDENTIALS==>", credentials);
+        // retrieve user data to verify with credentials
+        // Docs: https://next-auth.js.org/configuration/providers/credentials
 
-        if (!credentials || !(credentials.email && credentials?.password))
-          return;
-
-        const user = (await getUserByEmail({
-          email: credentials.email,
-        })) as UserClass | null;
-
-        console.log("USER_FROM_DB", user);
-
-        if (user) {
-
-          console.log("REACHED_YES_USER")
-
-          const passwordsMatch = await bcrypt.compare(credentials.password, user.password as string)
-
-          console.log("Passwords", passwordsMatch)
-
-          if (credentials.email === user.email && passwordsMatch) {
-            console.log("uSer should be logged in now", {
-              name: user.username,
-              email: user.email,
-              id: user._id,
-              image: user.photoURL || null,
-            });
-            return {
-              name: user.username,
-              email: user.email,
-              id: user.id,
-              image: user.photoURL || null,
-            };
-          }
-        } else {
-          console.log("USER_DOESN'T_EXIST => ", user);
-
-          const generatedUsername = credentials?.email
-            .split("@")[0]
-            .toString()
-            .trim();
-
-          const newUser = await createUser({
-            email: credentials.email.toString().trim(),
-            username: generatedUsername,
-            password: credentials.password,
-            tag: `@${generatedUsername}${Date.now()}${Math.random().toFixed(
-              2
-            )}`,
-          });
-
-          console.log("NEW_USER => ", newUser, generatedUsername);
-
-          if (!newUser) return null;
-
-          console.log("uSer should be logged in now");
-          return {
-            name: newUser.username,
-            email: newUser.email,
-            id: newUser.id,
-            image: newUser.photoURL || null,
-          };
-        }
-
-        return null;
+        const res = await fetch(`${BASE_URL}/api/auth/login/credentials`, {
+          method: "POST",
+          body: JSON.stringify(credentials),
+        });
+        const result = await res.json();
+        console.log("CREDENTIALS RESULT", result);
+        return result;
       },
     }),
   ],
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,
+  },
   callbacks: {
-    async signIn({ profile }) {
-      console.log("PROFILE:=======> ", profile);
-      let googleProfile: GoogleProfile = profile as GoogleProfile;
-      try {
-        await connectDB();
-        const userExists = await User.findOne({
-          email: profile?.email,
-        });
-
-        console.log("USER_EXISTS: ===>", userExists);
-
-        if (!userExists && profile?.email && profile?.name) {
-          const newUser = await createUser({
-            email: profile.email.toString().trim(),
-            username: profile.name.toString().trim(),
-            photoURL: googleProfile.picture,
-            tag: `@${
-              profile.name.split(" ")[0]
-            }${Date.now()}${Math.random().toFixed(2)}`,
-          });
-          if (!newUser) return false;
-          const newUserWallet = await createWallet({ ownerID: newUser.id });
-
-          addMemberToGroup({ name: "general chat", userID: newUser.id });
-
-          console.log("NEW_USER: ", newUser, "NEWUSERWALLET: ", newUserWallet);
-        }
-
-        return true;
-      } catch (error) {
-        console.error(error);
-        return false;
-      }
+    async signIn(params) {
+      const res = await fetch(`${BASE_URL}/api/auth/login/google-auth`, {
+        method: "POST",
+        body: JSON.stringify(params),
+      });
+      const result = await res.json();
+      return result.auth;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile, session, trigger }) {
+      console.log("JWTEEEEE", { token, session });
+      if (!token || !token.email || !token.id)
+        return { ...token, error: "UNAUTHORIZED" };
+
       try {
         await connectDB();
-        const userFromDB = await User.findOne({
-          email: token?.email,
+        const userFromDB: UserClass = await getUserByEmail({
+          email: token.email,
         });
-        console.log("USERFROMDB", userFromDB);
-        console.log("TOKEN, USER", token, user);
-
         if (!userFromDB) {
           token.id = null;
           token.email = null;
 
           return token;
         }
-        // if (user) {
-        token.email = userFromDB.email;
-        token.id = userFromDB.id;
-        // }
 
         return token;
       } catch (error) {
+        console.error(error);
         token.id = null;
         token.email = null;
         return token;
       }
     },
-    async session({ session, token }: { session: Session | any; token: JWT }) {
+    async session({ session, token, user, newSession, trigger }) {
       if (session.user?.email) {
         try {
+          console.log("SESSION_BEFFORE", session);
           await connectDB();
-          const sessionUser = await User.findOne({
+          const userFromDB: any = await User.findOne({
             email: session.user.email,
           });
 
-          if (sessionUser) {
-            console.log("SESSION_USER", sessionUser);
+          console.log("USERFROMDB", userFromDB);
 
-            session.user.id = sessionUser.id.toString();
+          if (userFromDB) {
+            session.user.name = userFromDB.username;
+            session.user.image = userFromDB.photo;
+            session.user.tag = userFromDB.tag;
+            session.user.id = userFromDB._id.toString();
+            console.log("UPDATED SESSION", session, userFromDB);
+            return session;
           } else {
             // User not found in the database, handle this situation as needed.
             // For example, you can log an error or remove the user from the session.
@@ -194,22 +123,80 @@ const handler = NextAuth({
             console.error(
               `User with email ${session.user.email} not found in the database.`
             );
+            session.user.name = null;
+            session.user.image = null;
+            session.user.tag = null;
+            session.user.id = null;
+            console.log("UPDATED SESSION", session, userFromDB);
+            return { ...session, error: "UNAUTHENTICATED" };
+            // return session;
           }
         } catch (error) {
           console.error("Error fetching user from database:", error);
         }
       }
 
-      // TODO COMEBACK and check these
-      session.user.id == token.id;
-      session.user.name = token.name;
+      //TODO COMEBACK and check these
+      // session.user == (token as any);
 
       return session;
+    },
+  },
+
+  events: {
+    async signOut({ token, session }) {
+      console.log("SIGNING_OUT!");
+      return;
     },
   },
   session: {
     maxAge: 24 * 60 * 60,
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
+
+/*
+ ====JWT_LOGS==== {
+  token: {
+    name: 'Bright Kingsley',
+    email: 'briggskvngzz@gmail.com',
+    picture: 'https://lh3.googleusercontent.com/a/ACg8ocK3vaDtlz1-pjVYVpFHq_bzsfPh24hA5uXyCMHCMJma6is=s96-c',
+    sub: '115155470008843609530',
+    iat: 1695176133,
+    exp: 1695262533,
+    jti: 'bb1feacd-a5e5-427b-adc5-1735f2c5ddd2'
+  }
+} { user: undefined } { account: undefined } { profile: undefined } { session: undefined } { trigger: undefined }
+====SESSION_LOGS=== {
+  session: {
+    user: {
+      name: 'Bright Kingsley',
+      email: 'briggskvngzz@gmail.com',
+      image: 'https://lh3.googleusercontent.com/a/ACg8ocK3vaDtlz1-pjVYVpFHq_bzsfPh24hA5uXyCMHCMJma6is=s96-c'
+    },
+    expires: '2023-09-21T02:17:12.422Z'
+  }
+} {
+  token: {
+    name: 'Bright Kingsley',
+    email: 'briggskvngzz@gmail.com',
+    picture: 'https://lh3.googleusercontent.com/a/ACg8ocK3vaDtlz1-pjVYVpFHq_bzsfPh24hA5uXyCMHCMJma6is=s96-c',
+    sub: '115155470008843609530',
+    iat: 1695176133,
+    exp: 1695262533,
+    jti: 'bb1feacd-a5e5-427b-adc5-1735f2c5ddd2'
+  }
+} { user: undefined } { newSession: undefined } { trigger: undefined }
+CHATS_SERVER_SESSION {
+  user: {
+    name: 'Bright Kingsley',
+    email: 'briggskvngzz@gmail.com',
+    image: 'https://lh3.googleusercontent.com/a/ACg8ocK3vaDtlz1-pjVYVpFHq_bzsfPh24hA5uXyCMHCMJma6is=s96-c'
+  }
+}
+
+
+ */

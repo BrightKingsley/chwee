@@ -3,19 +3,41 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components";
 import { Messages, SendMessage } from "../../../components";
+import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 
 export default function Chat({ params }: { params: { chatID: string } }) {
-  const [replyMessage, setReplyMessage] = useState("");
+  const [replyMessage, setReplyMessage] = useState<{
+    sender: string;
+    textContent?: string;
+    imageContent?: string[];
+  }>({ sender: "", textContent: "", imageContent: [] });
 
   return (
-    <main className="flex flex-col w-screen h-screen bg-primary/50">
-      <Messages chatID={params.chatID} setReplyMessage={setReplyMessage} />
-      <SendMessage
-        replyMessage={replyMessage}
-        setReplyMessage={setReplyMessage}
-        chatID={params.chatID}
-        roomType="p2p"
+    <>
+      <Header
+        title={"Username"}
+        leading={[
+          <button
+            key={Math.random()}
+            className="p-3 text-gray-700 rounded-full hover:bg-gray-400/40 active:animate-ping transition-all duration-200"
+          >
+            <ChevronLeftIcon className="w-6 h-6" />
+          </button>,
+        ]}
       />
-    </main>
+      <main className="flex flex-col w-full h-[calc(100vh-3.5rem)] bg-primary/50">
+        <Messages
+          chatID={params.chatID}
+          setReplyMessage={setReplyMessage}
+          roomType="p2p"
+        />
+        <SendMessage
+          replyMessage={replyMessage}
+          setReplyMessage={setReplyMessage}
+          chatID={params.chatID}
+          roomType="p2p"
+        />
+      </main>
+    </>
   );
 }

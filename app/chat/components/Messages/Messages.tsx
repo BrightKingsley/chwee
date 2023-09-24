@@ -6,16 +6,16 @@ import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "@/context";
 import { useParams } from "next/navigation";
 import { pusherClient } from "@/lib/config";
-import {URL} from "@/constants/routes"
+import { BASE_URL } from "@/constants/routes";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
-import LoadingMessages from "../LoadingMessages"
+import LoadingMessages from "../LoadingMessages";
 // const messages: MessageModel[] = [];
 
 // for (let i = 0; i < 10; i++) {
 // app/api/route.ts//   messages.push({
 //     id: `msgID${i}chkDSk`,
-//     photoURL: nft,
+//     photo: nft,
 //     name: `my Name - ${i}`,
 //     text: `I dont trust anybody - ${i}`,
 //     image: poor,
@@ -25,7 +25,7 @@ import LoadingMessages from "../LoadingMessages"
 // }
 
 //TODO typecheck
-export default function Messages({ setReplyMessage, chatID }: any) {
+export default function Messages({ setReplyMessage, chatID, roomType }: any) {
   const [messages, setMessages] = useState<MessageClass[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -36,23 +36,20 @@ export default function Messages({ setReplyMessage, chatID }: any) {
   const params = useParams();
 
   useEffect(() => {
-    if (!chatID) return;
-    pusherClient.subscribe(chatID);
-
-    pusherClient.bind("incoming-message", (message: MessageClass) => {
-      setMessages((prev) => [...prev, message]);
-    });
-
-    return () => pusherClient.unsubscribe(chatID);
+    // if (!chatID) return;
+    // pusherClient.subscribe(chatID);
+    // pusherClient.bind("incoming-message", (message: MessageClass) => {
+    //   setMessages((prev) => [...prev, message]);
+    // });
+    // return () => pusherClient.unsubscribe(chatID);
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     (async () => {
-      setLoading(true);
-
       //TODO remove hard-coded password
       const response = await fetch(
-        `${URL}/api/messaging/${chatID}?password=V6XBvBjX`,
+        `${BASE_URL}/api/messaging/${chatID}?password=V6XBvBjX`,
         {
           cache: "no-cache",
         }
@@ -60,14 +57,15 @@ export default function Messages({ setReplyMessage, chatID }: any) {
 
       console.log("FIRST_RES", response);
 
-      if (!response.ok) return;
+      if (!response.ok) {
+        setLoading(false);
+        return;
+      }
 
       const data = await response.json();
       if (!data) return;
 
       const { messages: msgs } = data;
-
-      console.log("RESPONSE =>", response, "MSGS", messages);
 
       if (!msgs) return;
 
@@ -77,28 +75,30 @@ export default function Messages({ setReplyMessage, chatID }: any) {
   }, [chatID]);
 
   return (
-    <div className="flex flex-col flex-1 m-2 space-y-2 overflow-y-auto ">
+    <div className="flex flex-col flex-1 mx-2 space-y-2 overflow-y-auto">
       {loading ? (
         <LoadingMessages />
-      ) : !messages || !session || !session.user.id ? (
-        <h1>NO MESSAGES AVAILABLE</h1>
+      ) : messages.length < 1 || !session || !session.user.id ? (
+        <div className="w-full h-full flex items-center justify-center">
+          <h1>NO MESSAGES AVAILABLE</h1>
+        </div>
       ) : (
-        messages.map(
-          ({ id, imageContent, textContent, sendDate, sender }, i) => (
-            <Message
-              key={i}
-              id={id}
-              // photoURL={photoURL}
-              imageContent={imageContent}
-              // name={name}
-              textContent={textContent}
-              sendDate={sendDate}
-              sender={sender}
-              userID={session.user.id}
-              setReplyMessage={setReplyMessage}
-            />
-          )
-        )
+        messages.map(({ id, ...message }, i) => (
+          <Message
+            key={i}
+            id={id}
+            message={message}
+            roomType={roomType}
+            // photo={photo}
+            // imageContent={imageContent}
+            // // name={name}
+            // textContent={textContent}
+            // sendDate={sendDate}
+            // sender={sender}
+            userID={session.user.id}
+            setReplyMessage={setReplyMessage}
+          />
+        ))
       )}
     </div>
   );

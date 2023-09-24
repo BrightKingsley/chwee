@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params: { userID } }: Props) {
   try {
     const user = await getUserByID({ userID });
     console.log(user);
-    return NextResponse.json(user );
+    return NextResponse.json(user);
   } catch (error) {
     return NextResponse.json({ error: "Could not get user" });
   }
@@ -23,13 +23,16 @@ type DeleteProps = {
 };
 
 // TODO remember to use correct Status Codes
-export async function DELETE(request: NextRequest, { params: { userID } }: Props) {
+export async function DELETE(
+  request: NextRequest,
+  { params: { userID } }: Props
+) {
   try {
     // const { userID }: DeleteProps = await request.json();
     const userDeleted = await deleteUser({ userID });
 
     if (!userDeleted)
-      return NextResponse.json({ mesage: "Couldn't delete user document" });
+      return NextResponse.json({ message: "Couldn't delete user document" });
 
     return NextResponse.json({ message: "user Deleted Successfully" });
   } catch (error) {
