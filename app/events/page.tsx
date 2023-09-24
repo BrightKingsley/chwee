@@ -1,5 +1,6 @@
-import {redirect} from "next/navigation"
+import { MY_EVENTS } from "@/constants/routes";
+import { redirect } from "next/navigation";
 
-export default function Events(){
-    redirect("/events/polls")
+export default function Events() {
+  redirect(MY_EVENTS);
 }

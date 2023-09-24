@@ -1,81 +1,97 @@
-"use client";
+import nft from "@/assets/images/nft.jpg";
 
-import { Header, SlideIn, Spinner, SubHeader } from "@/components";
-import { AUTH, MEMBER_INFO } from "@/constants/routes";
-import { useContext, useEffect, useState } from "react";
+import {
+  MagnifyingGlassIcon,
+  PlusIcon,
+  UserIcon,
+} from "@heroicons/react/20/solid";
+
+import { Header, ListTile, SearchBar, Spinner, SubHeader } from "@/components";
 import Image from "next/image";
+import Link from "next/link";
+import { BASE_URL, USER_PROFILE } from "@/constants/routes";
+import { UserClass } from "@/models";
+import { Session, getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { CreateChatButton } from "./components";
 
-export default function Connect() {
-  const [members, setMembers] = useState([]);
+const getUsers = async (session: Session): Promise<UserClass[] | null> => {
+  if (!session.user.id) return null;
+  const res = await fetch(`${BASE_URL}/api/users`, {
+    headers: {
+      user_id: session.user.id,
+    },
+  });
 
-  // const { section } = useParams();
+  const data = await res.json();
+  console.log("USERS_DATA", data);
+  return data;
+};
 
-  // const navigate = useNavigate();
+export default async function Connect() {
+  const serverSession = await getServerSession(authOptions);
+  if (!serverSession) return null;
+  const users: UserClass[] | null = await getUsers(serverSession);
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     // navigate(AUTH);
-  //   }
-  // }, []);
-
-  // const allMembersLinkFormatted = formatLink({
-  //   string: ALL_MEMBERS,
-  //   at: "s/",
-  //   get: "last",
-  // });
-
-  // const suspendedMembersLinkFormatted = formatLink({
-  //   string: SUSPENDED_MEMBERS,
-  //   at: "s/",
-  //   get: "last",
-  // });
-
-  // let page = <></>;
-
-  // switch (section) {
-  //   case allMembersLinkFormatted:
-  //     page = <AllMembers members={members} />;
-  //     break;
-
-  //   case suspendedMembersLinkFormatted:
-  //     page = <Suspended members={members} />;
-  //     break;
-
-  //   default:
-  //     page = <AllMembers members={members} />;
-  //     break;
-  // }
+  // @ts-ignore
+  if (users.error) return <h1>Error fetching Users</h1>;
 
   return (
-    <div className="flex flex-col h-screen bg-primary/10">
-      <Header title={`Members`} />
-      {/* <SubHeader
-        sublinks={[
-          {
-            label: replaceWith({
-              character: "-",
-              replacement: " ",
-              string: allMembersLinkFormatted,
-            }),
-            link: ALL_MEMBERS,
-          },
-          {
-            label: replaceWith({
-              character: "-",
-              replacement: " ",
-              string: suspendedMembersLinkFormatted,
-            }),
-            link: SUSPENDED_MEMBERS,
-          },
-        ]}
-      /> */}
-
-      <div className="h-full mx-2 space-y-2 overflow-y-auto">CONNECT</div>
+    <div className="flex flex-col h-screen overflow-auto bg-primary/10">
+      {/* TODO fix this. Its disorganized */}
+      <div>
+        <Header title="Connect" />
+      </div>
+      <div className="space-y-4">
+        <SearchBar disabled={!users || users.length < 1} colection="users" />
+        <div className="space-y-2 px-2">
+          {users && users.length > 0 ? (
+            users.map((user, i) => (
+              <ListTile
+                key={Math.random()}
+                slide
+                trailing={[
+                  <CreateChatButton receiverID={user._id as string} />,
+                ]}
+                index={i}
+                className="w-full px-2 gap-2 bg-white rounded-xl"
+              >
+                <Link
+                  href={USER_PROFILE}
+                  className="flex flex-1  items-center w-full_ gap-2 py-1 bg-white rounded-lg bg-primary/10_"
+                >
+                  <div className="w-10 h-10 rounded-full overflow-clip shrink-0 bg-primary flex items-center justify-center text-gray-200">
+                    {user.photo ? (
+                      <Image src={user.photo} alt="" fill />
+                    ) : (
+                      <UserIcon className="w-8 h-8" />
+                    )}
+                  </div>
+                  <div className="w-full text-left ">
+                    <p className="font-bold">{user.username}</p>
+                    <p className="text-sm text-gray-600 overflow-ellipsis overflow-hidden max-w-[10rem]">
+                      {user.tag}
+                    </p>
+                  </div>
+                </Link>
+              </ListTile>
+            )) // @ts-ignore TODO
+          ) : users?.error ? (
+            <div className="w-full h-full flex items-center justify-center ">
+              <h1>Error fetching Users</h1>
+            </div>
+          ) : (
+            <div className="w-full h-full flex items-center justify-center">
+              <h1>No users available</h1>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-// export function AllMembers({ members }: { members: any[] }) {
+// export function AllMembers({ users }: { users: any[] }) {
 //   // const navigate = useNavigate();
 
 //   const navigateToMemberInfo = (uid: string) => {
@@ -84,16 +100,16 @@ export default function Connect() {
 
 //   return (
 //     <>
-//       {members.length > 0 ? (
-//         members?.map(({ photoURL, tag, username, uid }, i) => (
-//           <SlideIn
+//       {users.length > 0 ? (
+//         users?.map(({ photo, tag, username, uid }, i) => (
+//           <ListTile
 //             key={Math.random()}
 //             index={i}
 //             onClick={() => navigateToMemberInfo(uid)}
 //             className="flex items-center w-full gap-2 p-2 bg-white rounded-md bg-primary/10_"
 //           >
 //             <div className="w-12 h-12 rounded-full overflow-clip shrink-0">
-//               <Image src={photoURL} fill alt="" />
+//               <Image src={photo} fill alt="" />
 //             </div>
 //             <div className="w-full text-left ">
 //               <p className="font-semibold">{username}</p>
@@ -103,7 +119,7 @@ export default function Connect() {
 //                 {tag}
 //               </p>
 //             </div>
-//           </SlideIn>
+//           </ListTile>
 //         ))
 //       ) : (
 //         <Spinner />
@@ -112,7 +128,7 @@ export default function Connect() {
 //   );
 // }
 
-// export function Suspended({ members }: { members: any[] }) {
+// export function Suspended({ users }: { users: any[] }) {
 //   return (
 //     <>
 //       <div className="flex items-center justify-center w-full h-full">

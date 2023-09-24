@@ -93,7 +93,7 @@ export const comparePasswords = async ({
   // const match = await bcrypt.compare(password, compareWith);
 
   // return match;
-  return true
+  return true;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

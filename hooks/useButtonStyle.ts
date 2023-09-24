@@ -22,7 +22,7 @@ export default function useButtonStyle({
       shadowColor = "hover:shadow-accent/30";
       break;
     case "error":
-      btnColor = "bg-red-800";
+      btnColor = "bg-red-400";
       textColor = "text-gray-500";
       shadowColor = "hover:shadow-red-800/30";
 

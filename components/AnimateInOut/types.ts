@@ -10,4 +10,5 @@ export type AnimateInOutType = {
   show?: boolean;
   drag?: DraggableProps["drag"];
   handleDragEnd?: Function;
+  transition?: AnimationProps["transition"];
 };

@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import { createContext, useState } from "react";
-import {Modal} from "@/components"
+import { Modal } from "@/components";
 
 const ModalContext = createContext<ModalContextType>({
   showModal: false,
@@ -17,11 +17,19 @@ export const ModalContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [actionConfirm, setActionConfirm] = useState<Function>(() => {});
-  const [actionCancel, setActionCancel] = useState<Function>(() => {});
-  const [modalMessage, setModalMessage] = useState<string>("");
-  const [disableOnClick, setDisableOnClick] = useState<boolean>(false);
+  const [modalState, setModalState] = useState<{
+    showModal: boolean;
+    actionConfirm: Function;
+    actionCancel: Function;
+    modalMessage: string;
+    disableOnClick: boolean;
+  }>({
+    showModal: false,
+    actionConfirm: () => {},
+    actionCancel: () => {},
+    modalMessage: "",
+    disableOnClick: false,
+  });
 
   const triggerModal = (
     { message, confirm, cancel, clickToDisable, show }: triggerModalType = {
@@ -33,32 +41,37 @@ export const ModalContextProvider = ({
     }
   ) => {
     show !== undefined
-      ? setShowModal(show)
-      : showModal
-      ? setShowModal(false)
-      : setShowModal(true);
+      ? setModalState((prev) => ({ ...prev, showModal: show }))
+      : modalState.showModal
+      ? setModalState((prev) => ({ ...prev, showModal: false }))
+      : setModalState((prev) => ({ ...prev, showModal: true }));
     // showModal = showModal ? false : true;
-    message && setModalMessage(message);
-    confirm && typeof confirm === "function" && setActionConfirm(confirm);
-    cancel && typeof cancel === "function" && setActionCancel(cancel);
-    typeof clickToDisable === "boolean" && setDisableOnClick(clickToDisable);
+    message && setModalState((prev) => ({ ...prev, modalMessage: message }));
+    confirm &&
+      typeof confirm === "function" &&
+      setModalState((prev) => ({ ...prev, actionConfirm: confirm }));
+    cancel &&
+      typeof cancel === "function" &&
+      setModalState((prev) => ({ ...prev, actionCancel: cancel }));
+    typeof clickToDisable === "boolean" &&
+      setModalState((prev) => ({ ...prev, disableOnClick: clickToDisable }));
   };
 
   return (
     <ModalContext.Provider
       value={{
-        showModal,
+        showModal: modalState.showModal,
         triggerModal,
-        modalMessage,
-        actionConfirm,
-        actionCancel,
-        disableOnClick,
+        modalMessage: modalState.modalMessage,
+        actionConfirm: modalState.actionConfirm,
+        actionCancel: modalState.actionCancel,
+        disableOnClick: modalState.disableOnClick,
       }}
     >
-      <>
-<Modal/>
-      {children}
-      </>
+      <div>
+        {children}
+        <Modal />
+      </div>
     </ModalContext.Provider>
   );
 };

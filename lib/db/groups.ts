@@ -264,6 +264,8 @@ export async function addMemberToGroup({
       { $push: { members: parsedID } }
     );
 
+    if (!group) return null;
+
     return group;
   } catch (error) {
     return { error };

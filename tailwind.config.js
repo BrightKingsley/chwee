@@ -18,6 +18,7 @@ module.exports = {
       fontFamily: {
         aeonik: ["aeonik", "sans-serif"],
         blogh: ["blogh", "sans-serif"],
+        "druk-wide-bold": ["druk-wide-bold", "sans-serif"],
       },
       backgroundImage: {
         "gradient-primary":

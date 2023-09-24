@@ -44,6 +44,9 @@ class WalletClass {
   @prop({ required: true, default: 0 })
   public balance: number;
 
+  @prop({ required: true, default: 1234 })
+  public transferPin: number;
+
   // TODO
   @prop({ ref: () => TransactionClass })
   public transactions: Ref<TransactionClass>[];

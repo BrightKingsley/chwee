@@ -6,4 +6,5 @@ export type ButtonProps = {
   text?: "xs" | "sm" | "lg" | "xl";
   disabled?: boolean;
   loading?: boolean;
+  className?: string;
 };

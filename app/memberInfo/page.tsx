@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
 import { HeaderWithoutNav, Spinner } from "@/components";
-import Image from 'next/image'
+import Image from "next/image";
 
 export default function MemberInfo() {
   const [member, setMember] = useState(null);
@@ -27,7 +27,7 @@ export default function MemberInfo() {
           <>
             <div>
               <div className="w-32 h-32 relative rounded-full overflow-clip mx-auto">
-                {/* <Image src={member.photoURL} fill alt="" /> */}
+                {/* <Image src={member.photo} fill alt="" /> */}
                 {/* <div className="absolute_ bottom-0_ text-xl z-10">
             <BiAlarmOff />
           </div> */}

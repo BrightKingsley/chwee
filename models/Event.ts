@@ -37,13 +37,20 @@ import { User, UserClass } from "./User";
 })
 class EventClass {
   @prop({ required: true })
-  public name: string;
+  public title: string;
+
+  public photo: string;
 
   // @prop({ required: true, ref: () => UserClass })
-  // public owner: mongoose.Types.ObjectId;
+  // public host: mongoose.Types.ObjectId;
 
-  @prop({ required: true,})
-  public owner: mongoose.Types.ObjectId;
+  @prop({ required: true })
+  public host: mongoose.Types.ObjectId;
+
+  public co_hosts?: mongoose.Types.ObjectId[];
+
+  @prop({ required: true, default: [] })
+  public participants?: mongoose.Types.ObjectId[];
 
   @prop({ required: true, default: "" })
   public description: string;

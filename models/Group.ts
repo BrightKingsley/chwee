@@ -6,7 +6,7 @@ import {
   post,
   type Ref,
 } from "@typegoose/typegoose";
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { User, UserClass } from "./User";
 import { MessageClass } from "./Message";
 import { ConversationClass } from "./Conversation";
@@ -44,7 +44,7 @@ class GroupClass {
   public name: string;
 
   @prop({ required: true })
-  public owner: string;
+  public owner: mongoose.Types.ObjectId;
 
   @prop({ required: true, default: "" })
   public description: string;
@@ -73,9 +73,9 @@ class GroupClass {
   @prop({
     required: true,
     // ref: () => UserClass,
-    default:[]
+    default: [],
   })
-  public members: (mongoose.Types.ObjectId | string)[];
+  public members: mongoose.Types.ObjectId[];
 
   // @prop({
   //   required: true,

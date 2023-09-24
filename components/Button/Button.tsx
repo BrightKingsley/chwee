@@ -5,6 +5,7 @@ import { ButtonProps } from "./types";
 
 const Button = ({
   children,
+  className,
   onClick,
   full,
   color,
@@ -23,7 +24,7 @@ const Button = ({
     <button
       onClick={() => onClick && onClick()}
       disabled={disabled}
-      className={btnStyles}
+      className={btnStyles + className}
     >
       {loading ? <Spinner size="small" color="body" /> : children}
     </button>

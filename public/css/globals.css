@@ -12,6 +12,11 @@
   src: url("../fonts/Blogh/Blogh.otf") format("opentype");
 }
 
+@font-face {
+  font-family: "Druk-Wide-Bold";
+  src: url("../fonts/Druk/Druk-Wide/DrukWide-Bold-Trial.otf") format("opentype");
+}
+
 @keyframes marquee {
   0% {
     transform: translateZ(0);
@@ -27,10 +32,11 @@
 }
 
 *::-webkit-scrollbar {
-  width: 0.5rem;
+  width: 0.3rem;
+  margin-right: 1rem;
   /* display: none; */
 }
-
+/* 
 *::-webkit-scrollbar-thumb {
   @apply bg-primary rounded-2xl border-2 border-white;
 }
@@ -41,6 +47,22 @@
 *::-webkit-scrollbar-thumb:hover {
   @apply rounded-2xl bg-gray-400;
 }
+*::-webkit-scrollbar-thumb:active {
+  @apply bg-gray-500 rounded-2xl;
+} */
+
+*::-webkit-scrollbar-thumb {
+  @apply bg-transparent rounded-2xl border-2 border-white;
+}
+
+*::-webkit-scrollbar-track {
+  @apply bg-transparent rounded-2xl w-2;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  @apply rounded-2xl bg-gray-400;
+}
+
 *::-webkit-scrollbar-thumb:active {
   @apply bg-gray-500 rounded-2xl;
 }
@@ -67,7 +89,7 @@
 
 @layer base {
   * {
-    @apply box-border;
+    box-sizing: border-box;
     scrollbar-width: none;
     user-select: none;
     -webkit-user-drag: none;
@@ -75,6 +97,13 @@
     -moz-user-drag: none;
     position: relative;
     /* border: 1px solid red; */
+  }
+
+  @media (min-width: 640px) {
+    * {
+      user-select: auto;
+      -moz-user-select: element;
+    }
   }
 
   ::-webkit-scrollbar {
@@ -85,8 +114,8 @@
 
   html {
     @apply text-gray-800;
-    font-family: "Poppins";
     scroll-behavior: smooth;
+    /* @apply font-aeonik; */
   }
 
   body {
@@ -96,6 +125,10 @@
   img {
     @apply object-cover w-full h-full;
   }
+}
+
+._main_ {
+  width: calc(100vw - 3.5rem);
 }
 
 .inset-notification {
@@ -111,9 +144,16 @@
   @apply absolute border-primary border-4 h-[90%] -translate-x-2 rounded-full transition-all duration-300;
 }
 
+._replied-text_{
+  display: -webkit-box;
+  -webkit-box-orient:vertical ;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
 .sub-nav::after {
   content: "";
-  @apply w-0;
+  @apply w-0 absolute inset-0 bg-primary h-[4px] top-full mx-auto rounded-full transition-all duration-500;
 }
 
 .active::after {
@@ -141,9 +181,9 @@ button:hover {
 
 @keyframes loader-gradient {
   0% {
-    opacity:0.2
+    opacity: 0.2;
   }
-  100%{
-    opacity:1
+  100% {
+    opacity: 1;
   }
 }

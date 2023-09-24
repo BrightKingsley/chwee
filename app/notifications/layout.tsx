@@ -1,10 +1,6 @@
 import { Header, SubHeader } from "@/components";
 import { formatLink, replaceWith } from "@/lib/utils";
-import {
-  AUTH,
-  CHAT_NOTIFICATIONS,
-  OTHER,
-} from "@/constants/routes";
+import { AUTH, CHAT_NOTIFICATIONS, OTHER } from "@/constants/routes";
 
 export default function NotificationsLayout({
   children,
@@ -52,7 +48,7 @@ export default function NotificationsLayout({
             }),
             link: CHAT_NOTIFICATIONS,
           },
-          
+
           // {
           //   label: replaceWith({
           //     character: "-",

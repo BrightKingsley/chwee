@@ -1,5 +1,5 @@
 // Import necessary modules and dependencies
-import { Chat } from "@/models";
+import { Chat, User } from "@/models";
 import connectDB from "./connect-db";
 import { generatePassword, stringToObjectId } from "../utils";
 import { ChatClass } from "@/models/Chat";
@@ -47,6 +47,16 @@ export async function createChat({ members }: { members: string[] }) {
 
     console.log("CREATED_CONVO", conversation);
 
+    parsedIDs.forEach(async (id) => {
+      const updatedUser = await User.findByIdAndUpdate(id, {
+        $push: {
+          chats: id,
+        },
+      });
+      console.log("UPDATED USER", updatedUser);
+      updatedUser?.save();
+    });
+
     return { chat };
   } catch (error) {
     return { error } as any;
@@ -88,7 +98,7 @@ export async function getChat({
     console.log("FOUND_GROUP", chat);
 
     // If the chat is not found, return an error
-    if (!chat) return { error: "Chat not found" };
+    if (!chat) return null;
 
     if (chat) {
       if (chat.password) {
@@ -98,6 +108,8 @@ export async function getChat({
         if (!password) return { error: { message: "Password Incorrect" } };
 
         const match = await bcrypt.compare(password, chat.password);
+
+        console.log("GROUP PASS MATCH:", match);
 
         return match
           ? { chat, password }
@@ -179,7 +191,7 @@ export async function getChats(filter: ChatFilter = {}) {
 
     console.log("WALLETS:", chats);
 
-    return { chats };
+    return chats;
   } catch (error) {
     return { error };
   }
