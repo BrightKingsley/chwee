@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import { useState, useEffect } from "react";
@@ -19,7 +20,7 @@ export default function Chat({ params }: { params: { chatID: string } }) {
         leading={[
           <button
             key={Math.random()}
-            className="p-3 text-gray-700 rounded-full hover:bg-gray-400/40 active:animate-ping transition-all duration-200"
+            className="p-3 text-gray-700 transition-all duration-200 rounded-full hover:bg-gray-400/40 active:animate-ping"
           >
             <ChevronLeftIcon className="w-6 h-6" />
           </button>,

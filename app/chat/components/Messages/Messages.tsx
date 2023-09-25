@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Message from "../Message";
 import { MessageClass } from "@/models/Message";
 import poor from "@/assets/images/poor.png";
@@ -79,7 +80,7 @@ export default function Messages({ setReplyMessage, chatID, roomType }: any) {
       {loading ? (
         <LoadingMessages />
       ) : messages.length < 1 || !session || !session.user.id ? (
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="flex items-center justify-center w-full h-full">
           <h1>NO MESSAGES AVAILABLE</h1>
         </div>
       ) : (

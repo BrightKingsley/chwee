@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, {
@@ -160,7 +161,7 @@ export default function SendMessage({
           show={previewImages.show}
           className="fixed h-[calc(100vh-3.5rem)] w-[calc(100vw-3.5rem)] bg-white top-14 right-0 z-30"
         >
-          <div className="relative w-full h-full flex flex-col items-center">
+          <div className="relative flex flex-col items-center w-full h-full">
             <Swiper
               className="w-full h-full"
               spaceBetween={1}
@@ -185,7 +186,7 @@ export default function SendMessage({
                     fill
                     src={image}
                     alt="selected"
-                    className="w-full h-full object-contain"
+                    className="object-contain w-full h-full"
                     loading="lazy"
                   />
                   {/* works? */}
@@ -197,9 +198,9 @@ export default function SendMessage({
                 setPreviewImages({ images: [], show: false });
                 setMessage((prev) => ({ ...prev, imageContent: [] }));
               }}
-              className="absolute top-4 right-4 z-40  text-primary"
+              className="absolute z-40 top-4 right-4 text-primary"
             />
-            <div className="z-40 absolute bottom-4 flex gap-2 items-center mx-2">
+            <div className="absolute z-40 flex items-center gap-2 mx-2 bottom-4">
               <ReactTextareaAutoSize
                 value={message.textContent}
                 // cols={5}
@@ -210,7 +211,7 @@ export default function SendMessage({
                     textContent: e.target.value,
                   }))
                 }
-                className="relative w-full p-1 bg-primary/10 text-gray-700 border-none rounded-xl outline-none resize-none focus:outline-primary before:w-full before:h-full before:absolute before:top-0 before:left-0"
+                className="relative w-full p-1 text-gray-700 border-none outline-none resize-none bg-primary/10 rounded-xl focus:outline-primary before:w-full before:h-full before:absolute before:top-0 before:left-0"
               />
               <button className="mb-2 text-3xl active:scale-90 active:opacity-40 rounded-full bg-primary p-2 flex items-center justify-center mt-[0.65rem]">
                 <PaperAirplaneIcon className="w-6 h-6 fill-white" />
@@ -256,7 +257,7 @@ export default function SendMessage({
         // TODO COMEBACK ADD_TYPES
         //@ts-ignore
         onSubmit={(e) => handleSend(e)}
-        className="flex items-end w-full gap-2 pb-1 mt-auto relative pt-1"
+        className="relative flex items-end w-full gap-2 pt-1 pb-1 mt-auto"
       >
         <div
           className={`relative bg-white rounded-xl flex items-center w-full gap-2 p-2 ${
@@ -281,7 +282,7 @@ export default function SendMessage({
                     textContent: "",
                   })
                 }
-                className="absolute top-0 right-0 active:opacity-50 active:scale-90 cursor-pointer p-2"
+                className="absolute top-0 right-0 p-2 cursor-pointer active:opacity-50 active:scale-90"
               >
                 <XMarkIcon className="w-5 h-5" />
               </span>
@@ -304,7 +305,7 @@ export default function SendMessage({
                         <PhotoIcon className="w-4 h-4 fill-gray-500" />
                         Photo
                       </small>
-                      <div className="h-10 w-10 rounded-md overflow-clip bg-primary ml-auto">
+                      <div className="w-10 h-10 ml-auto rounded-md overflow-clip bg-primary">
                         <Image
                           src={replyMessage.imageContent[0]}
                           alt="reply img content"
@@ -380,7 +381,7 @@ export default function SendMessage({
                 textContent: e.target.value,
               }))
             }
-            className="w-full text-gray-700 bg-transparent border-none rounded-xl outline-none resize-none"
+            className="w-full text-gray-700 bg-transparent border-none outline-none resize-none rounded-xl"
           />
           {/* </div> */}
         </div>
