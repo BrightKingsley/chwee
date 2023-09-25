@@ -70,7 +70,9 @@ export const ModalContextProvider = ({
     >
       <div>
         {children}
+        <div>
         <Modal />
+        </div>
       </div>
     </ModalContext.Provider>
   );
