@@ -36,10 +36,7 @@ export const NotificationContextProvider = ({
     <NotificationContext.Provider
       value={{ showNotification, triggerNotification, notificationMessage }}
     >
-      <>
-      <Notification/>
       {children}
-      </>
     </NotificationContext.Provider>
   );
 };
