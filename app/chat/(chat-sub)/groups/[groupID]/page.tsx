@@ -3,9 +3,12 @@
 import { useState } from "react";
 import { Header } from "@/components";
 import { Messages, SendMessage } from "../../../components";
+import { SendMessageType } from "@/app/chat/components/SendMessage/types";
 
 export default function Group({ params }: { params: { groupID: string } }) {
-  const [replyMessage, setReplyMessage] = useState("");
+  const [replyMessage, setReplyMessage] = useState<
+    SendMessageType["replyMessage"]
+  >({ sender: "", imageContent: [], textContent: "" });
 
   return (
     <main className="flex flex-col w-full h-screen bg-primary/50">
