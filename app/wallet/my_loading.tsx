@@ -1,7 +1,7 @@
 import { Header } from "@/components";
 
 export default function Loading() {
-  return (
+  return (<></>
     // <div className="flex flex-col h-screen">
     //   <Header title="wallet" imgShown location={WALLET} />
     //   <div className="h-full py-4 space-y-6">

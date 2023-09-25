@@ -165,7 +165,7 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
 
   return (
     <form onSubmit={(e) => handleSubmit(e, receiverTagInput)}>
-      <label htmlFor="receiverTag">input recipient's receiverTag</label>
+      <label htmlFor="receiverTag">input recipient receiverTag</label>
       <Input
         value={receiverTagInput}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

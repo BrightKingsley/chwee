@@ -44,23 +44,23 @@ export default async function Connect() {
       </div>
       <div className="space-y-4">
         <SearchBar disabled={!users || users.length < 1} colection="users" />
-        <div className="space-y-2 px-2">
+        <div className="px-2 space-y-2">
           {users && users.length > 0 ? (
             users.map((user, i) => (
               <ListTile
                 key={Math.random()}
                 slide
                 trailing={[
-                  <CreateChatButton receiverID={user._id as string} />,
+                  <CreateChatButton key={Math.random()} receiverID={user._id as string} />,
                 ]}
                 index={i}
-                className="w-full px-2 gap-2 bg-white rounded-xl"
+                className="w-full gap-2 px-2 bg-white rounded-xl"
               >
                 <Link
                   href={USER_PROFILE}
-                  className="flex flex-1  items-center w-full_ gap-2 py-1 bg-white rounded-lg bg-primary/10_"
+                  className="flex items-center flex-1 gap-2 py-1 bg-white rounded-lg w-full_ bg-primary/10_"
                 >
-                  <div className="w-10 h-10 rounded-full overflow-clip shrink-0 bg-primary flex items-center justify-center text-gray-200">
+                  <div className="flex items-center justify-center w-10 h-10 text-gray-200 rounded-full overflow-clip shrink-0 bg-primary">
                     {user.photo ? (
                       <Image src={user.photo} alt="" fill />
                     ) : (
@@ -77,11 +77,11 @@ export default async function Connect() {
               </ListTile>
             )) // @ts-ignore TODO
           ) : users?.error ? (
-            <div className="w-full h-full flex items-center justify-center ">
+            <div className="flex items-center justify-center w-full h-full ">
               <h1>Error fetching Users</h1>
             </div>
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="flex items-center justify-center w-full h-full">
               <h1>No users available</h1>
             </div>
           )}
