@@ -68,12 +68,7 @@ export const ModalContextProvider = ({
         disableOnClick: modalState.disableOnClick,
       }}
     >
-      <div>
-        {children}
-        <div>
-        <Modal />
-        </div>
-      </div>
+      {children}
     </ModalContext.Provider>
   );
 };

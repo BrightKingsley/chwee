@@ -1,4 +1,4 @@
-import { Header, Modal, Navbar, Notification } from "@/components";
+import { Header, Modal, Navbar, Notification, PortalElements } from "@/components";
 import {
   AuthContextProvider,
   ChatContextProvider,
@@ -112,6 +112,7 @@ export default function RootLayout({
               <ModalContextProvider>
                 <ChatContextProvider>
                   <main className="flex w-screen">
+                    <PortalElements/>
                     <Navbar />
                     <div className="w-[calc(100vw-3.5rem)]">{children}</div>
                   </main>
