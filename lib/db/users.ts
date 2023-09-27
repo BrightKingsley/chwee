@@ -5,7 +5,6 @@ import { UserClass } from "@/models/User";
 import bcrypt from "bcrypt";
 import { addMemberToGroup, createWallet } from ".";
 import mongoose from "mongoose";
-import Chats from "@/app/chat/(chat-list)/chats/page";
 
 // Define the number of salt rounds for password hashing
 const saltRounds = 10;
