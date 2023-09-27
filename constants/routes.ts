@@ -3,22 +3,23 @@ export const BASE_URL =
     ? "http://localhost:3000"
     : "https://chwee.vercel.app";
 
-export const HOME = "/";
-export const AUTH = "/auth";
+export const HOME = "/main/";
+export const DASHBOARD = "/main/dashboard";
+export const AUTH = "/main/auth";
 export const LOGIN = `${AUTH}/login`;
 export const REGISTER = `${AUTH}/register`;
-export const USER_PROFILE = "/user-profile";
-export const CHAT = "/chat";
+export const USER_PROFILE = "/main/user-profile";
+export const CHAT = "/main/chat";
 export const CHATS = `${CHAT}/chats`;
 export const GROUPS = `${CHAT}/groups`;
-export const SETTINGS = "/settings";
-export const MEMBER_INFO = "/member-info";
-export const CHAT_SETTINGS = "/chat-settings";
-export const ACCOUNT = "/account";
-export const NOTIFICATIONS = "/notifications";
-export const EVENTS = "/events";
-export const CONNECT = "/connect";
-export const WALLET = "/wallet";
+export const SETTINGS = "/main/settings";
+export const MEMBER_INFO = "/main/member-info";
+export const CHAT_SETTINGS = "/main/chat-settings";
+export const ACCOUNT = "/main/account";
+export const NOTIFICATIONS = "/main/notifications";
+export const EVENTS = "/main/events";
+export const CONNECT = "/main/connect";
+export const WALLET = "/main/wallet";
 export const ALL_CONNECT = `${CONNECT}/all`;
 export const SUSPENDED_CONNECT = `${CONNECT}/suspended`;
 export const OTHER = `${NOTIFICATIONS}/other`;

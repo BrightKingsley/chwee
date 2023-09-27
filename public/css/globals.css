@@ -78,7 +78,9 @@
 
 @layer utilities {
   :root {
-    --primary: #fb923c;
+    --primary: #ff631b;
+    --primary: #ff7b00;
+    --primary: #ff501b;
     --body: #fff;
   }
 
@@ -144,9 +146,9 @@
   @apply absolute border-primary border-4 h-[90%] -translate-x-2 rounded-full transition-all duration-300;
 }
 
-._replied-text_{
+._replied-text_ {
   display: -webkit-box;
-  -webkit-box-orient:vertical ;
+  -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
 }
@@ -172,7 +174,6 @@ button:active {
 
 button:hover {
   @apply outline outline-1 outline-transparent -outline-offset-2;
-  /* rounded-md_ */
 }
 
 .animate-loader {

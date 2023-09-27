@@ -3,12 +3,6 @@ export { default } from "next-auth/middleware";
 
 export const config = {
   matcher: [
-    "/wallet/:path*",
-    "/chat/:path*",
-    "/settings/:path*",
-    "/events/:path*",
-    "/connect/:path*",
-    "/notifications/:path*",
-    "/account/:path*",
+    "/main/:path*",
   ],
 };
