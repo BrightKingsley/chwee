@@ -16,7 +16,7 @@ const poppins = Poppins({
   style: "normal",
   display: "swap",
   fallback: ["poppins"],
-  subsets: ["latin-ext", "latin", "latin-ext"],
+  subsets: ["latin-ext", "latin"],
 });
 
 const description =
