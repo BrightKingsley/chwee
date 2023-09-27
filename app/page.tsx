@@ -313,6 +313,7 @@ export default function Landing() {
               <div className="">
                 {stackImgs.map((_, i) => (
                   <div
+                    key={Math.random()}
                     style={{ left: `-${1 * i}rem` }}
                     className="w-12 h-12 inline-block top-0 border border-red-400 overflow-clip rounded-full"
                   >
