@@ -24,6 +24,7 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
+      checks: ["none"],
       httpOptions: {
         timeout: 40000,
       },
@@ -140,6 +141,9 @@ export const authOptions: NextAuthOptions = {
       // session.user == (token as any);
 
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      return baseUrl;
     },
   },
 
