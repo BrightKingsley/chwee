@@ -115,9 +115,9 @@
   }
 
   html {
+    font-family: "Poppins";
     @apply text-gray-800;
     scroll-behavior: smooth;
-    /* @apply font-aeonik; */
   }
 
   body {
@@ -127,6 +127,14 @@
   img {
     @apply object-cover w-full h-full;
   }
+}
+
+.row-span-8 {
+  grid-row: span 8 / span 8;
+}
+
+.row-span-11 {
+  grid-row: span 11 / span 11;
 }
 
 ._main_ {
