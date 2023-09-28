@@ -30,7 +30,7 @@ export async function POST(
   try {
     const params = await request.json();
 
-    if (!params) return NextResponse.json({ auth: false });
+    if (!params) throw new Error("Invalid params");
     const {
       profile,
       account,
@@ -38,6 +38,8 @@ export async function POST(
       credentials,
       email,
     } = params as GoogleAuthParams;
+
+    console.log("PARAMS: ", params);
 
     if (
       authUser.id &&
@@ -55,7 +57,7 @@ export async function POST(
     let googleProfile: GoogleProfile = profile as GoogleProfile;
     let user: any;
 
-    if (!profile || !profile.email) return NextResponse.json({ auth: false });
+    if (!profile || !profile.email) throw new Error("Google profile not found");
 
     const userExists = await getUserByEmail({
       email: profile?.email,

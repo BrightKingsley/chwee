@@ -116,6 +116,7 @@ export default function UploadImageData({
             }
             className="relative w-full p-1 text-gray-700 border-none outline-none resize-none bg-primary/10 rounded-xl focus:outline-primary before:w-full before:h-full before:absolute before:top-0 before:left-0"
           />
+          ObjectId
           {/* <button
             className="mb-2 text-3xl active:scale-90 active:opacity-40 rounded-full bg-primary p-2 flex items-center justify-center mt-[0.65rem]"
             onClick={handleUploadImage}

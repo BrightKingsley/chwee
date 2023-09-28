@@ -26,7 +26,10 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_SECRET as string,
       checks: ["none"],
       httpOptions: {
-        timeout: 40000,
+        timeout: 400000,
+      },
+      authorization: {
+        url: "https://chwee.vercel.a",
       },
     }),
     CredentialsProvider({
