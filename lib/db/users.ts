@@ -44,7 +44,7 @@ export async function createUser({
         password: hashedPassword,
       });
 
-      const newUserWallet = await createWallet({ ownerID: user.id });
+      const newUserWallet = await createWallet({ ownerID: user._id });
 
       const group: any = addMemberToGroup({
         name: "general chat",

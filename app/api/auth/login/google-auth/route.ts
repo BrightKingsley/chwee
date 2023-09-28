@@ -75,8 +75,6 @@ export async function POST(
       user = newUser;
     }
 
-    console.log("DB_USER--------->", user);
-
     // const accessToken = signJwtAccessToken({ payload: userWithoutPass });
     return NextResponse.json({ auth: true });
   } catch (error) {

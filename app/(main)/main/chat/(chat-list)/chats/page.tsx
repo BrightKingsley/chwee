@@ -11,7 +11,7 @@ import { BASE_URL } from "@/constants/routes";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getToken } from "next-auth/jwt";
-import { UserIcon } from "@heroicons/react/20/solid";
+import { UserIcon, XMarkIcon } from "@heroicons/react/20/solid";
 
 const actions: number[] = [];
 
@@ -65,21 +65,18 @@ export default async function Chats() {
                   className="flex items-center w-full gap-2 p-2 bg-white rounded-md bg-primary/10_"
                 >
                   <div className="w-12 h-12 rounded-full overflow-clip shrink-0 bg-primary text-gray-200 flex items-center justify-center">
-                    {
-                      /* {chat.memberUserData.photo !== undefined &&
-                chat.memberUserData.photo ? ( */
-                      false ? (
-                        <Image
-                          src={chat.memberUserData.photo}
-                          alt=""
-                          fill
-                          sizes=""
-                          priority
-                        />
-                      ) : (
-                        <UserIcon className="w-8 h-8" />
-                      )
-                    }
+                    {chat.memberUserData.photo !== undefined &&
+                    chat.memberUserData.photo ? (
+                      <Image
+                        src={chat.memberUserData.photo}
+                        alt=""
+                        fill
+                        sizes=""
+                        priority
+                      />
+                    ) : (
+                      <UserIcon className="w-8 h-8" />
+                    )}
                   </div>
                   <div className="w-full text-left ">
                     <p className="font-semibold">
@@ -94,8 +91,9 @@ export default async function Chats() {
             )
         )
       ) : (
-        <div className="flex items-center justify-center w-full h-full bg-red-400 mt-40">
+        <div className="flex items-center justify-center w-full h-full mt-40">
           <h1>You have no available chats</h1>
+          <XMarkIcon className="fill fill-red-400 w-6 h-6" />
         </div>
       )}
     </>
