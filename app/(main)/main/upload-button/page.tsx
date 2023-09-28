@@ -40,7 +40,7 @@ export default function UploadButtonPage() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-start p-24">
       <UploadButton<OurFileRouter>
-        endpoint="imageUploader"
+        endpoint="chatImageUploader"
         onClientUploadComplete={(
           res: { fileUrl: string; fileKey: string }[] | undefined
         ) => {
