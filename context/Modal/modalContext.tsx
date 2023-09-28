@@ -40,6 +40,7 @@ export const ModalContextProvider = ({
       show: false,
     }
   ) => {
+    console.log("TriGggered");
     show !== undefined
       ? setModalState((prev) => ({ ...prev, showModal: show }))
       : modalState.showModal

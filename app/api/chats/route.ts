@@ -17,35 +17,41 @@ export async function GET(request: NextRequest, response: any) {
   try {
     //  const serverToken = await getToken({req:request, secret})
     const headersList = headers();
-    const myID = headersList.get("user_id");
+    const userID = headersList.get("user_id");
 
-    if (!myID)
+    if (!userID)
       return NextResponse.json({
         error: { message: "Acces Denied. Unauthenticated" },
       });
 
-    const myParsedID = stringToObjectId(myID);
+    const parsedUserID = stringToObjectId(userID);
 
-    if (!myParsedID)
+    if (!parsedUserID)
       return NextResponse.json({
         error: { message: "Acces Denied. Unauthenticated" },
       });
 
-    // if (!myID)
+    // if (!userID)
     //
-    const chats = await Chat.find();
+    const user = await User.findById(parsedUserID);
 
-    console.log("CHATSSS=>", chats);
+    console.log("USER_FROM_CHATS", user);
+
+    if (!user) throw new Error("User not found");
+    // return NextResponse.json({
+    //   error: { message: "Acces Denied. Unauthenticated" },
+    // });
 
     const chatsWithUserData = await Promise.all(
-      chats.map(async (chat) => {
+      user.chats.map(async (userChat) => {
+        const chat = await Chat.findById(userChat);
+        if (!chat) throw new Error("Chat unavailable");
         const memberUserID = chat.members.find((id) => {
-          console.log("ID_TO_STR", id);
-          return id?.toString() !== myParsedID?.toString();
+          return id?.toString() !== parsedUserID?.toString();
         });
         console.log("MEMBERS___", {
           members: chat.members,
-          myParsedID,
+          parsedUserID,
           memberUserID,
         });
         const mine = "123";
@@ -62,7 +68,7 @@ export async function GET(request: NextRequest, response: any) {
       })
     );
 
-    if (!chats || !chatsWithUserData)
+    if (!chatsWithUserData)
       return NextResponse.json({ error: "Couldnt get Chats" });
 
     return NextResponse.json(chatsWithUserData);

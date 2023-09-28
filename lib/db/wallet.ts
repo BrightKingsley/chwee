@@ -2,19 +2,20 @@ import { Wallet } from "@/models";
 import connectDB from "./connect-db";
 import { stringToObjectId } from "../utils";
 import { WalletClass } from "@/models/Wallet";
+import mongoose, { ObjectId } from "mongoose";
 
 export async function createWallet({
   ownerID,
 }: {
-  ownerID: string;
+  ownerID: string | mongoose.Types.ObjectId;
 }): Promise<WalletClass> {
   console.log("CREA>TED_WALLET_OWNER", ownerID);
   try {
     await connectDB();
 
-    const parsedID = stringToObjectId(ownerID);
+    // const parsedID = stringToObjectId(ownerID);
 
-    const wallet = await Wallet.create({ owner: parsedID });
+    const wallet = await Wallet.create({ owner: ownerID });
     return wallet;
   } catch (error: any) {
     return error;
@@ -55,7 +56,7 @@ export async function getWallets(filter: WalletFilter = {}) {
 
     const wallets = await Wallet.find().skip(skip).limit(limit).lean().exec();
 
-    console.log("WALLETS:",wallets);
+    console.log("WALLETS:", wallets);
 
     return { wallets };
   } catch (error) {

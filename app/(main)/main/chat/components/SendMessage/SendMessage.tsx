@@ -29,19 +29,8 @@ import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import Image from "next/image";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
-
-type MessageBody = {
-  textContent: string;
-  sendDate: Date;
-  sender: string | undefined;
-  // imageContent: (Blob | Uint8Array | ArrayBuffer)[];
-  imageContent: (string | StaticImport)[];
-  replyTo: {
-    sender: string;
-    textContent?: string;
-    imageContent?: string[];
-  };
-};
+import { useUploadThing } from "@/lib/uploadThing";
+import { SendFunds, UploadImageData } from "..";
 
 interface HTMLInputEvent extends Event {
   target: HTMLIFrameElement & EventTarget;
@@ -55,6 +44,8 @@ export default function SendMessage({
 }: SendMessageType) {
   const { data } = useSession();
   const session: Session | null = data;
+
+  const uploadThing = useUploadThing("imageUploader", {});
 
   const [message, setMessage] = useState<MessageBody>({
     textContent: "",
@@ -92,14 +83,21 @@ export default function SendMessage({
     }, 2000);
 
     return () => clearTimeout(timeout);
-  }, [session, session?.user, message.textContent]);
+  }, [session, session?.user, message.textContent, message.imageContent]);
 
-  const sendMessage = async () => {
+  const sendMessage = async (
+    images?: MessageBody["imageContent"] = message.imageContent
+  ) => {
+    let messageData = { ...message };
+    if (images.length > 0) {
+      messageData.sender = message.sender;
+      messageData.imageContent = images;
+    }
     try {
-      console.log("SENDING_MESSAGE ==>", message);
+      console.log("SENDING_MESSAGE ==>", { messageData, message });
       const res = await fetch(`${BASE_URL}/api/messaging/${chatID}`, {
         method: "POST",
-        body: JSON.stringify({ message, roomType }),
+        body: JSON.stringify({ message: messageData, roomType }),
       });
 
       const result = await res.json();
@@ -142,122 +140,27 @@ export default function SendMessage({
     return message.textContent ? setShowOthers(false) : setShowOthers(true);
   }, [message.textContent]);
 
-  useEffect(() => {
-    console.log("REPLY_MESSAGE_CHANGE", replyMessage);
-  }, [
-    replyMessage,
-    replyMessage.textContent,
-    replyMessage.sender,
-    replyMessage.imageContent,
-  ]);
-
   return (
     <div className="relative w-full">
       {previewImages.images.length > 0 && previewImages.show && (
-        <AnimateInOut
-          init={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          out={{ opacity: 0 }}
-          show={previewImages.show}
-          className="fixed h-[calc(100vh-3.5rem)] w-[calc(100vw-3.5rem)] bg-white top-14 right-0 z-30"
-        >
-          <div className="relative flex flex-col items-center w-full h-full">
-            <Swiper
-              className="w-full h-full"
-              spaceBetween={1}
-              breakpoints={{
-                640: {
-                  slidesPerView: 1,
-                },
-                768: {
-                  slidesPerView: 2,
-                },
-                1024: {
-                  slidesPerView: 4,
-                },
-              }}
-            >
-              {previewImages.images.map((image, index) => (
-                <SwiperSlide
-                  className="flex items-center justify-center w-full h-full"
-                  key={index}
-                >
-                  <Image
-                    fill
-                    src={image}
-                    alt="selected"
-                    className="object-contain w-full h-full"
-                    loading="lazy"
-                  />
-                  {/* works? */}
-                </SwiperSlide>
-              ))}
-            </Swiper>
-            <Close
-              close={() => {
-                setPreviewImages({ images: [], show: false });
-                setMessage((prev) => ({ ...prev, imageContent: [] }));
-              }}
-              className="absolute z-40 top-4 right-4 text-primary"
-            />
-            <div className="absolute z-40 flex items-center gap-2 mx-2 bottom-4">
-              <ReactTextareaAutoSize
-                value={message.textContent}
-                // cols={5}
-                maxRows={5}
-                onChange={(e) =>
-                  setMessage((prev) => ({
-                    ...prev,
-                    textContent: e.target.value,
-                  }))
-                }
-                className="relative w-full p-1 text-gray-700 border-none outline-none resize-none bg-primary/10 rounded-xl focus:outline-primary before:w-full before:h-full before:absolute before:top-0 before:left-0"
-              />
-              <button className="mb-2 text-3xl active:scale-90 active:opacity-40 rounded-full bg-primary p-2 flex items-center justify-center mt-[0.65rem]">
-                <PaperAirplaneIcon className="w-6 h-6 fill-white" />
-              </button>
-            </div>
-          </div>
-        </AnimateInOut>
-      )}
-      <AnimateInOut
-        init={{ opacity: 0, translateY: 80, scale: 0 }}
-        animate={{ opacity: 1, translateY: 0, scale: 1 }}
-        out={{ opacity: 0, translateY: 80, scale: 0 }}
-        show={toggleTransferForm}
-        className="absolute space-y-4 p-2 bottom-[100%] bg-white rounded-xl mx-4 md:mx-16 text-center z-40"
-      >
-        <p>Enter the amount You want to transfer</p>
-        <input
-          type="number"
-          className="w-full p-3 text-3xl text-gray-700 border rounded-md outline-none resize-none bg-primary/20 border-primary_ focus:outline-primary"
+        // NOTE Upload Image Data component
+        <UploadImageData
+          message={message}
+          previewImages={previewImages}
+          setMessage={setMessage}
+          setPreviewImages={setPreviewImages}
+          sendMessage={sendMessage}
         />
-
-        <div className="flex justify-around w-full">
-          <button onClick={() => setToggleTransferForm(false)}>cancel</button>{" "}
-          <button>confirm</button>
-        </div>
-      </AnimateInOut>
-
-      {/* REPLY MESSAGE */}
-      {/* <AnimateInOut
-        init={{ opacity: 0, left: 100 }}
-        animate={{ opacity: 1, left: 0 }}
-        out={{ opacity: 0, left: 100 }}
-        show={replyMessage.length > 0}
-        className={`${
-          replyMessage.length > 0 && "-translate-y-full"
-        } left-0 w-full bg-white p-2 absolute -top-0 text-gray-500 `}
-      >
-        <p className="relative p-2 px-3  rounded-md bg-primary/10 after:absolute after:left-1 after:inset-0 after:bg-primary after:h-[80%] after:w-1 after:my-auto top-full mx-auto after:rounded-full">
-          {replyMessage}
-        </p>
-      </AnimateInOut> */}
+      )}
+      <SendFunds
+        setToggleTransferForm={setToggleTransferForm}
+        toggleTransferForm={toggleTransferForm}
+      />
       <form
         // TODO COMEBACK ADD_TYPES
         //@ts-ignore
         onSubmit={(e) => handleSend(e)}
-        className="relative flex items-end w-full gap-2 pt-1 pb-1 mt-auto max-w-md mx-auto"
+        className="relative flex items-end w-full max-w-md gap-2 pt-1 pb-1 mx-auto mt-auto"
       >
         <div
           className={`relative bg-white rounded-xl flex items-center w-full gap-2 p-2 ${
@@ -292,6 +195,18 @@ export default function SendMessage({
                   ? "You"
                   : replyMessage.sender}
               </small>
+              <span
+                onClick={() =>
+                  setReplyMessage({
+                    sender: "",
+                    imageContent: [],
+                    textContent: "",
+                  })
+                }
+                className="absolute top-0 right-0 p-2 cursor-pointer active:opacity-50 active:scale-90"
+              >
+                <XMarkIcon className="w-5 h-5" />
+              </span>
               <div className="flex items-center">
                 {replyMessage.textContent && (
                   <small className="font-bold">
@@ -305,7 +220,7 @@ export default function SendMessage({
                         <PhotoIcon className="w-4 h-4 fill-gray-500" />
                         Photo
                       </small>
-                      <div className="w-10 h-10 ml-auto rounded-md overflow-clip bg-primary">
+                      <div className="ml-auto rounded-md w-14 h-14 overflow-clip bg-primary">
                         <Image
                           src={replyMessage.imageContent[0]}
                           alt="reply img content"

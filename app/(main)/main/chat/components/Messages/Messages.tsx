@@ -37,12 +37,16 @@ export default function Messages({ setReplyMessage, chatID, roomType }: any) {
   const params = useParams();
 
   useEffect(() => {
-    // if (!chatID) return;
-    // pusherClient.subscribe(chatID);
-    // pusherClient.bind("incoming-message", (message: MessageClass) => {
-    //   setMessages((prev) => [...prev, message]);
-    // });
-    // return () => pusherClient.unsubscribe(chatID);
+    if (!chatID) return;
+    pusherClient.subscribe(chatID);
+    pusherClient.bind("incoming-message", (message: MessageClass) => {
+      setMessages((prev) => [...prev, message]);
+    });
+    return () => pusherClient.unsubscribe(chatID);
+  }, []);
+
+  useEffect(() => {
+    console.log("RUNNNININIIININ");
   }, []);
 
   useEffect(() => {
@@ -56,8 +60,6 @@ export default function Messages({ setReplyMessage, chatID, roomType }: any) {
         }
       );
 
-      console.log("FIRST_RES", response);
-
       if (!response.ok) {
         setLoading(false);
         return;
@@ -67,6 +69,7 @@ export default function Messages({ setReplyMessage, chatID, roomType }: any) {
       if (!data) return;
 
       const { messages: msgs } = data;
+      console.log("CLIENT MSGS", msgs);
 
       if (!msgs) return;
 
@@ -76,7 +79,7 @@ export default function Messages({ setReplyMessage, chatID, roomType }: any) {
   }, [chatID]);
 
   return (
-    <div className="flex flex-col flex-1 mx-2 space-y-2 overflow-y-auto">
+    <div className="flex flex-col flex-1 mx-2 space-y-4 overflow-y-auto">
       {loading ? (
         <LoadingMessages />
       ) : messages.length < 1 || !session || !session.user.id ? (
@@ -90,12 +93,6 @@ export default function Messages({ setReplyMessage, chatID, roomType }: any) {
             id={id}
             message={message}
             roomType={roomType}
-            // photo={photo}
-            // imageContent={imageContent}
-            // // name={name}
-            // textContent={textContent}
-            // sendDate={sendDate}
-            // sender={sender}
             userID={session.user.id}
             setReplyMessage={setReplyMessage}
           />

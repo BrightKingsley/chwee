@@ -26,7 +26,7 @@ export default function Chat({ params }: { params: { chatID: string } }) {
           </button>,
         ]}
       />
-      <main className="flex flex-col w-full h-[calc(100vh-3.5rem)] bg-primary/50">
+      <main className="flex flex-col w-full h-[calc(100vh-3.5rem)] bg-primary/10">
         <Messages
           chatID={params.chatID}
           setReplyMessage={setReplyMessage}

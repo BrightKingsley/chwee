@@ -12,7 +12,7 @@ export default function Group({ params }: { params: { groupID: string } }) {
   >({ sender: "", imageContent: [], textContent: "" });
 
   return (
-    <main className="flex flex-col w-full h-screen bg-primary/50">
+    <main className="flex flex-col w-full h-screen bg-primary/10">
       <Header title="Group" imgShown />
       <Messages chatID={params.groupID} setReplyMessage={setReplyMessage} />
       <SendMessage

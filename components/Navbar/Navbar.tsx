@@ -88,7 +88,7 @@ export default function Navbar() {
       {!showMenu && (
         <button
           onClick={() => setShowMenu((prev) => !prev)}
-          className="fixed md:hidden z-50 top-3 left-3"
+          className="fixed md:hidden z-40 top-3 left-3"
         >
           <Bars3Icon className="w-8 h-8 fill-gray-500" />
         </button>

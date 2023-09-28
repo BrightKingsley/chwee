@@ -57,7 +57,6 @@ export const authOptions: NextAuthOptions = {
           body: JSON.stringify(credentials),
         });
         const result = await res.json();
-        console.log("CREDENTIALS RESULT", result);
         return result;
       },
     }),
@@ -75,7 +74,6 @@ export const authOptions: NextAuthOptions = {
       return result.auth;
     },
     async jwt({ token, user, account, profile, session, trigger }) {
-      console.log("JWTEEEEE", { token, session });
       if (!token || !token.email || !token.id)
         return { ...token, error: "UNAUTHORIZED" };
 
@@ -90,7 +88,7 @@ export const authOptions: NextAuthOptions = {
 
           return token;
         }
-
+        token.sub = userFromDB._id.toString();
         return token;
       } catch (error) {
         console.error(error);
@@ -102,20 +100,16 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token, user, newSession, trigger }) {
       if (session.user?.email) {
         try {
-          console.log("SESSION_BEFFORE", session);
           await connectDB();
           const userFromDB: any = await User.findOne({
             email: session.user.email,
           });
-
-          console.log("USERFROMDB", userFromDB);
 
           if (userFromDB) {
             session.user.name = userFromDB.username;
             session.user.image = userFromDB.photo;
             session.user.tag = userFromDB.tag;
             session.user.id = userFromDB._id.toString();
-            console.log("UPDATED SESSION", session, userFromDB);
             return session;
           } else {
             // User not found in the database, handle this situation as needed.
@@ -128,7 +122,6 @@ export const authOptions: NextAuthOptions = {
             session.user.image = null;
             session.user.tag = null;
             session.user.id = null;
-            console.log("UPDATED SESSION", session, userFromDB);
             return { ...session, error: "UNAUTHENTICATED" };
             // return session;
           }

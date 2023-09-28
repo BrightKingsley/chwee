@@ -391,10 +391,10 @@ export default function Landing() {
               amazing animations and it runs smoothly.❤️
             </div>
             <div className="row-span-6 p-6 col-span-full md:col-span-3 rounded-t-xl rounded-l-xl bg-brand-lightblue">
-              I couldn't have survived without it. I've never lost a message,
-              file, picture, and voice notes are crystal clear. The organization
-              functions make it superior to all other options. It was nice to
-              have a grown up space of normal communication threads.
+              I {"couldn't"} have survived without it. {"I've"} never lost a
+              message, file, picture, and voice notes are crystal clear. The
+              organization functions make it superior to all other options. It
+              was nice to have a grown up space of normal communication threads.
             </div>
             <div className="row-span-3 p-6 col-span-full md:col-span-9 rounded-t-xl rounded-l-xl bg-brand-darkblue">
               The most interesting feature , your chat, music, video and other
@@ -402,8 +402,9 @@ export default function Landing() {
               device with your email and an email verification.
             </div>
             <div className="row-span-2 p-6 col-span-full md:col-span-5 rounded-t-xl rounded-l-xl bg-primary">
-              This is a great app. I'm making this my main social media for
-              everything. I'm a content creator and I really like the format.
+              This is a great app. {"I'm"} making this my main social media for
+              everything. {"I'm"} a content creator and I really like the
+              format.
             </div>
             <div className="row-span-2 p-6 col-span-full md:col-span-4 rounded-t-xl rounded-l-xl bg-brand-yellow">
               Chwee is seriosly flexible. It just makes your life eaiser. Super

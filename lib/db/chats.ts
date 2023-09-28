@@ -50,7 +50,7 @@ export async function createChat({ members }: { members: string[] }) {
     parsedIDs.forEach(async (id) => {
       const updatedUser = await User.findByIdAndUpdate(id, {
         $push: {
-          chats: id,
+          chats: chat._id,
         },
       });
       console.log("UPDATED USER", updatedUser);

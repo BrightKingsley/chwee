@@ -32,8 +32,6 @@ export async function sendMessage({
       }
     );
 
-    console.log("UPDATED_CONVO", updatedConversation);
-
     if (!updatedConversation) return null;
 
     return updatedConversation;

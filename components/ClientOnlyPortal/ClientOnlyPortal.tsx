@@ -1,7 +1,8 @@
 //@ts-nocheck
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { ModalContext } from "@/context";
+import { useContext, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 export default function ClientOnlyPortal({
@@ -14,9 +15,12 @@ export default function ClientOnlyPortal({
   const ref = useRef();
   const [mounted, setMounted] = useState(false);
 
+  const { actionCancel } = useContext(ModalContext);
+
+  console.log("CLIENT_ONLY_REACHED", actionCancel);
+
   useEffect(() => {
     ref.current = document.querySelector(selector);
-
     setMounted(true);
   }, [selector]);
 

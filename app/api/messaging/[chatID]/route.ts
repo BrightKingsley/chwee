@@ -95,21 +95,24 @@ export async function POST(
 
       // Check if the chat exists and if the members Set includes the memberIdToCheck
       if (chat && chat.members.includes(parsedSenderID)) {
-        const senderData: UserClass | any = await getUserByID({
-          userID: parsedSenderID,
-        });
+        const senderDoc = await User.findById(parsedSenderID);
 
-        if (!senderData || senderData.error)
-          return NextResponse.json({
-            error: { message: "Couldnt get userData" },
-          });
+        if (!senderDoc) throw new Error("Couldn't retrieve sender document");
+
+        const senderInfo = {
+          username: senderDoc.username,
+          id: senderDoc._id,
+          tag: senderDoc.tag,
+          email: senderDoc.email,
+          photo: senderDoc.photo,
+        };
 
         pusherServer.trigger(chatID, "incoming-message", {
-          ...message,
-          ...senderData,
+          message,
+          senderInfo,
         });
 
-        console.log("====REACHED-4 PUSHER=====");
+        console.log("====REACHED-4 PUSHER=====", { ...message, ...senderInfo });
 
         await sendMessage({ chatID, message });
 
@@ -130,55 +133,97 @@ export async function GET(
   request: NextRequest,
   { params: { chatID } }: GetProps
 ) {
-  const session = await getServerSession(authOptions);
-
-  const userID = session?.user.id;
-
-  if (!userID)
-    return NextResponse.json({ error: { message: "Access Denied" } });
-
-  const parsedUserID = stringToObjectId(userID);
-  const parsedChatID = stringToObjectId(chatID);
-
-  if (!parsedUserID || !parsedChatID)
-    return NextResponse.json({ error: { message: "Access Denied" } });
-
-  console.log("CHAT_ID", chatID);
-
-  const messageResult = await Conversation.findOne({ chatID });
-
-  if (!messageResult)
-    return NextResponse.json(
-      { error: { message: "Conversation not found" } },
-      { status: 404 }
+  try {
+    console.log(
+      "///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"
     );
-  const chatResult = await Chat.findById(parsedChatID);
 
-  if (!chatResult?.members.includes(parsedUserID))
+    const session = await getServerSession(authOptions);
+
+    const userID = session?.user.id;
+
     if (!userID)
+      return NextResponse.json({ error: { message: "Access Denied" } });
+
+    const parsedUserID = stringToObjectId(userID);
+    const parsedChatID = stringToObjectId(chatID);
+
+    if (!parsedUserID || !parsedChatID)
+      return NextResponse.json({ error: { message: "Access Denied" } });
+
+    console.log("CHAT_ID", chatID);
+
+    const messageResult = await Conversation.findOne({ chatID });
+
+    if (!messageResult)
       return NextResponse.json(
-        { error: { message: "Access Denied" } },
-        {
-          status: 401,
-        }
+        { error: { message: "Conversation not found" } },
+        { status: 404 }
       );
+    const chatResult = await Chat.findById(parsedChatID);
 
-  const messages = await Promise.all(
-    messageResult.messages.map(async (message) => {
-      const senderUserID = message.sender;
-      const mine = "123";
-      const senderData = await User.findById(senderUserID);
-      return {
-        messageData: message,
-        senderData,
-      };
-    })
-  );
+    if (!chatResult?.members.includes(parsedUserID))
+      if (!userID)
+        return NextResponse.json(
+          { error: { message: "Access Denied" } },
+          {
+            status: 401,
+          }
+        );
 
-  if (!messages)
-    return { error: { message: "Could not get messages for this chat" } };
+    const messages = await Promise.all(
+      messageResult.messages.map(async (message) => {
+        console.log("MESSAGE_RESULT- message", message);
+        const senderUserID = message.sender;
+        const senderDoc = await User.findById(senderUserID);
 
-  console.log("API_messageS", messageResult, messages);
+        if (!senderDoc) throw new Error("Couldn't retrieve sender document");
 
-  return NextResponse.json({ messages });
+        const senderInfo = {
+          username: senderDoc.username,
+          id: senderDoc._id,
+          tag: senderDoc.tag,
+          email: senderDoc.email,
+          photo: senderDoc.photo,
+        };
+
+        // const combined = {
+        //   sender: message.sender,
+        //   imageContent: message.imageContent,
+        //   textContent: message.textContent,
+        //   replyTo: message.replyTo,
+        //   sendDate: message.sendDate,
+        //   _id: message._id,
+        //   createdAt: message.createdAt,
+        //   updatedAt: message.updatedAt,
+        //   username: senderDoc.username,
+        //   id: senderDoc._id,
+        //   tag: senderDoc.tag,
+        //   email: senderDoc.email,
+        photo: senderDoc.photo;
+        // };
+
+        console.log("COMBINED: ", {
+          message,
+          senderInfo,
+        });
+
+        return {
+          message,
+          senderInfo,
+        };
+      })
+    );
+
+    if (!messages) throw new Error("Could not get messages for this chat");
+
+    console.log("API_messageS", messageResult, messages);
+
+    return NextResponse.json({ messages });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({
+      error: { message: "An internal error occured" },
+    });
+  }
 }

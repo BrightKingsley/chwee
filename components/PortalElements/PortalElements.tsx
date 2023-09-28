@@ -1,10 +1,13 @@
 import { Modal, Notification } from "..";
 
-const PortalElements = () => (
-  <>
-    <Modal />
-    <Notification />
-  </>
-);
+const PortalElements = () => {
+  return (
+    <>
+      <Modal />
+      <Notification />
+    </>
+  );
+};
 
 export default PortalElements;
+import { ModalContext } from "@/context";
