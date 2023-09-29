@@ -1,5 +1,7 @@
 export const BASE_URL = typeof window !== "undefined" && window.location.origin;
 
+console.log("BASE_URL", BASE_URL);
+
 export const HOME = "/main/";
 export const DASHBOARD = "/main/dashboard";
 export const AUTH = "/main/auth";
