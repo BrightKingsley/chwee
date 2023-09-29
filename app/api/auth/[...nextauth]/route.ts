@@ -9,7 +9,7 @@ import {
   getUserByEmail,
   getUserByTag,
 } from "@/lib/db";
-import { comparePasswords } from "@/lib/utils";
+import { comparePasswords, generatePassword } from "@/lib/utils";
 import { UserClass } from "@/models/User";
 import { User } from "@/models";
 import { JWT } from "next-auth/jwt";
@@ -55,12 +55,61 @@ export const authOptions: NextAuthOptions = {
         // retrieve user data to verify with credentials
         // Docs: https://next-auth.js.org/configuration/providers/credentials
 
-        const res = await fetch(`${BASE_URL}/api/auth/login/credentials`, {
-          method: "POST",
-          body: JSON.stringify(credentials),
-        });
-        const result = await res.json();
-        return result;
+        try {
+          if (!credentials || !(credentials.email && credentials?.password))
+            return null;
+
+          await connectDB();
+          const user = (await User.findOne({
+            email: credentials.email,
+          })) as UserClass | null;
+
+          if (user) {
+            const passwordsMatch = await bcrypt.compare(
+              credentials.password,
+              user.password as string
+            );
+
+            if (credentials.email === user.email && passwordsMatch) {
+              console.log("uSer should be logged in now", {
+                name: user.username,
+                email: user.email,
+                id: user._id,
+                image: user.photo || null,
+              });
+              return {
+                name: user.username,
+                email: user.email,
+                id: user.id,
+                image: user.photo || null,
+              };
+            }
+          } else {
+            const generatedUsername = credentials?.email
+              .split("@")[0]
+              .toString()
+              .trim();
+
+            const newUser = await createUser({
+              email: credentials.email.toString().trim(),
+              username: generatedUsername,
+              password: credentials.password,
+              tag: `@${generatedUsername}${generatePassword(6)}`,
+            });
+
+            if (!newUser) return null;
+
+            return {
+              name: newUser.username,
+              email: newUser.email,
+              id: newUser.id,
+              image: newUser.photo || "",
+            };
+          }
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
       },
     }),
   ],
@@ -68,13 +117,51 @@ export const authOptions: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
   },
   callbacks: {
-    async signIn(params) {
-      const res = await fetch(`${BASE_URL}/api/auth/login/google-auth`, {
-        method: "POST",
-        body: JSON.stringify(params),
-      });
-      const result = await res.json();
-      return result.auth;
+    async signIn({ profile, account, user: authUser, credentials, email }) {
+      try {
+        if (
+          authUser.id &&
+          authUser.email &&
+          authUser.name &&
+          account?.providerAccountId &&
+          account.type === "credentials" &&
+          account.provider === "credentials" &&
+          credentials?.csrfToken &&
+          credentials.email &&
+          credentials.password
+        )
+          return true;
+
+        let googleProfile: GoogleProfile = profile as GoogleProfile;
+        let user: any;
+
+        if (!profile || !profile.email)
+          throw new Error("Google profile not found");
+
+        const userExists = await getUserByEmail({
+          email: profile?.email,
+        });
+
+        user = userExists;
+
+        if (!(userExists && user) && profile?.email && profile?.name) {
+          const newUser = await createUser({
+            email: profile.email.toString().trim(),
+            username: profile.name.toString().trim(),
+            photo: googleProfile.picture,
+            tag: `@${profile.name.split(" ")[0]}${generatePassword(6)}`,
+          });
+          if (!newUser) return false;
+
+          user = newUser;
+        }
+
+        // const accessToken = signJwtAccessToken({ payload: userWithoutPass });
+        return true;
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
     },
     async jwt({ token, user, account, profile, session, trigger }) {
       if (!token || !token.email || !token.id)
