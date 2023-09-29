@@ -3,11 +3,6 @@ const nextConfig = {
   images: {
     domains: ["lh3.googleusercontent.com","utfs.io"],
   },
-  server: { host: "0.0.0.0" },
-  experimental: {
-    serverActions: true,
-    serverComponentsExternalPackages: ["mongoose", "@typegoose/typegoose"],
-  },
 };
 
 const withPWA = require("next-pwa")({

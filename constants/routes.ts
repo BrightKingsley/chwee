@@ -1,7 +1,4 @@
-export const BASE_URL =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3000"
-    : "https://chwee.vercel.app";
+export const BASE_URL = typeof window !== "undefined" && window.location.origin;
 
 export const HOME = "/main/";
 export const DASHBOARD = "/main/dashboard";
