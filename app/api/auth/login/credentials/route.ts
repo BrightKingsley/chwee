@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { generatePassword } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
+  try{
   const credentials: Record<"email" | "password", string> | undefined =
     await request.json();
 
@@ -57,5 +58,8 @@ export async function POST(request: NextRequest) {
       id: newUser.id,
       image: newUser.photo || null,
     });
+  }}catch(error){
+    console.error(error)
+    return NextResponse.json({error})
   }
 }
