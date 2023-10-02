@@ -1,4 +1,4 @@
-"ue client";
+"use client";
 
 import {
   XMarkIcon,
@@ -129,6 +129,7 @@ export default function Message({
       >
         {emotes.map((emote, i) => (
           <motion.div
+            key={i}
             initial={{ scale: 0, translateY: 5 }}
             animate={{ scale: 1, translateY: 0 }}
             transition={{ delay: i / 10 }}
