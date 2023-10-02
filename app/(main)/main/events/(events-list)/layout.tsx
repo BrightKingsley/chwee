@@ -23,6 +23,7 @@ export default function EventsLayout({
           title="Events"
           trailing={[
             <IconButton
+              key={Math.random()}
               title="create event"
               aria-label="create event"
               className="rounded-full border !text-gray-700 !fill-gray-700"
