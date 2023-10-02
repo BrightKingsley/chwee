@@ -33,7 +33,7 @@ export const authOptions: NextAuthOptions = {
         timeout: 400000,
       },
       authorization: {
-        url: "http://localhost:3000",
+        url: "https://chwee.vercel.app",
       },
     }),
     // CredentialsProvider({
