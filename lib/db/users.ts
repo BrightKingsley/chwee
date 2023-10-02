@@ -1,10 +1,11 @@
 import { Chat, Group, GroupClass, User, Wallet } from "@/models";
 import connectDB from "./connect-db";
-import { generatePassword, stringToObjectId } from "../utils";
+import { dbToClientUser, generatePassword, stringToObjectId } from "../utils";
 import { UserClass } from "@/models/User";
 import bcrypt from "bcrypt";
 import { addMemberToGroup, createWallet } from ".";
 import mongoose from "mongoose";
+import { ClientUser } from "@/types/models";
 
 // Define the number of salt rounds for password hashing
 const saltRounds = 10;
@@ -21,10 +22,12 @@ export async function createUser({
   photo?: string;
   tag: string;
   password?: string;
-}): Promise<UserClass> {
+}): Promise<UserClass | null> {
   try {
     console.log("USERDATA", email, username, photo, tag, password);
     if (password) {
+      await connectDB();
+
       // Generate a random password
 
       // Generate a salt for password hashing
@@ -58,10 +61,24 @@ export async function createUser({
     }
 
     await connectDB();
+
     const user = await User.create({ email, username, photo, tag });
+
+    const newUserWallet = await createWallet({ ownerID: user._id });
+
+    const group = addMemberToGroup({
+      name: "general chat",
+      // Check this "toString". Is it needed?
+      userID: user._id.toString(),
+    });
+
+    if (!group) console.log("Couldn't add user to general group");
+    console.log({ user, newUserWallet, group });
+
     return user;
-  } catch (error: any) {
-    return error;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 }
 
@@ -69,31 +86,32 @@ export async function getUserByID({
   userID,
 }: {
   userID: string | mongoose.Types.ObjectId;
-}) {
+}): Promise<ClientUser | null> {
   try {
     await connectDB();
 
     const parsedID =
       typeof userID === "string" ? stringToObjectId(userID) : userID;
 
-    if (!parsedID) {
-      return { error: "User not Found" };
-    }
+    if (!parsedID) throw new Error("Invalid user id");
 
-    const dbUser = await User.findById(parsedID);
+    const dbUser = await User.findById(parsedID)
+      .select("username tag connections groups photo _id")
+      .exec();
 
-    if (!dbUser) return null;
+    if (!dbUser) throw Error("User not found");
 
-    if (!dbUser.password) return dbUser;
+    // if (!dbUser.password) return dbUser;
 
-    const { password, ...userWithoutPass } = dbUser as UserClass;
+    // const { password, ...userWithoutPass } = dbUser as UserClass;
+    const user = dbToClientUser(dbUser);
 
-    if (!userWithoutPass) return null;
+    // if (!userWithoutPass) return null;
 
-    return userWithoutPass;
+    return user;
   } catch (error) {
     console.log(error);
-    return error;
+    return null;
   }
 }
 
@@ -105,7 +123,7 @@ export async function getUserByEmail({
   try {
     await connectDB();
 
-    let user: UserClass;
+    // let user: UserClass;
 
     const dbUser = await User.findOne({
       email,
@@ -113,15 +131,17 @@ export async function getUserByEmail({
 
     if (!dbUser) return null;
 
-    if (!dbUser.password) {
-      user = dbUser;
-      return user;
-    }
+    // if (!dbUser.password) {
+    //   user = dbUser;
+    //   return user;
+    // }
 
-    console.log("DB_EMAIL_USER", dbUser);
+    // console.log("DB_EMAIL_USER", dbUser);
 
-    const { password, ...userWithoutPass } = dbUser;
-    user = userWithoutPass;
+    // const { password, ...userWithoutPass } = dbUser;
+    // user = userWithoutPass;
+
+    const user = dbToClientUser(dbUser);
 
     return user;
   } catch (error) {
@@ -133,26 +153,30 @@ export async function getUserByTag({ tag }: { tag: string }) {
   try {
     await connectDB();
 
-    let user: UserClass;
+    // let user: UserClass;
+    const decodedTag = decodeURIComponent(tag);
 
     const dbUser = await User.findOne({
-      tag,
+      tag: decodedTag,
     });
+
     if (!dbUser) return null;
 
-    if (!dbUser.password) {
-      user = dbUser;
-      return user;
-    }
+    // if (!dbUser.password) {
+    //   user = dbUser;
+    //   return user;
+    // }
 
-    const { password, ...userWithoutPass } = dbUser;
+    // const { password, ...userWithoutPass } = dbUser;
 
-    user = userWithoutPass;
+    // user = userWithoutPass;
+
+    const user = dbToClientUser(dbUser);
 
     return user;
   } catch (err) {
     const error = err as Error;
-    return { error };
+    return null;
   }
 }
 
@@ -211,5 +235,60 @@ export async function getUsers(filter: UserFilter = {}) {
     return users;
   } catch (error) {
     return { error };
+  }
+}
+
+export async function findUsers({
+  userID,
+  limit,
+  page,
+}: {
+  userID?: string;
+  page?: number;
+  limit?: number;
+}): Promise<ClientUser[] | null> {
+  try {
+    if (!userID) throw new Error("Unauthorized");
+
+    const parsedUserID = stringToObjectId(userID);
+
+    const user = await User.findById(parsedUserID);
+
+    if (!user) throw new Error("User not found");
+
+    // get page and limit parameters form request url to paginate user data when fetching from database
+
+    const users: any = await getUsers({ page, limit });
+    if (!users) throw new Error("Could not get Users");
+
+    const usersWithoutCommonChats: ClientUser[] = await User.aggregate([
+      {
+        $match: {
+          _id: { $ne: parsedUserID },
+          chats: { $nin: user.chats },
+        },
+      },
+      {
+        $project: {
+          username: 1,
+          tag: 1,
+          photo: 1,
+          chats: 1,
+          connections: 1,
+          groups: 1,
+        },
+      },
+    ]);
+
+    console.log("-----UsersWithoutCommonChats: ", usersWithoutCommonChats);
+
+    const filteredUsers = usersWithoutCommonChats.filter(
+      (user: ClientUser) => user._id.toString() !== parsedUserID?.toString()
+    );
+
+    return filteredUsers;
+  } catch (error) {
+    console.error({ error });
+    return null;
   }
 }

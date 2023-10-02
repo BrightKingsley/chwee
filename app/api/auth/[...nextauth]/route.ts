@@ -17,9 +17,13 @@ import bcrypt from "bcrypt";
 import { signJwtAccessToken } from "@/lib/jwt";
 import { BASE_URL } from "@/constants/routes";
 import { Jwt, JwtPayload } from "jsonwebtoken";
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+// import { clientPromise } from "@/lib/config";
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
+  debug: true,
+  // adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID as string,
@@ -29,89 +33,89 @@ export const authOptions: NextAuthOptions = {
         timeout: 400000,
       },
       authorization: {
-        url: "https://chwee.vercel.a",
+        url: "http://localhost:3000",
       },
     }),
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        email: {
-          label: "email:",
-          type: "email",
-          placeholder: "your email",
-        },
-        password: {
-          label: "Pasword",
-          type: "password",
-          placeholder: "Input a paword",
-        },
-      },
-      // TODO
-      // @ts-ignore
-      async authorize(credentials, req) {
-        // retrieve user data to verify with credentials
-        // Docs: https://next-auth.js.org/configuration/providers/credentials
+    // CredentialsProvider({
+    //   name: "Credentials",
+    //   credentials: {
+    //     email: {
+    //       label: "email:",
+    //       type: "email",
+    //       placeholder: "your email",
+    //     },
+    //     password: {
+    //       label: "Pasword",
+    //       type: "password",
+    //       placeholder: "Input a paword",
+    //     },
+    //   },
+    //   // TODO
+    //   // @ts-ignore
+    //   async authorize(credentials, req) {
+    //     // retrieve user data to verify with credentials
+    //     // Docs: https://next-auth.js.org/configuration/providers/credentials
 
-        // retrieve user data to verify with credentials
-        // Docs: https://next-auth.js.org/configuration/providers/credentials
+    //     // retrieve user data to verify with credentials
+    //     // Docs: https://next-auth.js.org/configuration/providers/credentials
 
-        try {
-          if (!credentials || !(credentials.email && credentials?.password))
-            return null;
+    //     try {
+    //       if (!credentials || !(credentials.email && credentials?.password))
+    //         return null;
 
-          await connectDB();
-          const user = (await User.findOne({
-            email: credentials.email,
-          })) as UserClass | null;
+    //       await connectDB();
+    //       const user = (await User.findOne({
+    //         email: credentials.email,
+    //       })) as UserClass | null;
 
-          if (user) {
-            const passwordsMatch = await bcrypt.compare(
-              credentials.password,
-              user.password as string
-            );
+    //       if (user) {
+    //         const passwordsMatch = await bcrypt.compare(
+    //           credentials.password,
+    //           user.password as string
+    //         );
 
-            if (credentials.email === user.email && passwordsMatch) {
-              console.log("uSer should be logged in now", {
-                name: user.username,
-                email: user.email,
-                id: user._id,
-                image: user.photo || null,
-              });
-              return {
-                name: user.username,
-                email: user.email,
-                id: user.id,
-                image: user.photo || null,
-              };
-            }
-          } else {
-            const generatedUsername = credentials?.email
-              .split("@")[0]
-              .toString()
-              .trim();
+    //         if (credentials.email === user.email && passwordsMatch) {
+    //           console.log("uSer should be logged in now", {
+    //             name: user.username,
+    //             email: user.email,
+    //             id: user._id,
+    //             image: user.photo || null,
+    //           });
+    //           return {
+    //             name: user.username,
+    //             email: user.email,
+    //             id: user.id,
+    //             image: user.photo || null,
+    //           };
+    //         }
+    //       } else {
+    //         const generatedUsername = credentials?.email
+    //           .split("@")[0]
+    //           .toString()
+    //           .trim();
 
-            const newUser = await createUser({
-              email: credentials.email.toString().trim(),
-              username: generatedUsername,
-              password: credentials.password,
-              tag: `@${generatedUsername}${generatePassword(6)}`,
-            });
+    //         const newUser = await createUser({
+    //           email: credentials.email.toString().trim(),
+    //           username: generatedUsername,
+    //           password: credentials.password,
+    //           tag: `@${generatedUsername}${generatePassword(6)}`,
+    //         });
 
-            if (!newUser) return null;
+    //         if (!newUser) return null;
 
-            return {
-              name: newUser.username,
-              email: newUser.email,
-              id: newUser.id,
-              image: newUser.photo || "",
-            };
-          }
-        } catch (error) {
-          console.error(error);
-          return null;
-        }
-      },
-    }),
+    //         return {
+    //           name: newUser.username,
+    //           email: newUser.email,
+    //           id: newUser.id,
+    //           image: newUser.photo || "",
+    //         };
+    //       }
+    //     } catch (error) {
+    //       console.error(error);
+    //       return null;
+    //     }
+    //   },
+    // }),
   ],
   jwt: {
     secret: process.env.NEXTAUTH_SECRET,
@@ -119,18 +123,24 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ profile, account, user: authUser, credentials, email }) {
       try {
+        console.log("AUTHUSER: ", { authUser, profile, credentials });
+
         if (
-          authUser.id &&
-          authUser.email &&
-          authUser.name &&
-          account?.providerAccountId &&
-          account.type === "credentials" &&
-          account.provider === "credentials" &&
+          // authUser.id &&
+          // authUser.email &&
+          // authUser.name &&
+          // account?.providerAccountId &&
+          // account.type === "credentials" &&
+          // account.provider === "credentials" &&
           credentials?.csrfToken &&
           credentials.email &&
           credentials.password
-        )
+        ) {
+          console.log("REACHED_TRUE");
           return true;
+        }
+
+        console.log("ALSO_REACHED!!!");
 
         let googleProfile: GoogleProfile = profile as GoogleProfile;
         let user: any;
@@ -142,6 +152,8 @@ export const authOptions: NextAuthOptions = {
           email: profile?.email,
         });
 
+        console.log("USER_EXISTS: ", userExists);
+
         user = userExists;
 
         if (!(userExists && user) && profile?.email && profile?.name) {
@@ -152,14 +164,15 @@ export const authOptions: NextAuthOptions = {
             tag: `@${profile.name.split(" ")[0]}${generatePassword(6)}`,
           });
           if (!newUser) return false;
-
           user = newUser;
         }
 
         // const accessToken = signJwtAccessToken({ payload: userWithoutPass });
+        console.log("USER_RETURNED: ", user);
+
         return true;
       } catch (error) {
-        console.error(error);
+        console.error({ error });
         return false;
       }
     },
@@ -188,6 +201,8 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async session({ session, token, user, newSession, trigger }) {
+      console.log("SESSION_DATA: ", { session, token });
+
       if (session.user?.email) {
         try {
           await connectDB();

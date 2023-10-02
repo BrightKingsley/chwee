@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverActions: true,
+    serverComponentsExternalPackages: ["mongoose", "@typegoose/typegoose"],
+  },
   images: {
-    domains: ["lh3.googleusercontent.com","utfs.io"],
+    domains: ["lh3.googleusercontent.com", "utfs.io"],
   },
 };
 

@@ -4,8 +4,8 @@ import {
   Navbar,
   Notification,
   PortalElements,
-} from "@/components";
-import { AuthContextProvider } from "@/context";
+} from "@/components/shared";
+import { AuthContextProvider, ThemeContextProvider } from "@/context";
 import "@/public/css/globals.css";
 import "swiper/css";
 import type { Metadata } from "next";
@@ -142,9 +142,11 @@ export default function RootLayout({
         <div id="modal" />
         <div id="notification" />
         <AuthContextProvider>
-          <main className="flex w-screen">
-            <div className="w-[calc(100vw-3.5rem)]">{children}</div>
-          </main>
+          <ThemeContextProvider>
+            <main className="flex w-screen">
+              <div className="w-[calc(100vw-3.5rem)]">{children}</div>
+            </main>
+          </ThemeContextProvider>
         </AuthContextProvider>
       </body>
     </html>

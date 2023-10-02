@@ -1,6 +1,6 @@
 // "use client"
 
-import { ListTile } from "@/components";
+import { ListTile } from "@/components/shared";
 import Image from "next/image";
 import nft from "@/assets/images/nft.jpg";
 import Link from "next/link";
@@ -12,6 +12,7 @@ import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getToken } from "next-auth/jwt";
 import { UserIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { getChats } from "@/lib/db";
 
 const actions: number[] = [];
 
@@ -19,23 +20,19 @@ for (let i = 0; i < 10; i++) {
   actions.push(i);
 }
 
-const getChats = async (session: Session): Promise<MessageType[] | null> => {
-  if (!session.user.id) return null;
-  const res = await fetch(`${BASE_URL}/api/chats`, {
-    cache: "no-cache",
-    headers: {
-      user_id: session.user.id,
-    },
-  });
+// const getChats = async (session: Session): Promise<MessageType[] | null> => {
+//   if (!session.user.id) return null;
+//   // const res = await fetch(`${BASE_URL}/api/chats`, {
+//   const res = await getChats({ userID: "" });
 
-  const data = await res.json();
+//   const data = await res.json();
 
-  console.log("CHAT_DATA===>", data);
+//   console.log("CHAT_DATA===>", data);
 
-  if (!data) return null;
+//   if (!data) return null;
 
-  return data;
-};
+//   return data;
+// };
 
 type MessageType = {
   chatData: ChatClass;
@@ -44,10 +41,15 @@ type MessageType = {
 
 export default async function Chats() {
   const serverSession = await getServerSession(authOptions);
-  if (!serverSession) return null;
+  if (!serverSession || !serverSession.user || !serverSession.user.id)
+    return null;
 
   // const res = await fetch("http://localhost:3000/api/chats")
-  const chats: MessageType[] | null = await getChats(serverSession);
+  const res = await getChats({
+    userID: serverSession.user.id,
+  });
+
+  const chats = res as { chatData: ClientChat; memberUserData: ClientUser }[];
 
   // if (!chats) return <h1>NO CHATS</h1>;
 
@@ -62,9 +64,9 @@ export default async function Chats() {
               <ListTile key={Math.random()} index={i}>
                 <Link
                   href={`${CHATS}/${chat.chatData._id}`}
-                  className="flex items-center w-full gap-2 p-2 bg-white rounded-md bg-primary/10_"
+                  className="flex items-center w-full gap-2 p-2 rounded-md bg-primary/10_"
                 >
-                  <div className="w-12 h-12 rounded-full overflow-clip shrink-0 bg-primary text-gray-200 flex items-center justify-center">
+                  <div className="flex items-center justify-center w-12 h-12 text-gray-200 rounded-full overflow-clip shrink-0 bg-deep-orange-400">
                     {chat.memberUserData.photo !== undefined &&
                     chat.memberUserData.photo ? (
                       <Image
@@ -93,7 +95,7 @@ export default async function Chats() {
       ) : (
         <div className="flex items-center justify-center w-full h-full mt-40">
           <h1>You have no available chats</h1>
-          <XMarkIcon className="fill fill-red-400 w-6 h-6" />
+          <XMarkIcon className="w-6 h-6 fill fill-red-400" />
         </div>
       )}
     </>

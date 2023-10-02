@@ -7,6 +7,8 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { createConversation } from ".";
 import { ConversationClass } from "@/models/Conversation";
+import { NextRequest, NextResponse } from "next/server";
+import { headers } from "next/headers";
 
 // Define the number of salt rounds for password hashing
 const saltRounds = 10;
@@ -174,26 +176,76 @@ interface ChatFilter {
  * @param {ChatFilter} filter - Filtering and pagination options.
  * @returns {Promise<object>} - An array of chats or an error object.
  */
-export async function getChats(filter: ChatFilter = {}) {
+export async function getChats({ userID }: { userID?: string }) {
   try {
     // Connect to the database
-    await connectDB();
+    // await connectDB();
 
-    console.log("REACHED");
+    // console.log("REACHED");
 
-    // Extract filtering and pagination options
-    const page = filter.page ?? 1;
-    const limit = filter.limit ?? 10;
-    const skip = (page - 1) * limit;
+    // // Extract filtering and pagination options
+    // const page = filter.page ?? 1;
+    // const limit = filter.limit ?? 10;
+    // const skip = (page - 1) * limit;
 
-    // Find and retrieve chats with optional pagination
-    const chats = await Chat.find().skip(skip).limit(limit).lean().exec();
+    // // Find and retrieve chats with optional pagination
+    // const chats = await Chat.find().skip(skip).limit(limit).lean().exec();
 
-    console.log("WALLETS:", chats);
+    // console.log("ChatS:", chats);
 
-    return chats;
+    //  const serverToken = await getToken({req:request, secret})
+    // const headersList = headers();
+    // const userID = headersList.get("user_id");
+
+    if (!userID) throw new Error("Acces Denied. Unauthenticated");
+
+    const parsedUserID = stringToObjectId(userID);
+
+    if (!parsedUserID) throw new Error("Acces Denied. Unauthenticated");
+
+    // if (!userID)
+    //
+    const user = await User.findById(parsedUserID);
+
+    console.log("USER_FROM_CHATS", user);
+
+    if (!user) throw new Error("User not found");
+    // return NextResponse.json({
+    //   error: { message: "Acces Denied. Unauthenticated" },
+    // });
+
+    const chatsWithUserData = await Promise.all(
+      user.chats.map(async (userChat) => {
+        const chat = await Chat.findById(userChat);
+        if (!chat) throw new Error("Chat unavailable");
+        const memberUserID = chat.members.find((id) => {
+          return id?.toString() !== parsedUserID?.toString();
+        });
+        console.log("MEMBERS___", {
+          members: chat.members,
+          parsedUserID,
+          memberUserID,
+        });
+        const mine = "123";
+        const arr = ["123", "456"];
+        console.log(
+          "MINE===>",
+          arr.find((id) => id !== mine)
+        );
+        const memberUserData = await User.findById(memberUserID);
+        return {
+          chatData: chat,
+          memberUserData,
+        };
+      })
+    );
+
+    if (!chatsWithUserData) throw new Error("Couldnt get Chats");
+
+    return chatsWithUserData;
   } catch (error) {
-    return { error };
+    console.error(error);
+    return error;
   }
 }
 

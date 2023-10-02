@@ -6,32 +6,44 @@ import {
   UserIcon,
 } from "@heroicons/react/20/solid";
 
-import { Header, ListTile, SearchBar, Spinner, SubHeader } from "@/components";
+import {
+  Header,
+  ListTile,
+  SearchBar,
+  Spinner,
+  SubHeader,
+} from "@/components/shared";
 import Image from "next/image";
 import Link from "next/link";
-import { BASE_URL, USER_PROFILE } from "@/constants/routes";
+import { BASE_URL, CONNECT, USER_PROFILE } from "@/constants/routes";
 import { UserClass } from "@/models";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "../../../api/auth/[...nextauth]/route";
-import { CreateChatButton } from "./components";
+import { ConnectButton } from "./components";
+import { findUsers } from "@/lib/db";
 
-const getUsers = async (session: Session): Promise<UserClass[] | null> => {
-  if (!session.user.id) return null;
-  const res = await fetch(`${BASE_URL}/api/users`, {
-    headers: {
-      user_id: session.user.id,
-    },
-  });
+// const getUsers = async (session: Session): Promise<UserClass[] | null> => {
+//   if (!session.user.id) return null;
+//   const res = await fetch(`${BASE_URL}/api/users`, {
+//     headers: {
+//       user_id: session.user.id,
+//     },
+//   });
 
-  const data = await res.json();
-  console.log("USERS_DATA", data);
-  return data;
-};
+//   const data = await res.json();
+//   console.log("USERS_DATA", data);
+//   return data;
+// };
 
 export default async function Connect() {
   const serverSession = await getServerSession(authOptions);
-  if (!serverSession) return null;
-  const users: UserClass[] | null = await getUsers(serverSession);
+  if (!serverSession || !serverSession.user || !serverSession?.user.id)
+    return null;
+  const res = await findUsers({
+    userID: serverSession.user.id,
+  });
+
+  const users = res;
 
   // @ts-ignore
   if (users.error) return <h1>Error fetching Users</h1>;
@@ -51,17 +63,17 @@ export default async function Connect() {
                 key={Math.random()}
                 slide
                 trailing={[
-                  <CreateChatButton
+                  <ConnectButton
                     key={Math.random()}
-                    receiverID={user._id as string}
+                    receiverID={user._id.toString()}
                   />,
                 ]}
                 index={i}
-                className="w-full gap-2 px-2 bg-white rounded-xl"
+                className="w-full gap-2 pr-2 bg-white rounded-xl"
               >
                 <Link
-                  href={USER_PROFILE}
-                  className="flex items-center flex-1 gap-2 py-1 bg-white rounded-lg w-full_ bg-primary/10_"
+                  href={`${CONNECT}/${user.tag}`}
+                  className="flex items-center flex-1 gap-2 py-3 pl-2 w-full_ "
                 >
                   <div className="flex items-center justify-center w-10 h-10 text-gray-200 rounded-full overflow-clip shrink-0 bg-primary">
                     {user.photo ? (

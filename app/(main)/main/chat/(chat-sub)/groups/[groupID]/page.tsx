@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "@/components";
+import { Header } from "@/components/shared";
 import { Messages, SendMessage } from "../../../components";
 import { SendMessageType } from "@/app/chat/components/SendMessage/types";
 

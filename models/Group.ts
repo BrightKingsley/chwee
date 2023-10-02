@@ -44,10 +44,16 @@ class GroupClass {
   public name: string;
 
   @prop({ required: true })
+  public tag: string;
+
+  @prop({ required: true })
   public owner: mongoose.Types.ObjectId;
 
   @prop({ required: true, default: "" })
   public description: string;
+
+  @prop({ required: true, default: "" })
+  public photo: string;
 
   @prop({ required: false, default: "" })
   public password: string;

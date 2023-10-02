@@ -1,4 +1,4 @@
-import { Header } from "@/components";
+import { Header } from "@/components/shared";
 import Image from "next/image";
 export default function DashBoardLayout({
   children,

@@ -4,7 +4,7 @@ import { deleteAllGroups, getGroups } from "@/lib/db";
 
 export async function GET() {
   try {
-    const groups = await getGroups();
+    const groups = await getGroups({});
 
     if (!groups) return NextResponse.json({ error: "Couldnt get Groups" });
 

@@ -1,4 +1,5 @@
-import { AnimateInOut } from "@/components";
+import { AnimateInOut } from "@/components/shared";
+import { Button } from "@/components/mui";
 
 export default function SendFunds({
   setToggleTransferForm,
@@ -22,8 +23,10 @@ export default function SendFunds({
       />
 
       <div className="flex justify-around w-full">
-        <button onClick={() => setToggleTransferForm(false)}>cancel</button>{" "}
-        <button>confirm</button>
+        <Button variant="text" onClick={() => setToggleTransferForm(false)}>
+          cancel
+        </Button>{" "}
+        <Button variant="text">confirm</Button>
       </div>
     </AnimateInOut>
   );

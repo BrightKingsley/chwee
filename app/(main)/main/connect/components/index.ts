@@ -1,1 +1,1 @@
-export { default as CreateChatButton } from "./CreateChatButton";
+export { default as ConnectButton } from "./ConnectButton";

@@ -6,7 +6,7 @@ import {
   UserIcon,
 } from "@heroicons/react/20/solid";
 
-import { AnimateInOut, OptionsMenu } from "@/components";
+import { AnimateInOut, OptionsMenu } from "@/components/shared";
 import { Ref, memo, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -19,6 +19,7 @@ import { SendMessageType } from "../SendMessage/types";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import nft from "@/assets/images/nft.jpg";
+import { IconButton } from "@mui/material";
 
 interface ClientMessage {
   setReplyMessage: SendMessageType["setReplyMessage"];
@@ -30,6 +31,8 @@ interface ClientMessage {
   // message: MessageClass & UserClass;
   roomType: "group" | "p2p";
 }
+
+const emotes = ["😂", "💩", "😢", "😭", "💔"];
 
 export default function Message({
   setReplyMessage,
@@ -77,9 +80,9 @@ export default function Message({
     <motion.div
       {...gestures}
       ref={messageRef as Ref<HTMLDivElement>}
-      initial={{ scale: 0.8, opacity: 0 }}
+      initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.02 }}
+      transition={{ duration: 0.3 }}
       drag="x"
       dragElastic={{
         left: sender === userID ? 0.5 : 0,
@@ -105,7 +108,7 @@ export default function Message({
             imageContent,
           });
       }}
-      className={`relative min-w-[10rem] cursor-grab active:cursor-grabbing active:bg-gray-200 active:border active:border-gray-600 active:text-gray-600 transition-colors duration-100 flex px-2 py-1 flex-col max-w-[90%] ${
+      className={`relative min-w-[10rem] cursor-grab active:cursor-grabbing transition-colors duration-100 flex px-2 py-1 flex-col max-w-[90%] ${
         sender === userID
           ? "bg-primary text-white TODO"
           : "bg-brand-lightblue text-white"
@@ -124,36 +127,19 @@ export default function Message({
           sender === userID ? "-right-0" : "left-0"
         }`}
       >
-        <span
-          onClick={() => setShowMore((prev) => ({ ...prev, emojis: false }))}
-          className="p-1 transition-all duration-200 rounded-full active:scale-[10] active:rotate-12 hover:scale-150 active:z-20 text-2xl cursor-pointer"
-        >
-          😂
-        </span>
-        <span
-          onClick={() => setShowMore((prev) => ({ ...prev, emojis: false }))}
-          className="p-1 transition-all duration-200 rounded-full active:scale-[10] active:rotate-12 hover:scale-150 active:z-20 text-2xl cursor-pointer"
-        >
-          💩
-        </span>
-        <span
-          onClick={() => setShowMore((prev) => ({ ...prev, emojis: false }))}
-          className="p-1 transition-all duration-200 rounded-full active:scale-[10] active:rotate-12 hover:scale-150 active:z-20 text-2xl cursor-pointer"
-        >
-          😢
-        </span>
-        <span
-          onClick={() => setShowMore((prev) => ({ ...prev, emojis: false }))}
-          className="p-1 transition-all duration-200 rounded-full active:scale-[10] active:rotate-12 hover:scale-150 active:z-20 text-2xl cursor-pointer"
-        >
-          😭
-        </span>
-        <span
-          onClick={() => setShowMore((prev) => ({ ...prev, emojis: false }))}
-          className="p-1 transition-all duration-200 rounded-full active:scale-[10] active:rotate-12 hover:scale-150 active:z-20 text-2xl cursor-pointer"
-        >
-          💔
-        </span>
+        {emotes.map((emote, i) => (
+          <motion.div
+            initial={{ scale: 0, translateY: 5 }}
+            animate={{ scale: 1, translateY: 0 }}
+            transition={{ delay: i / 10 }}
+            onClick={() => setShowMore((prev) => ({ ...prev, emojis: false }))}
+            className="cursor-pointer"
+          >
+            <div className="p-1 transition-all duration-200 rounded-full active:scale-[10] active:rotate-12 hover:scale-150 active:z-20 text-2xl">
+              {emote}
+            </div>
+          </motion.div>
+        ))}
       </AnimateInOut>
       {replyTo?.sender && (
         <div
@@ -194,18 +180,18 @@ export default function Message({
             text-2xl`}
         >
           {
-            <button
+            <IconButton
               onClick={() =>
                 setShowMore((prev) => ({ ...prev, options: !prev.options }))
               }
-              className="p-3 text-gray-700 transition-all duration-200 rounded-full hover:bg-white/20 active:scale-75"
+              // className="p-3 text-gray-700 transition-all duration-200 rounded-full hover:bg-white/20 active:scale-75"
             >
               {showMore.options ? (
                 <XMarkIcon className="w-6 h-6 text-gray-600" />
               ) : (
                 <EllipsisVerticalIcon className="w-6 h-6 text-gray-600" />
               )}
-            </button>
+            </IconButton>
           }
           <OptionsMenu
             show={showMore.options}

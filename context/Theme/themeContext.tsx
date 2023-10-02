@@ -1,22 +1,66 @@
-"use client"
+"use client";
+import { ThemeProvider } from "@material-tailwind/react";
+import type {
+  ButtonStyleTypes,
+  IconButtonStyleTypes,
+  InputStylesType,
+  SwitchButtonStylesType,
+} from "@material-tailwind/react";
 
-import { createContext, useState } from "react";
-
-const ThemeContext = createContext<ThemeContextType>({
-  color: "",
-  setColor: () => {},
-});
-
-export const ThemeContextProvider = ({
+export function ThemeContextProvider({
   children,
-}: ThemeContextProviderProps) => {
-  const [color, setColor] = useState("#fb923c");
+}: {
+  children: React.ReactNode;
+}) {
+  const customTheme: {
+    button: ButtonStyleTypes;
+    iconButton: IconButtonStyleTypes;
+    input: InputStylesType;
+    switch: SwitchButtonStylesType;
+  } = {
+    button: {
+      defaultProps: {
+        color: "deep-orange",
+        ripple: true,
+        variant: "gradient",
+      },
+      styles: {
+        variants: {
+          filled: {
+            "deep-orange": {
+              backgroud: "bg-primary",
+              color: "text-white",
+              shadow: "shadow-md shadow-primary/10",
+              hover: "hover:shadow-lg hover:primary/20",
+              focus: "focus:opacity-[0.85] focus:shadow-none",
+              active: "active:opacity-[0.85] active:shadow-none",
+            },
+          },
+          gradient: {},
+          outlined: {},
+        },
+      },
+    },
+    iconButton: {
+      defaultProps: {
+        ripple: true,
+        variant: "text",
+        className: "flex items-center justify-center",
+        color: "deep-orange",
+        //TODO size, fullwidth
+      },
+    },
 
-  return (
-    <ThemeContext.Provider value={{ color, setColor }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
+    input: {
+      defaultProps: { variant: "outlined", color: "deep-orange" },
+    },
 
-export default ThemeContext;
+    switch: {
+      defaultProps: {
+        color: "deep-orange",
+      },
+    },
+  };
+
+  return <ThemeProvider value={customTheme}>{children}</ThemeProvider>;
+}

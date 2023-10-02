@@ -5,6 +5,7 @@ export {
   getUserByTag,
   getUsers,
   deleteUser,
+  findUsers,
 } from "./users";
 
 export { sendMessage, getMessages } from "./messaging";
@@ -15,7 +16,8 @@ export { createConversation } from "./conversations";
 
 export {
   createGroup,
-  getGroup,
+  getGroupInfo,
+  getGroupByID,
   getGroups,
   deleteGroup,
   deleteAllGroups,

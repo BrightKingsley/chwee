@@ -102,6 +102,33 @@ export async function createGroup({
   }
 }
 
+export async function getGroupInfo({ groupID }: { groupID: string }) {
+  try {
+    await connectDB();
+
+    const parsedGroupID = stringToObjectId(groupID);
+
+    const group = await Group.findById(parsedGroupID);
+
+    if (!group) throw new Error("Group not found");
+
+    const groupInfo = {
+      name: group.name,
+      description: group.description,
+      photo: group.photo,
+      tag: group.tag,
+      membersCount: group.members.length,
+      owner: group.owner.toString(),
+      hasPassword: group.password.length > 0,
+    };
+
+    return groupInfo;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 /**
  * Get a group by its ID.
  *
@@ -110,7 +137,7 @@ export async function createGroup({
  * @param {string} query.password - Password for accessing a password-protected group.
  * @returns {Promise<object>} - The requested group or an error object.
  */
-export async function getGroup({
+export async function getGroupByID({
   groupID,
   password,
 }: {
@@ -211,24 +238,26 @@ interface GroupFilter {
  * @param {GroupFilter} filter - Filtering and pagination options.
  * @returns {Promise<object>} - An array of groups or an error object.
  */
-export async function getGroups(filter: GroupFilter = {}) {
+export async function getGroups({ filter }: { filter?: GroupFilter }) {
   try {
     // Connect to the database
     await connectDB();
 
     // Extract filtering and pagination options
-    const page = filter.page ?? 1;
-    const limit = filter.limit ?? 10;
+    const page = filter?.page ?? 1;
+    const limit = filter?.limit ?? 10;
     const skip = (page - 1) * limit;
 
     // Find and retrieve groups with optional pagination
     const groups = await Group.find().skip(skip).limit(limit).lean().exec();
 
-    console.log("WALLETS:", groups);
+    if (!groups) throw new Error("Couldnt get Groups");
 
-    return { groups };
+    console.log("GROUPSS:", groups);
+    return groups;
   } catch (error) {
-    return { error };
+    console.error(error);
+    return null;
   }
 }
 
@@ -254,7 +283,7 @@ export async function addMemberToGroup({
     // Parse the user's ID
     const parsedID = stringToObjectId(userID);
 
-    if (!parsedID) return { error: { message: "Invalid User Id" } };
+    if (!parsedID) throw new Error("Invalid UserId");
 
     // Find the group by name and add the user as a member
     const group = await Group.findOneAndUpdate(
@@ -268,6 +297,7 @@ export async function addMemberToGroup({
 
     return group;
   } catch (error) {
-    return { error };
+    console.error(error);
+    return null;
   }
 }

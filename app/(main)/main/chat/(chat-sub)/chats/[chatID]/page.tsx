@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Header } from "@/components";
+import { Header } from "@/components/shared";
 import { Messages, SendMessage } from "../../../components";
 import { ChevronLeftIcon } from "@heroicons/react/20/solid";
 
@@ -15,17 +15,7 @@ export default function Chat({ params }: { params: { chatID: string } }) {
 
   return (
     <>
-      <Header
-        title={"Username"}
-        leading={[
-          <button
-            key={Math.random()}
-            className="p-3 text-gray-700 transition-all duration-200 rounded-full hover:bg-gray-400/40 active:animate-ping"
-          >
-            <ChevronLeftIcon className="w-6 h-6" />
-          </button>,
-        ]}
-      />
+      <Header title={"Username"} />
       <main className="flex flex-col w-full h-[calc(100vh-3.5rem)] bg-primary/10">
         <Messages
           chatID={params.chatID}

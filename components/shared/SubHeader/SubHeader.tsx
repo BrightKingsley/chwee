@@ -11,7 +11,7 @@ export default function SubHeader({ sublinks }: SubHeaderType) {
         <NavLink
           key={link + label}
           href={link}
-          className="flex-1 px-1 py-2 text-center bg-white rounded-sm sub-nav hover:font-bold hover:text-gray-700 transition-all duration-150 min-w-[8rem]"
+          className="flex-1 px-1 py-2 text-center bg-white rounded-sm sub-nav hover:font-bold_ hover:text-gray-700 transition-all duration-150 min-w-[8rem]"
         >
           {({ isActive }) => (
             <div

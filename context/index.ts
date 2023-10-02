@@ -1,4 +1,4 @@
-export { default as ThemeContext, ThemeContextProvider } from "./Theme";
+export { ThemeContextProvider } from "./Theme";
 export { default as ModalContext, ModalContextProvider } from "./Modal";
 export {
   default as NotificationContext,

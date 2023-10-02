@@ -5,9 +5,10 @@ import { useState } from "react";
 import { KeyboardEventHandler, useContext, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Overlay from "../Overlay";
-import Button from "../Button";
+import { Button, IconButton } from "@/components/mui";
 import { ModalContext } from "@/context";
 import Close from "../Close";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { AnimatePresence, motion } from "framer-motion";
 import ClientOnlyPortal from "../ClientOnlyPortal";
 
@@ -54,14 +55,21 @@ export default function Modal() {
                       exit={{ y: 50, opacity: 0 }}
                     >
                       <div className="absolute z-50 cursor-pointer right-1 top-1">
-                        <Close close={actionCancel} />
+                        <IconButton
+                          onClick={() => {
+                            actionCancel()();
+                          }}
+                        >
+                          <CloseOutlinedIcon />
+                        </IconButton>
                       </div>
                       <div className={""}>{modalMessage}</div>
                       <div
                         className={"flex gap-8 mx-auto w-full justify-around"}
                       >
                         <Button
-                          color="error"
+                          variant="text"
+                          className="border border-red-500"
                           onClick={() => {
                             actionCancel();
                             triggerModal({});

@@ -1,7 +1,7 @@
-import { AnimateInOut, Close } from "@/components";
+import { AnimateInOut, Close } from "@/components/shared";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import ReactTextareaAutoSize from "react-textarea-autosize";
+import { TextareaAutosize } from "@mui/material";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import { useUploadThing } from "@/lib/uploadThing";
 import { UploadButton } from "@uploadthing/react";
@@ -104,7 +104,7 @@ export default function UploadImageData({
           className="absolute z-40 top-4 right-4 text-primary"
         />
         <div className="absolute z-40 flex items-center gap-2 mx-2 bottom-4">
-          <ReactTextareaAutoSize
+          <TextareaAutosize
             value={message.textContent}
             // cols={5}
             maxRows={5}

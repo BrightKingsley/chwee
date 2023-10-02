@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AnimateInOut } from "@/components";
+import { AnimateInOut } from "@/components/shared";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 

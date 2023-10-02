@@ -29,6 +29,7 @@
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  /* @apply border-[1px] border-red-500; */
 }
 
 *::-webkit-scrollbar {
@@ -38,29 +39,29 @@
 }
 /* 
 *::-webkit-scrollbar-thumb {
-  @apply bg-primary rounded-2xl border-2 border-white;
+  @apply border-2 border-white bg-primary rounded-2xl;
 }
 *::-webkit-scrollbar-track {
-  @apply bg-white rounded-2xl w-2;
+  @apply w-2 bg-white rounded-2xl;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  @apply rounded-2xl bg-gray-400;
+  @apply bg-gray-400 rounded-2xl;
 }
 *::-webkit-scrollbar-thumb:active {
   @apply bg-gray-500 rounded-2xl;
 } */
 
 *::-webkit-scrollbar-thumb {
-  @apply bg-transparent rounded-2xl border-2 border-white;
+  @apply bg-transparent border-2 border-white rounded-2xl;
 }
 
 *::-webkit-scrollbar-track {
-  @apply bg-transparent rounded-2xl w-2;
+  @apply w-2 bg-transparent rounded-2xl;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  @apply rounded-2xl bg-gray-400;
+  @apply bg-gray-400 rounded-2xl;
 }
 
 *::-webkit-scrollbar-thumb:active {
@@ -177,11 +178,10 @@ a:focus {
 }
 
 button:active {
-  @apply opacity-50 scale-90;
+  @apply scale-95;
 }
 
 button:hover {
-  @apply outline outline-1 outline-transparent -outline-offset-2;
 }
 
 .animate-loader {

@@ -1,6 +1,6 @@
 // "use client"
 
-import { ListTile } from "@/components";
+import { ListTile } from "@/components/shared";
 import Image from "next/image";
 import nft from "@/assets/images/nft.jpg";
 import Link from "next/link";
@@ -10,6 +10,7 @@ import { GroupClass } from "@/models";
 import { BASE_URL } from "@/constants/routes";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getGroups } from "@/lib/db";
 
 const actions: number[] = [];
 
@@ -17,31 +18,32 @@ for (let i = 0; i < 10; i++) {
   actions.push(i);
 }
 
-const getGroups = async (session: Session): Promise<GroupClass[] | null> => {
-  if (!session.user.id) return null;
-  const res = await fetch(`${BASE_URL}/api/groups`, {
-    cache: "no-cache",
-    headers: {
-      user_id: session.user.id,
-    },
-  });
+// const getGroups = async (session: Session): Promise<GroupClass[] | null> => {
+//   if (!session.user.id) return null;
+//   const res = await fetch(`${BASE_URL}/api/groups`, {
+//     cache: "no-cache",
+//     headers: {
+//       user_id: session.user.id,
+//     },
+//   });
 
-  const data = await res.json();
+//   const data = await res.json();
 
-  if (!data) return null;
+//   if (!data) return null;
 
-  const { groups } = data;
+//   const { groups } = data;
 
-  if (!groups) return null;
+//   if (!groups) return null;
 
-  return groups;
-};
+//   return groups;
+// };
 
 export default async function Groups() {
   const serverSession = await getServerSession(authOptions);
-  if (!serverSession) return null;
+  if (!serverSession || !serverSession.user || !serverSession.user.id)
+    return null;
 
-  const groups: GroupClass[] | null = await getGroups(serverSession);
+  const groups: GroupClass[] | null = await getGroups({});
 
   if (!groups) return null;
 

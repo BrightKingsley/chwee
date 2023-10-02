@@ -1,4 +1,4 @@
-import { Header } from "@/components";
+import { Header } from "@/components/shared";
 import Image from "next/image";
 import { Session, getServerSession } from "next-auth";
 import { UserIcon } from "@heroicons/react/20/solid";
