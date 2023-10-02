@@ -13,7 +13,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getToken } from "next-auth/jwt";
 import { UserIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { getChats } from "@/lib/db";
-import {ClientChat, ClientUser} from "@/types/models.d.ts"
+import {ClientChat, ClientUser} from "@/types/models"
 
 const actions: number[] = [];
 
