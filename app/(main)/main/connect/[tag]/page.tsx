@@ -61,10 +61,10 @@ export default async function UserInfo({
         <div className="flex items-center w-full_ overflow-auto p-2 pt-0 gap-2">
           {avatars.groups.length > 0 ? (
             avatars.groups.map((group, i) => (
-              <GroupAvatar groupID={group.toString()} />
+              <GroupAvatar key={i} groupID={group.toString()} />
             ))
           ) : (
-            <p>This user doesn't belong to any groups</p>
+            <p>This user {"doesn't"} belong to any groups</p>
           )}
         </div>
       </div>
