@@ -37,6 +37,94 @@ export const ourFileRouter = {
 
       console.log("file url", file.url);
     }),
+
+  userPhoto: f({ image: { maxFileSize: "4MB", maxFileCount: 10 } })
+    // Set permissions and file types for this FileRoute
+    .middleware(async ({ req }) => {
+      // This code runs on your server before upload
+
+      const session = await getToken({
+        req,
+        secret: process.env.NEXTAUTH_SECRET,
+      });
+
+      const data = req.cookies;
+
+      console.log("UPLOAD_REQ DATA: ", data, session);
+
+      const user = await auth(req);
+
+      // If you throw, the user will not be able to upload
+      if (!user) throw new Error("Unauthorized");
+
+      // Whatever is returned here is accessible in onUploadComplete as `metadata`
+      return { userId: user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      // This code RUNS ON YOUR SERVER after upload
+      console.log("Upload complete for userId:", metadata.userId);
+
+      console.log("file url", file.url);
+    }),
+
+  groupPhoto: f({ image: { maxFileSize: "4MB", maxFileCount: 10 } })
+    // Set permissions and file types for this FileRoute
+    .middleware(async ({ req }) => {
+      // This code runs on your server before upload
+
+      const session = await getToken({
+        req,
+        secret: process.env.NEXTAUTH_SECRET,
+      });
+
+      const data = req.cookies;
+
+      console.log("UPLOAD_REQ DATA: ", data, session);
+
+      const user = await auth(req);
+
+      // If you throw, the user will not be able to upload
+      if (!user) throw new Error("Unauthorized");
+
+      // Whatever is returned here is accessible in onUploadComplete as `metadata`
+      return { userId: user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      // This code RUNS ON YOUR SERVER after upload
+      console.log("Upload complete for userId:", metadata.userId);
+
+      console.log("file url", file.url);
+    }),
+
+  eventPhoto: f({ image: { maxFileSize: "4MB", maxFileCount: 10 } })
+    // Set permissions and file types for this FileRoute
+    .middleware(async ({ req }) => {
+      // This code runs on your server before upload
+
+      const session = await getToken({
+        req,
+        secret: process.env.NEXTAUTH_SECRET,
+      });
+
+      const data = req.cookies;
+
+      console.log("UPLOAD_REQ DATA: ", data, session);
+
+      const user = await auth(req);
+
+      // If you throw, the user will not be able to upload
+      if (!user) throw new Error("Unauthorized");
+
+      // Whatever is returned here is accessible in onUploadComplete as `metadata`
+      return { userId: user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      // This code RUNS ON YOUR SERVER after upload
+      console.log("Upload complete for userId:", metadata.userId);
+
+      console.log("file url", file.url);
+    }),
+
   // Takes a 4 2mb images and/or 1 256mb video
   mediaPost: f({
     image: { maxFileSize: "2MB", maxFileCount: 4 },

@@ -2,16 +2,20 @@
 
 import { BASE_URL } from "@/constants/routes";
 import { ModalContext, NotificationContext } from "@/context";
-import { PlusIcon } from "@heroicons/react/20/solid";
-import { m } from "framer-motion";
+import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
+import { IconButton } from "@/components/mui";
 import { Session } from "inspector";
 import { useSession } from "next-auth/react";
 import { useContext } from "react";
 
-export default function CreateChatButton({
+export default function ConnectButton({
   receiverID,
+  color,
+  variant,
 }: {
   receiverID: string;
+  variant?: "circle" | "rounded";
+  color?: "primary" | "gray";
 }) {
   const { triggerModal } = useContext(ModalContext);
   const { triggerNotification } = useContext(NotificationContext);
@@ -19,7 +23,10 @@ export default function CreateChatButton({
   const { data } = useSession();
   const session: Session | any = data;
 
-  const createChat = async () => {
+  console.log("CREAT CHAT SESSION: ", session);
+
+  const connectWithUser = async () => {
+    if (!session.user.id) return;
     const res = await fetch(`${BASE_URL}/api/chats/${session.user.id}`, {
       method: "POST",
       body: JSON.stringify({ receiver: receiverID }),
@@ -27,21 +34,25 @@ export default function CreateChatButton({
 
     const result = await res.json();
     console.log("RESULT", result);
+    triggerNotification("connect request sent");
   };
 
   return (
-    <button
+    <IconButton
+      color="gray"
       onClick={() =>
         triggerModal({
-          message: "Create chat with this user?",
+          message: "Send connect request to this user?",
           cancel: () => triggerModal,
-          confirm: () => createChat(),
+          confirm: () => connectWithUser(),
         })
       }
       key={Math.random()}
-      className="bg-primary rounded-md p-1 font-druk-wide-bold text-white"
+      className={`${color === "gray" ? "bg-gray-600" : "bg-primary"} ${
+        variant === "circle" ? "rounded-full" : "rounded-md"
+      }  p-2 font-druk-wide-bold text-white hover:border hover:border-gray-700 hover:text-gray-700`}
     >
-      <PlusIcon className="w-8 h-8" />
-    </button>
+      <PersonAddOutlinedIcon className="w-8 h-8" />
+    </IconButton>
   );
 }

@@ -3,22 +3,33 @@ import connectDB from "./connect-db";
 import { stringToObjectId } from "../utils";
 import { WalletClass } from "@/models/Wallet";
 import mongoose, { ObjectId } from "mongoose";
+import { ClientWallet } from "@/types/models";
 
 export async function createWallet({
   ownerID,
 }: {
   ownerID: string | mongoose.Types.ObjectId;
-}): Promise<WalletClass> {
+}): Promise<ClientWallet | null> {
   console.log("CREA>TED_WALLET_OWNER", ownerID);
   try {
     await connectDB();
 
     // const parsedID = stringToObjectId(ownerID);
 
-    const wallet = await Wallet.create({ owner: ownerID });
-    return wallet;
+    const walletDoc = await Wallet.create({ owner: ownerID });
+
+    if (!walletDoc) throw new Error("Couldn't Create Wallet");
+    const wallet = {
+      _id: walletDoc._id,
+      balance: walletDoc.balance,
+      owner: walletDoc.owner.toString(),
+      transactions: walletDoc.transactions,
+    };
+
+    return wallet as ClientWallet;
   } catch (error: any) {
-    return error;
+    console.error(error);
+    return null;
   }
 }
 
@@ -28,17 +39,22 @@ export async function getWallet({ ownerID }: { ownerID: string }) {
 
     const parsedID = stringToObjectId(ownerID);
 
-    if (!parsedID) {
-      return { error: "Wallet not Found" };
-    }
+    if (!parsedID) throw new Error("Invalid ID");
 
-    const wallet = await Wallet.findOne({ owner: parsedID });
+    const walletDoc = await Wallet.findOne({ owner: parsedID });
 
-    if (!wallet) return { error: "Wallet not found" };
+    if (!walletDoc) throw new Error("Wallet not found");
+    const wallet = {
+      _id: walletDoc._id.toString(),
+      balance: walletDoc.balance,
+      owner: walletDoc.owner.toString(),
+      transactions: walletDoc.transactions,
+    };
 
-    return wallet;
+    return wallet as ClientWallet;
   } catch (error) {
-    return error;
+    console.error(error);
+    return null;
   }
 }
 

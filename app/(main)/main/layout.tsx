@@ -4,7 +4,7 @@ import {
   Navbar,
   Notification,
   PortalElements,
-} from "@/components";
+} from "@/components/shared";
 import {
   AuthContextProvider,
   ChatContextProvider,
@@ -82,11 +82,13 @@ export default function RootLayout({
           <NotificationContextProvider>
             <ModalContextProvider>
               <ChatContextProvider>
-                <main className="flex w-screen">
-                  <PortalElements />
+                <main className="md:flex h-scree w-screen">
                   <Navbar />
                   <div className="w-screen md:w-[calc(100vw-3.5rem)]">
                     {children}
+                  </div>
+                  <div className="fixed bottom-0 left-0">
+                    <PortalElements />
                   </div>
                 </main>
               </ChatContextProvider>

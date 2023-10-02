@@ -3,13 +3,16 @@
 import { ModalContext, NotificationContext } from "@/context";
 import { useContext, useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
+import { Button } from "@/components/mui";
 
 export default function SignOutButton() {
   const { triggerModal } = useContext(ModalContext);
   const { triggerNotification } = useContext(NotificationContext);
 
   return (
-    <button
+    <Button
+      variant="text"
+      fullWidth
       onClick={() => {
         console.log("logout clicked");
         triggerModal({
@@ -24,9 +27,9 @@ export default function SignOutButton() {
           message: "Are you sure you want to logout?",
         });
       }}
-      className="w-full p-2 font-bold text-white transition-all duration-100 rounded-md bg-primary active:scale-90 active:shadow-none hover:shadow-md hover:shadow-primary/20 "
+      className="w-full_ p-2 font-bold"
     >
       log out
-    </button>
+    </Button>
   );
 }

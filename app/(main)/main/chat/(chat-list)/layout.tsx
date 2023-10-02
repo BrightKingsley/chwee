@@ -1,5 +1,5 @@
 "use client";
-import { SubHeader, Header } from "@/components";
+import { SubHeader, Header } from "@/components/shared";
 import { CHATS, GROUPS, CHAT } from "@/constants/routes";
 import { replaceWith, formatLink } from "@/lib/utils";
 import { usePathname } from "next/navigation";

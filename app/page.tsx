@@ -1,3 +1,5 @@
+import { Button, IconButton } from "@/components/mui";
+import MenuOutlined from "@mui/icons-material/MenuOutlined";
 import { DASHBOARD } from "@/constants/routes";
 import {
   Bars3Icon,
@@ -92,10 +94,17 @@ export default function Landing() {
           <p className="font-extrabold text-primary">Chweee</p>
         </div>
         <div className="flex items-center gap-3 ml-auto text-sm md:flex-row-reverse whitespace-nowrap">
-          <button className={buttonStyles}>Download</button>
-          <button className="md:hidden">
-            <Bars3Icon className="w-8 h-8 fill-primary" />
-          </button>
+          <Button className="rounded-full px-3 py-2 text-white font-bold">
+            Download
+          </Button>
+          <IconButton
+            title="toggle menu"
+            variant="text"
+            className="md:hidden text-primary flex items-center justify-center rounded-full"
+          >
+            {/* <Bars3Icon className="w-8 h-8 fill-primary" /> */}
+            <MenuOutlined />
+          </IconButton>
           <ul className="items-center hidden gap-3 sm:flex">
             <li>Home</li>
             <li>Why us?</li>
@@ -119,9 +128,9 @@ export default function Landing() {
           <div className="flex items-center gap-3 mx-auto md:mx-0 w-fit">
             <Link
               href={DASHBOARD}
-              className={`hover:scale-110 active:scale-75 active:opacity-60 transition-all duration-150 ${buttonStyles}`}
+              // className={`hover:scale-110 active:scale-75 active:opacity-60 transition-all duration-150 ${buttonStyles}`}
             >
-              Get the app
+              <Button className="">Get the app</Button>
             </Link>
             <div className="flex items-center gap-2 text-primary">
               <button>

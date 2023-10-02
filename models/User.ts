@@ -58,14 +58,14 @@ class UserClass {
   public connections: mongoose.Types.ObjectId[];
 
   // @prop({ required: true, ref: () => UserClass })
-  // // public connections: Ref<UserClass>[];
+  // // public connections: mongoose.Types.ObjectId[];
   // public connections: mongoose.Types.ObjectId[];
 
   @prop({ required: true, ref: () => GroupClass })
-  public groups: Ref<GroupClass>[];
+  public groups: mongoose.Types.ObjectId[];
 
   @prop({ required: true, ref: () => ChatClass, default: [] })
-  public chats: Ref<ChatClass>[];
+  public chats: mongoose.Types.ObjectId[];
 
   @prop({ required: true, default: "" })
   public photo: string;

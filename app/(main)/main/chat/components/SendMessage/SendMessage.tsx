@@ -9,19 +9,18 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import {
-  PaperAirplaneIcon,
-  PhotoIcon,
-  WalletIcon,
-  XMarkIcon,
-} from "@heroicons/react/20/solid";
+
+import AccountBalanceWalletOutlined from "@mui/icons-material/AccountBalanceWalletOutlined";
+import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
+import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
+
+import { PhotoIcon, XMarkIcon } from "@heroicons/react/20/solid";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import { SendMessageType } from "./types";
-import { AnimateInOut, Close } from "@/components";
+import { AnimateInOut, Close } from "@/components/shared";
 import { ChatContext } from "@/context";
-import ReactTextareaAutoSize from "react-textarea-autosize";
 import { useParams } from "next/navigation";
 import { MessageClass } from "@/models/Message";
 import { BASE_URL } from "@/constants/routes";
@@ -31,6 +30,7 @@ import Image from "next/image";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { useUploadThing } from "@/lib/uploadThing";
 import { SendFunds, UploadImageData } from "..";
+import { IconButton, TextareaAutosize } from "@mui/material";
 
 interface HTMLInputEvent extends Event {
   target: HTMLIFrameElement & EventTarget;
@@ -177,7 +177,7 @@ export default function SendMessage({
             } left-0 w-full bg-white pt-2 px-2 absolute -top-0 rounded-t-xl text-gray-500 `}
           >
             <div className="relative p-1 px-3  rounded-md bg-primary/10 after:absolute after:left-1 after:inset-0 after:bg-primary after:h-[80%] after:w-1 after:my-auto top-full mx-auto after:rounded-full">
-              <span
+              <IconButton
                 onClick={() =>
                   setReplyMessage({
                     sender: "",
@@ -188,7 +188,7 @@ export default function SendMessage({
                 className="absolute top-0 right-0 p-2 cursor-pointer active:opacity-50 active:scale-90"
               >
                 <XMarkIcon className="w-5 h-5" />
-              </span>
+              </IconButton>
               <small className="text-xs">
                 {replyMessage.sender.toString() ===
                 session?.user.name?.toString()
@@ -239,22 +239,22 @@ export default function SendMessage({
             animate={{ width: "auto", scale: 1 }}
             out={{ width: 0, scale: 0 }}
             transition={{ type: "keyframes" }}
-            className="flex items-center gap-2"
+            className="flex items-center -space-x-2"
           >
-            <div>
-              <div
-                onClick={() => setToggleTransferForm((prev) => !prev)}
-                className="text-3xl cursor-pointer active:scale-90 active:opacity-40"
-              >
-                <WalletIcon className="w-6 h-6 fill-primary" />
-              </div>
-            </div>
-            <div>
+            <IconButton
+              title="send funds"
+              aria-label="send funds"
+              onClick={() => setToggleTransferForm((prev) => !prev)}
+              className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
+            >
+              <LocalAtmOutlinedIcon className="w-6 h-6 fill-primary" />
+            </IconButton>
+            <IconButton title="attach image">
               <label
                 htmlFor="image"
-                className="text-3xl cursor-pointer active:scale-90 active:opacity-40"
+                className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
               >
-                <PhotoIcon className="w-6 h-6 fill-primary" />
+                <AddPhotoAlternateOutlined className="w-6 h-6 fill-primary" />
               </label>
               <input
                 // value={""}
@@ -281,12 +281,14 @@ export default function SendMessage({
                   }));
                 }}
               />
-            </div>
+            </IconButton>
           </AnimateInOut>
           {/* <div className="relative z-10 flex items-end flex-1 transition-all duration-500 rounded-xl bg-primary/10_"> */}
 
           {/* MESSAGE INPUT */}
-          <ReactTextareaAutoSize
+          <TextareaAutosize
+            title="enter text"
+            aria-label="enter message text"
             value={message.textContent}
             // cols={5}
             maxRows={5}
@@ -296,13 +298,32 @@ export default function SendMessage({
                 textContent: e.target.value,
               }))
             }
-            className="w-full text-gray-700 bg-transparent border-none outline-none resize-none rounded-xl"
+            className="w-full py-2 text-gray-700 bg-transparent border-none outline-none resize-none rounded-xl"
           />
           {/* </div> */}
         </div>
-        <button className="mb-2 text-3xl active:scale-90 active:opacity-40">
-          <PaperAirplaneIcon className="w-8 h-8 translate-y-1 fill-primary" />
-        </button>
+        <IconButton
+          type="submit"
+          title="send message"
+          aria-label="send message"
+          className="flex items-center justify-center active:scale-90 active:opacity-40 stroke-primary"
+        >
+          {/* <Send className="w-8 h-8 " /> */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            // stroke="currentColor"
+            strokeWidth={2}
+            className="w-8 h-8"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+            />
+          </svg>
+        </IconButton>
       </form>
     </div>
   );

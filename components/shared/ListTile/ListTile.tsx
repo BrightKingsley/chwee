@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import { ListTileType } from "./types";
-export default function ListTile({
+import { ListItem } from "@material-tailwind/react";
+export default function MyListTile({
   children,
   className,
   index = 1,
@@ -21,12 +22,12 @@ export default function ListTile({
       }}
       className={`cursor-pointer active:scale-90 flex items-center w-full rounded-lg ${className}`}
     >
-      <div
+      <ListItem
         onClick={(e) => onClick && onClick(e)}
-        className="flex-1 active:opacity-50"
+        className="flex-1 active:opacity-50 !p-0"
       >
         {children}
-      </div>
+      </ListItem>
       {trailing.length > 0 && (
         <div className="ml-auto_">
           {trailing.map((item, i) => (

@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import { headers } from "next/headers";
-import { getGroup, createGroup, deleteGroup } from "@/lib/db";
+import { getGroupByID, createGroup, deleteGroup } from "@/lib/db";
 import { Group, GroupClass } from "@/models";
 import { stringToObjectId } from "@/lib/utils";
 import bcrypt from "bcrypt";
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest, { params: { ID } }: GetProps) {
     console.log("GROUP_GET--UERID", userID);
 
     // const {password} = await request.json()
-    const group = await getGroup({
+    const group = await getGroupByID({
       groupID: ID,
       password: password ? password : undefined,
     });

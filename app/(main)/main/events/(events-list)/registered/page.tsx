@@ -1,7 +1,8 @@
-import { ListTile } from "@/components";
+import { ListTile } from "@/components/shared";
+import { Button } from "@/components/mui";
 import Image from "next/image";
 import nft from "@/assets/images/nft.jpg";
-import { Header } from "@/components";
+import { Header } from "@/components/shared";
 import { EventCards } from "../../components";
 
 const events = [1, 1, 1, 1, 1, 1];
@@ -19,14 +20,15 @@ export default async function Registered() {
       {events.map((event, i) => (
         <ListTile
           key={i}
-          className="bg-white"
+          className="bg-white hover:border hover:border-primary pr-2 transition-colors"
           trailing={[
-            <button
+            <Button
+              variant="text"
               key={Math.random()}
-              className="bg-primary rounded-md px-3 py-1 font-druk-wide-bold text-white text-sm"
+              className="font-druk-wide-bold text-sm !p-2"
             >
               enter
-            </button>,
+            </Button>,
           ]}
         >
           <div className="flex p-2 rounded-lg gap-2 items-center w-full">

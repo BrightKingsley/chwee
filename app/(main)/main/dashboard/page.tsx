@@ -1,14 +1,16 @@
-"use client";
-
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
+import { Session, getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-export default function DashboardPage() {
-  const { data } = useSession();
+export default async function DashboardPage() {
+  const data = await getServerSession(authOptions);
   const session: Session | any = data;
+
+  console.log("DASH_SESSION", session);
+
   if (session) {
     return (
       <>

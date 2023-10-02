@@ -1,5 +1,5 @@
 "use client";
-import { AnimateInOut, Button, Header, Spinner } from "@/components";
+import { AnimateInOut, Button, Header, Spinner } from "@/components/shared";
 import { BASE_URL } from "@/constants/routes";
 import { NotificationContext } from "@/context";
 import { useContext, useState } from "react";

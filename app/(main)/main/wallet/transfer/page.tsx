@@ -1,4 +1,4 @@
-import { Button, Header } from "@/components";
+import { Button, Header } from "@/components/shared";
 import { WALLET } from "@/constants/routes";
 import {
   BuildingOfficeIcon,

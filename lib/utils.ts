@@ -1,3 +1,5 @@
+import { UserClass } from "@/models";
+import { ClientUser } from "@/types/models";
 import mongoose from "mongoose";
 // import bcrypt from "bcrypt";
 // REPLACE_ELEMENT_IN_STRING
@@ -25,6 +27,21 @@ export function stringToObjectId(id: string): mongoose.Types.ObjectId | null {
   } else {
     return null;
   }
+}
+
+// DBtoClientUser
+export function dbToClientUser(dbUser: UserClass) {
+  const user: ClientUser = {
+    _id: dbUser._id.toString(),
+    chats: dbUser.chats,
+    connections: dbUser.connections,
+    groups: dbUser.groups,
+    photo: dbUser.photo,
+    tag: dbUser.tag,
+    username: dbUser.username,
+  };
+
+  return user;
 }
 
 // FORMAT_LINK

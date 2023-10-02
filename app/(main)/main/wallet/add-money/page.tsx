@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Header } from "@/components";
+import { Button, Header } from "@/components/shared";
 import { BASE_URL, WALLET } from "@/constants/routes";
 import { NotificationContext } from "@/context";
 import { useLongPress } from "@/hooks";

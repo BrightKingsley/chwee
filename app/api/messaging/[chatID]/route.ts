@@ -2,7 +2,7 @@ import { pusherServer } from "@/lib/config";
 import {
   sendMessage,
   getMessages,
-  getGroup,
+  getGroupByID,
   connectDB,
   getUserByID,
   getChat,

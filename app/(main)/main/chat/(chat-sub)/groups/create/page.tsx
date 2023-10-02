@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import ReactTextareaAutoSize from "react-textarea-autosize";
-import { Button } from "@/components";
+import { Button } from "@/components/shared";
 import { BASE_URL } from "@/constants/routes";
+import { TextareaAutosize } from "@mui/material";
 
 type GroupCreate = {
   description: string;
@@ -64,12 +64,12 @@ export default function CreateGroup() {
         </div>
         <div>
           <small>description</small>
-          <ReactTextareaAutoSize
+          <TextareaAutosize
             value={groupData.description}
             // cols={5}
             maxRows={6}
             minRows={5}
-            onChange={(e) =>
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
               setGroupData((prev) => ({
                 ...prev,
                 description: e.target.value,

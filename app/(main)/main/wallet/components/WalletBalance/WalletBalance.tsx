@@ -10,11 +10,13 @@ import { WalletClass } from "@/models";
 import Link from "next/link";
 import { WALLET } from "@/constants/routes";
 import { log } from "console";
+import { ClientWallet } from "@/types/models";
+import { IconButton } from "@/components/mui";
 
 export default function WalletBalance({
   walletData,
 }: {
-  walletData: WalletClass | null;
+  walletData: ClientWallet | null;
 }) {
   const [showBalance, setShowBalance] = useState(false);
 
@@ -25,8 +27,9 @@ export default function WalletBalance({
       <div className="flex items-center justify-between">
         <div className="flex gap-1 font-semibold items-center w-fit">
           <small className="w-fit">Available</small> <small>Balance</small>
-          <span
-            className="text-xl flex-1 cursor-pointer ml-2 active:scale-90"
+          <IconButton
+            color="white"
+            className="text-xl rounded-full flex-1 ml-2"
             onClick={() => setShowBalance((prev) => !prev)}
           >
             {showBalance ? (
@@ -34,7 +37,7 @@ export default function WalletBalance({
             ) : (
               <EyeSlashIcon className="w-6 h-6" />
             )}
-          </span>
+          </IconButton>
         </div>
         <Link href={`${WALLET}/transaction-history`}>
           <small className="flex items-center">

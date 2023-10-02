@@ -19,7 +19,7 @@
 import nft from "@assets/images/nft.jpg";
 import { AUTH, BASE_URL, WALLET } from "@/constants/routes";
 import { ModalContext } from "@/context";
-import { Header } from "@/components";
+import { Header } from "@/components/shared";
 import Link from "next/link";
 // import { IoCellular } from "react-icons/io5";
 // import { IoIosCellular, IoMdCellular } from "react-icons/io";
@@ -38,31 +38,40 @@ import { useSession } from "next-auth/react";
 import Loading from "./my_loading";
 import { WalletBalance } from "./components";
 import { authOptions } from "../../../api/auth/[...nextauth]/route";
+import { getWallet } from "@/lib/db";
+import { ClientWallet } from "@/types/models";
 
-const getWalletData = async (session: Session | null) => {
-  try {
-    const res = await fetch(`${BASE_URL}/api/wallet`, {
-      headers: {
-        user_id: session?.user.id!,
-      },
-    });
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
+// const getWalletData = async (serverSession: Session | null) => {
+//   try {
+//     const res = await fetch(`${BASE_URL}/api/wallet`, {
+//       headers: {
+//         user_id: serverSession?.user.id!,
+//       },
+//     });
+//     const data = await res.json();
+//     return data;
+//   } catch (error) {
+//     console.error(error);
+//     return null;
+//   }
+// };
 
 export default async function Wallet() {
-  const session = await getServerSession(authOptions);
-  const walletData = await getWalletData(session);
+  const serverSession = await getServerSession(authOptions);
+
+  if (!serverSession || !serverSession?.user || !serverSession?.user.id)
+    return null;
+  const data = await getWallet({ ownerID: serverSession?.user.id });
+
+  const walletData = data as ClientWallet | null;
+
+  console.log("WALLETDATA: ", { ...walletData });
 
   return (
     <div className="flex flex-col h-screen">
       <Header title="wallet" imgShown location={WALLET} />
       <div className="h-full py-4 space-y-6">
-        {!walletData || walletData.error ? (
+        {!walletData ? (
           <h1>No DATA</h1>
         ) : (
           <>

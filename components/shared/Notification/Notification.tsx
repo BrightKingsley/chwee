@@ -1,10 +1,9 @@
 //@ts-nocheck
 "use client";
 
-import React, { useContext, useEffect } from "react";
-import { createPortal } from "react-dom";
+import { useContext, useEffect, useState } from "react";
 
-import { NotificationContext } from "../../context";
+import { NotificationContext } from "@/context";
 
 import { BellAlertIcon, BellIcon } from "@heroicons/react/20/solid";
 import { AnimatePresence, motion } from "framer-motion";
@@ -20,7 +19,7 @@ export default function Notification() {
     console.log("NOTIF", showNotification);
   }, [showNotification]);
 
-  const [domReady, setDomReady] = React.useState(false);
+  const [domReady, setDomReady] = useState(false);
 
   useEffect(() => {
     setDomReady(true);

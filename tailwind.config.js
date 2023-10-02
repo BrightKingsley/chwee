@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const withMT = require("@material-tailwind/react/utils/withMT");
+
+module.exports = withMT({
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,7 +12,9 @@ module.exports = {
     extend: {
       fontFamily: ["Poppins"],
       colors: {
-        primary: "#ff501b",
+        primary: "#f4511e",
+        // primary: "#ff7043",
+        // primary: "#ff501b",
         // primary: "#fb923c",
         "brand-yellow": "#fed33c",
         "brand-darkblue": "#6300ff",
@@ -26,9 +30,9 @@ module.exports = {
       },
       backgroundImage: {
         "gradient-primary":
-          "linear-gradient(185.44deg, rgb(251 146 60 / 1) 13.21%,  rgb(234 88 12 / 1) 95.65%)",
+          "linear-gradient(185.44deg, #f4511e 13.21%,  #ff7043 95.65%)",
       },
     },
   },
   plugins: [],
-};
+});

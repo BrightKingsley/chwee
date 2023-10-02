@@ -1,4 +1,4 @@
-import { SubHeader, Header } from "@/components";
+import { SubHeader, Header } from "@/components/shared";
 import {
   DISCOVER_EVENTS,
   REGISTERED_EVENTS,

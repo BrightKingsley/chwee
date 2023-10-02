@@ -8,8 +8,9 @@ export default function Rat() {
   const session = data;
 
   useEffect(() => {
-    console.log("LOGOUTBTN_SESSION", session);
-    if (session && !session?.user.id) signOut();
+    console.log("LOGOUT_RAT_SESSION", session);
+    // if (session && !session?.user.id) signOut();
+    console.log("LOGOUT_RAT_SESSION: ", session);
   }, [session]);
   return <></>;
 }

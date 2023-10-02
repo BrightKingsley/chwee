@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Notification, Modal, PortalElements } from "@/components";
+import { Notification, Modal, PortalElements } from "@/components/shared";
 import { useContext } from "react";
 import { ModalContext, NotificationContext } from "@/context";
 import { DASHBOARD } from "@/constants/routes";
