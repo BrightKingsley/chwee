@@ -34,5 +34,12 @@ export {
 } from "./chats";
 
 export { createWallet, getWallet, getWallets } from "./wallet";
+export { getTransactionByID } from "./transactions";
+export {
+  getUserConnections,
+  createUserConnection,
+  deleteUserConnection,
+} from "./connections";
+export { transferToChweeWallet } from "./transfers";
 
 export { default as connectDB } from "./connect-db";

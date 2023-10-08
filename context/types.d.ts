@@ -1,4 +1,3 @@
-
 // AUTH
 type signUpWithEmailAndPassword = {
   username: string;
@@ -45,7 +44,7 @@ type ChatContextType = {
 
 // MODAL
 type triggerModalType = {
-  message?: string;
+  message?: string | React.ReactNode;
   confirm?: Function;
   cancel?: Function;
   clickToDisable?: boolean;
@@ -60,7 +59,7 @@ type ModalContextType = {
     cancel,
     clickToDisable,
   }: triggerModalType) => void;
-  modalMessage: string;
+  modalMessage: string | React.ReactNode;
   actionConfirm: Function;
   actionCancel: Function;
   disableOnClick: boolean;

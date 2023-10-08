@@ -8,7 +8,7 @@ const events = [1, 1, 1, 1, 1, 1, 1, 1];
 export default function DiscoverEvents() {
   return (
     <div className="space-y-2 bg-primary/20 p-1">
-      <SearchBar colection="events" />
+      <SearchBar collection="events" />
       {events.map((event, i) => (
         <ListTile
           key={i}

@@ -21,20 +21,18 @@ import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 // import { clientPromise } from "@/lib/config";
 
 export const authOptions: NextAuthOptions = {
-  secret: process.env.NEXTAUTH_SECRET,
   debug: true,
   // adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
-      checks: ["none"],
       httpOptions: {
         timeout: 400000,
       },
-      authorization: {
-        url: "https://chwee.vercel.app",
-      },
+      // authorization: {
+      //   url: "https://chwee.vercel.app",
+      // },
     }),
     // CredentialsProvider({
     //   name: "Credentials",
@@ -93,7 +91,6 @@ export const authOptions: NextAuthOptions = {
     //           .split("@")[0]
     //           .toString()
     //           .trim();
-
     //         const newUser = await createUser({
     //           email: credentials.email.toString().trim(),
     //           username: generatedUsername,
@@ -117,9 +114,9 @@ export const authOptions: NextAuthOptions = {
     //   },
     // }),
   ],
-  jwt: {
-    secret: process.env.NEXTAUTH_SECRET,
-  },
+  // jwt: {
+  //   secret: process.env.NEXTAUTH_SECRET,
+  // },
   callbacks: {
     async signIn({ profile, account, user: authUser, credentials, email }) {
       try {

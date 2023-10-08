@@ -10,4 +10,3 @@ const PortalElements = () => {
 };
 
 export default PortalElements;
-import { ModalContext } from "@/context";

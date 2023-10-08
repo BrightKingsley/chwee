@@ -59,6 +59,8 @@ export async function POST(request: NextRequest) {
         amount,
         date: new Date(),
         type: "deposit",
+        title: "deposit into wallet",
+        status: "successful",
       });
 
       wallet.balance += amount;
@@ -76,6 +78,9 @@ export async function POST(request: NextRequest) {
     }
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "an error occured" });
+    return NextResponse.json(
+      { message: "an error occured" },
+      { status: 500, statusText: "an error occured on the server" }
+    );
   }
 }

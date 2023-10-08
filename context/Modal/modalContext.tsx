@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useState } from "react";
+import React, { createContext, useState } from "react";
 import { Modal } from "@/components/shared";
 
 const ModalContext = createContext<ModalContextType>({
@@ -21,7 +21,7 @@ export const ModalContextProvider = ({
     showModal: boolean;
     actionConfirm: Function;
     actionCancel: Function;
-    modalMessage: string;
+    modalMessage: string | React.ReactNode;
     disableOnClick: boolean;
   }>({
     showModal: false,

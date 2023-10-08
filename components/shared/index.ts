@@ -1,7 +1,10 @@
 export { default as AnimateInOut } from "./AnimateInOut";
 export { default as Button } from "./Button";
 export { default as Close } from "./Close";
+export { default as ConnectButton } from "./ConnectButton";
 export { default as ConnectionCard } from "./ConnectionCard";
+export { default as ConnectOptions } from "./ConnectOptions";
+export { default as DisconnectButton } from "./DisconnectButton";
 export { default as GroupAvatar } from "./GroupAvatar";
 export { default as Dropdown } from "./Dropdown";
 export { default as Header } from "./Header";

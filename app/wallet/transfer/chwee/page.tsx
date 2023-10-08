@@ -1,8 +1,15 @@
 "use client";
-import { AnimateInOut, Button, Header, Spinner } from "@/components/shared";
+import {
+  AnimateInOut,
+  Button,
+  Header,
+  ListTile,
+  Spinner,
+} from "@/components/shared";
 import { BASE_URL } from "@/constants/routes";
 import { NotificationContext } from "@/context";
-import { useContext, useState } from "react";
+import { ClientUser } from "@/types/models";
+import { useContext, useEffect, useState } from "react";
 import { useSwiper } from "swiper/react";
 
 export default function TranferToChwee() {
@@ -162,22 +169,55 @@ export default function TranferToChwee() {
 
 function TagInput({ handleSubmit }: { handleSubmit: Function }) {
   const [receiverTagInput, setTagInput] = useState<string>("");
+  const [connectionsModal, setConnectionsModal] = useState<{
+    show: boolean;
+    connections: ClientUser[];
+  }>({
+    show: false,
+    connections: [],
+  });
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch(`${BASE_URL}/api/connections`);
+      const data = await res.json();
+      console.log({ data });
+      const connections = data as ClientUser[] | null;
+      if (!connections) return;
+      setConnectionsModal({ show: true, connections });
+    })();
+  }, []);
 
   return (
-    <form onSubmit={(e) => handleSubmit(e, receiverTagInput)}>
-      <label htmlFor="receiverTag">input recipient receiverTag</label>
-      <Input
-        value={receiverTagInput}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setTagInput(e.target.value)
-        }
-        type="text"
-        maxLength={4}
-        name="receiverTag"
-        placeholder="@johnDoe"
-      />
-      <Button onClick={() => {}}>confirm</Button>
-    </form>
+    <>
+      <form onSubmit={(e) => handleSubmit(e, receiverTagInput)}>
+        <label htmlFor="receiverTag">input {"recipient's"} Tag</label>
+        <Input
+          value={receiverTagInput}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setTagInput(e.target.value)
+          }
+          type="text"
+          maxLength={4}
+          name="receiverTag"
+          placeholder="@johnDoe"
+        />
+        <Button onClick={() => {}}>confirm</Button>
+      </form>
+      <AnimateInOut
+        init={{ translateY: "100%" }}
+        animate={{ translateY: 0 }}
+        out={{ translateY: "100%" }}
+        show={connectionsModal.show}
+        className="space-y-2"
+      >
+        {connectionsModal.connections.map((connection, i) => (
+          <ListTile onClick={() => setTagInput(connection.tag)}>
+            {connection.tag}
+          </ListTile>
+        ))}
+      </AnimateInOut>
+    </>
   );
 }
 

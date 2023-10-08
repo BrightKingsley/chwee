@@ -1,5 +1,5 @@
 "use client";
-import { ThemeProvider } from "@material-tailwind/react";
+import { SpinnerStyleTypes, ThemeProvider } from "@material-tailwind/react";
 import type {
   ButtonStyleTypes,
   IconButtonStyleTypes,
@@ -17,12 +17,14 @@ export function ThemeContextProvider({
     iconButton: IconButtonStyleTypes;
     input: InputStylesType;
     switch: SwitchButtonStylesType;
+    spinner: SpinnerStyleTypes;
   } = {
     button: {
       defaultProps: {
         color: "deep-orange",
         ripple: true,
         variant: "gradient",
+        className: "!font-poppins",
       },
       styles: {
         variants: {
@@ -56,6 +58,12 @@ export function ThemeContextProvider({
     },
 
     switch: {
+      defaultProps: {
+        color: "deep-orange",
+      },
+    },
+
+    spinner: {
       defaultProps: {
         color: "deep-orange",
       },

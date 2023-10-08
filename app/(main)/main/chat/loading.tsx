@@ -4,7 +4,7 @@ export default function Loading() {
   return (
     <>
       <Header title="Chat" />
-      <h1>Loading</h1>
+      <h1>Loading Chat</h1>
     </>
   );
 }

@@ -27,7 +27,7 @@ export default function ConnectButton({
 
   const connectWithUser = async () => {
     if (!session.user.id) return;
-    const res = await fetch(`${BASE_URL}/api/chats/${session.user.id}`, {
+    const res = await fetch(`${BASE_URL}/api/connections`, {
       method: "POST",
       body: JSON.stringify({ receiver: receiverID }),
     });
@@ -39,18 +39,23 @@ export default function ConnectButton({
 
   return (
     <IconButton
-      color="gray"
+      variant="filled"
       onClick={() =>
         triggerModal({
-          message: "Send connect request to this user?",
+          message: (
+            <p>
+              Send{" "}
+              <span className="font-bold text-green-400">connect request</span>{" "}
+              to this user?
+            </p>
+          ),
           cancel: () => triggerModal,
           confirm: () => connectWithUser(),
         })
       }
-      key={Math.random()}
-      className={`${color === "gray" ? "bg-gray-600" : "bg-primary"} ${
+      className={`${color === "gray" ? "bg-green-400" : "bg-primary"} ${
         variant === "circle" ? "rounded-full" : "rounded-md"
-      }  p-2 font-druk-wide-bold text-white hover:border hover:border-gray-700 hover:text-gray-700`}
+      }  p-2 font-druk-wide-bold text-white hover:border`}
     >
       <PersonAddOutlinedIcon className="w-8 h-8" />
     </IconButton>

@@ -51,13 +51,13 @@ import { Button, IconButton } from "@material-tailwind/react";
 const iconClassNames = "w-6 h-6";
 
 const navLinks = [
+  // {
+  //   link: DASHBOARD,
+  //   icon: <DashboardOutlinedIcon className={iconClassNames} />,
+  //   name: "dashboard",
+  // },
   {
-    link: DASHBOARD,
-    icon: <DashboardOutlinedIcon className={iconClassNames} />,
-    name: "dashboard",
-  },
-  {
-    link: CHAT,
+    link: `${CHAT}/chats`,
     icon: <SmsOutlinedIcon className={iconClassNames} />,
     name: "chat",
   },
@@ -71,13 +71,13 @@ const navLinks = [
     icon: <NotificationsOutlinedIcon className={iconClassNames} />,
     name: "notifications",
   },
+  // {
+  //   link: `${EVENTS}/my-events`,
+  //   icon: <DateRangeOutlinedIcon className={iconClassNames} />,
+  //   name: "events",
+  // },
   {
-    link: EVENTS,
-    icon: <DateRangeOutlinedIcon className={iconClassNames} />,
-    name: "events",
-  },
-  {
-    link: CONNECT,
+    link: `${CONNECT}/my-connections`,
     icon: <HubOutlinedIcon className={iconClassNames} />,
     name: "connect",
   },
@@ -89,7 +89,6 @@ const navLinks = [
 ];
 
 let screen = false;
-
 export default function Navbar() {
   const [showMenu, setShowMenu] = useState(true);
   const pathname = usePathname();

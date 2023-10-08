@@ -46,6 +46,12 @@ class MessageClass {
   @prop({ default: "" })
   public textContent: string;
 
+  @prop({ default: null })
+  public funds:{
+    receiver: string
+    amount: number;
+  }
+
   @prop({ required: true, default: {} })
   public replyTo?: {
     sender: string;

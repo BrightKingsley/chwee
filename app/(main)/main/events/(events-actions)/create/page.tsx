@@ -102,7 +102,6 @@ export default function CreateEvent() {
                   id="image"
                   accept="image/*"
                   hidden
-                  multiple
                   onChange={(e: any) => {
                     const target = e.target as HTMLInputElement;
 

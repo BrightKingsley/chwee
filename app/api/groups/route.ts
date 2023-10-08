@@ -26,6 +26,6 @@ export async function DELETE() {
       message: "Group documents deleted successfully",
     });
   } catch (error) {
-    return { error };
+    return NextResponse.json({ error });
   }
 }

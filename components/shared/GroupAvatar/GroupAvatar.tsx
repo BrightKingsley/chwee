@@ -8,7 +8,7 @@ import { LockClosedIcon } from "@heroicons/react/20/solid";
 import LockOutlined from "@mui/icons-material/LockOutlined";
 import LockOpenOutlined from "@mui/icons-material/LockOpenOutlined";
 
-export default async function GroupAvatar({ groupID }: { groupID: string }) {
+export default function GroupAvatar({ groupID }: { groupID: string }) {
   // const group = await getGroupInfo({ groupID });
 
   // if (!group) return null;

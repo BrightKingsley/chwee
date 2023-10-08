@@ -3,7 +3,7 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
 import { stringToObjectId } from "@/lib/utils";
 import { Transaction, User, UserClass, Wallet, WalletClass } from "@/models";
-import { getUserByID, getUserByTag } from "@/lib/db";
+import { getUserByID, getUserByTag, transferToChweeWallet } from "@/lib/db";
 import { Document } from "mongoose";
 import {
   BeAnObject,
@@ -44,61 +44,73 @@ export async function POST(request: NextRequest) {
 
     if (accountType === "chwee") {
       const { amount, receiverTag } = res;
-
-      console.log({ amount, receiverTag });
-
-      const receiverDoc: any = await User.findOne({ tag: receiverTag.trim() });
-
-      if (!(amount && receiverDoc) || receiverDoc.error)
+      if (!amount)
         return NextResponse.json({
-          error: { message: "Invalid Amount (AMOUNT)", data: { receiverDoc } },
+          error: { message: "Invalid Amount (AMOUNT)" },
         });
 
-      console.log("RECEIVER_DOC: ", receiverDoc);
+      // console.log({ amount, receiverTag });
+      // const receiverDoc: any = await User.findOne({ tag: receiverTag.trim() });
 
-      const receiverWallet = await Wallet.findOne({
-        owner: receiverDoc._id,
-      });
-
-      if (!(receiverWallet && senderWallet))
-        return NextResponse.json({
-          error: {
-            message: "Invalid Sender or Recipient Data",
-            data: {
-              receiverWallet,
-              senderWallet,
-            },
-          },
-        });
-
-      if (senderWallet.balance < amount)
-        return NextResponse.json({
-          error: { message: "Insufficient Balance" },
-        });
-
-      const transaction = await Transaction.create({
-        sender: parsedSenderID,
-        receiver: receiverDoc._id,
+      // console.log("RECEIVER_DOC: ", receiverDoc);
+      // const receiverWallet = await Wallet.findOne({
+      //   owner: receiverDoc._id,
+      // });
+      // if (!(receiverWallet && senderWallet))
+      //   return NextResponse.json({
+      //     error: {
+      //       message: "Invalid Sender or Recipient Data",
+      //       data: {
+      //         receiverWallet,
+      //         senderWallet,
+      //       },
+      //     },
+      //   });
+      // if (senderWallet.balance < amount) {
+      //   const transaction = await Transaction.create({
+      //     sender: parsedSenderID,
+      //     receiver: receiverDoc._id,
+      //     amount,
+      //     date: new Date(),
+      //     type: "transfer",
+      //     title: "Trasfer to Chwee Walet",
+      //     // TODO check status confirmation
+      //     status: "declined",
+      //   });
+      //   return NextResponse.json({
+      //     error: { message: "Insufficient Balance" },
+      //   });
+      // }
+      // const transaction = await Transaction.create({
+      //   sender: parsedSenderID,
+      //   receiver: receiverDoc._id,
+      //   amount,
+      //   date: new Date(),
+      //   type: "transfer",
+      //   title: "Trasfer to Chwee Walet",
+      //   // TODO check status confirmation
+      //   status: "successful",
+      // });
+      // //Apply changes to wallet balance
+      // senderWallet.balance -= amount;
+      // receiverWallet.balance += amount;
+      // //Add transaction to wallet
+      // senderWallet.transactions.push(transaction._id);
+      // receiverWallet.transactions.push(transaction._id);
+      // senderWallet.save();
+      // receiverWallet.save();
+      // transaction.save();
+      // console.log("Transfer", { senderWallet, receiverWallet });
+      // return NextResponse.json({ message: "success" });
+      const result = await transferToChweeWallet({
         amount,
-        date: new Date(),
-        type: "transfer",
+        receiverTag,
+        senderID,
       });
 
-      //Apply changes to wallet balance
-      senderWallet.balance -= amount;
-      receiverWallet.balance += amount;
-
-      //Add transaction to wallet
-      senderWallet.transactions.push(transaction._id);
-      receiverWallet.transactions.push(transaction._id);
-
-      senderWallet.save();
-      receiverWallet.save();
-      transaction.save();
-
-      console.log("Transfer", { senderWallet, receiverWallet });
-
-      return NextResponse.json({ message: "success" });
+      return NextResponse.json({
+        error: { message: result },
+      });
     }
   } catch (error) {
     console.error(error);

@@ -65,7 +65,7 @@ import { useContext, useState } from "react";
 //             <p className="w-full text-center">sign in with Facebook</p>
 //           </button>
 //         </div>
-//       </div>
+//       </div>const cards = { connections: [1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 1] };
 //     </div>
 //   );
 // }

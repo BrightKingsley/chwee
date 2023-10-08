@@ -94,6 +94,8 @@ export default function Modal() {
           )}
         </AnimatePresence>
       );
+    } else {
+      return null;
     }
   } else {
     return null;

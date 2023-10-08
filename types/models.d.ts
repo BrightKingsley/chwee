@@ -53,3 +53,14 @@ interface GroupInfo {
   hasPassword: boolean;
   tag: string;
 }
+
+interface CLientTransaction {
+  amount: number;
+  sender: string | mongoose.Types.ObjectId;
+  receiver: string | mongoose.Types.ObjectId;
+  date: Date;
+  type: "deposit" | "withdrawal" | "transfer" | "airtime" | "data";
+  title: string;
+  status: "successful" | "declined";
+  _id: string | mongoose.Types.ObjectId | string;
+}
