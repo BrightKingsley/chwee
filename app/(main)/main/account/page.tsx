@@ -1,17 +1,16 @@
 import { ConnectionCard, GroupAvatar, Header } from "@/components/shared";
-import { ListItem } from "@/components/mui";
+import { Button, ListItem } from "@/components/mui";
 import Image from "next/image";
 import { Session, getServerSession } from "next-auth";
 import { UserIcon } from "@heroicons/react/20/solid";
 import { AccountEditForm, SignOutButton } from "./components";
 import { authOptions } from "../../../api/auth/[...nextauth]/route";
-import { signOut } from "next-auth/react";
-import { BASE_URL } from "@/constants/routes";
+import { CONNECT } from "@/constants/routes";
 import { EditAccountButton } from "./components/Buttons";
+import { getUserByID } from "@/lib/db";
+import Link from "next/link";
 
-const cards = { connections: [1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 1] };
-
-const avatars = { groups: [1, 1, 1, 1, 1, 1, 1, 1, 1, 11, 1] };
+const avatars = { groups: [1, 1, 1, 1, 1] };
 
 export default async function Account({
   params,
@@ -25,27 +24,34 @@ export default async function Account({
   console.log("ACC_PARAMS: ", searchParams);
 
   const serverSession: Session | null = data;
-  if (!serverSession) return <h1>Loading...</h1>;
+  if (!serverSession || !serverSession.user || !serverSession.user.id)
+    return <h1>Loading...</h1>;
 
-  const { user } = serverSession;
+  const userFromSession = serverSession.user;
 
-  console.log("MYACCOUNT_SERVER_SESSION", serverSession);
+  const user = await getUserByID({ userID: userFromSession.id! });
 
-  const userConnections = cards.connections.slice(0, 5);
+  console.log("ACCOUNT_USER", { user });
+
+  if (!user) return <h1>User Unavailable</h1>;
+
+  const userConnections = user.connections.slice(0, 5);
 
   return (
     <>
-      <div className="">
-        <Header title="My Account" />
-        {!serverSession || !user ? (
+      <div className="flex flex-col h-screen">
+        <div className="shrink-0">
+          <Header title="My Account" />
+        </div>
+        {!serverSession || !userFromSession ? (
           <h1>Loading...</h1>
         ) : (
-          <div className="h-full px-2 py-4 space-y-6">
+          <div className="flex-1 h-full px-2 py-4 space-y-6 overflow-y-auto shrink-0">
             <div className="space-y-4">
-              <div className="relative w-fit mx-auto">
-                <div className="w-32 h-32 rounded-full overflow-clip border">
-                  {user.image ? (
-                    <Image src={user.image} alt="" fill />
+              <div className="relative mx-auto w-fit">
+                <div className="w-32 h-32 border rounded-full overflow-clip">
+                  {userFromSession.image ? (
+                    <Image src={userFromSession.image} alt="" fill />
                   ) : (
                     <UserIcon className="w-full h-full" />
                   )}
@@ -55,32 +61,52 @@ export default async function Account({
                 </div>
               </div>
               <div className="mx-auto text-center w-fit">
-                <p className="text-3xl font-druk-wide-bold">{user.name}</p>
-                <p className="tetx-2xl">{user.tag}</p>
+                <p className="text-3xl font-druk-wide-bold">
+                  {userFromSession.name}
+                </p>
+                <p className="tetx-2xl">{userFromSession.tag}</p>
               </div>
             </div>
             <div>
               <p className="font-bold">Connections</p>
-              <div className="grid w-full grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 grid-rows-2 lg:grid-rows-1 gap-1 px-2">
-                {userConnections.map((connect) => (
-                  <ConnectionCard key={connect} userTag={connect.toString()} />
-                ))}
-                <ListItem className="!p-0 col-span-1 row-span-1 border-[1px]">
-                  <div className="w-full h-full flex items-center justify-center">
-                    +{cards.connections.slice(5, -1).length}
+              {userConnections.length > 0 ? (
+                <div className="grid w-full grid-cols-3 gap-1 px-2 grid-rows-2_ sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 lg:grid-rows-1">
+                  {userConnections.map((connect) => (
+                    <ConnectionCard
+                      key={connect.toString()}
+                      userID={connect.toString()}
+                    />
+                  ))}
+                  {userConnections.slice(5, -1).length > 0 && (
+                    <ListItem className="!p-0 col-span-1 row-span-1 border-[1px]">
+                      <div className="flex items-center justify-center w-full h-full">
+                        +{userConnections.slice(5, -1).length}
+                      </div>
+                    </ListItem>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <div className="mx-auto w-fit">
+                    <p>You have no available connections</p>
+                    <Button>
+                      <Link href={`${CONNECT}/new`}>
+                        Find and Create a connection
+                      </Link>
+                    </Button>
                   </div>
-                </ListItem>
-              </div>
+                </div>
+              )}
             </div>
             <div>
               <p className="font-bold">Groups</p>
-              <div className="flex items-center w-full_ overflow-auto p-2 pt-0 gap-2">
+              <div className="flex items-center gap-2 p-2 pt-0 overflow-auto w-full_">
                 {avatars.groups.length > 0 ? (
                   avatars.groups.map((group, i) => (
                     <GroupAvatar key={i} groupID={group.toString()} />
                   ))
                 ) : (
-                  <p>This user {"doesn't"} belong to any groups</p>
+                  <p>This userFromSession {"doesn't"} belong to any groups</p>
                 )}
               </div>
             </div>

@@ -31,6 +31,6 @@ export async function DELETE() {
       message: "Chat documents deleted successfully",
     });
   } catch (error) {
-    return { error };
+    return NextResponse.json({ error });
   }
 }

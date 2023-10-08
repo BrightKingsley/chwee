@@ -50,8 +50,8 @@ export default function AccountEditForm({ show }: { show: boolean }) {
   return (
     <div className="z-20">
       <Overlay show={show}>
-        <Card className="w-80 relative border bg-white">
-          <form className="w-full h-full space-y-4 p-4" onSubmit={handleSubmit}>
+        <Card className="relative bg-white border w-80">
+          <form className="w-full h-full p-4 space-y-4" onSubmit={handleSubmit}>
             <div className="absolute top-2 right-2">
               <Link href={ACCOUNT}>
                 <IconButton
@@ -72,8 +72,8 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                 </IconButton>
               </Link>
             </div>
-            <div className="w-fit mx-auto relative">
-              <div className="border w-24 h-24 rounded-full flex items-center justify-center overflow-clip">
+            <div className="relative mx-auto w-fit">
+              <div className="flex items-center justify-center w-24 h-24 border rounded-full overflow-clip">
                 {previewImage ? (
                   <Image src={previewImage} alt="new" fill />
                 ) : (
@@ -98,7 +98,6 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                     id="image"
                     accept="image/*"
                     hidden
-                    multiple
                     onChange={(e: any) => {
                       const target = e.target as HTMLInputElement;
 

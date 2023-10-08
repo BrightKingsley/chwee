@@ -83,7 +83,6 @@ const ImgStack = ({
 );
 
 export default function Landing() {
-  console.log("LANDING");
   return (
     <main className="w-screen space-y-6 bg-emerald-700 bg-primary/10">
       <header className="flex w-full px-4 md:px-12">

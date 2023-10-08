@@ -9,21 +9,21 @@ import {
 import mongoose from "mongoose";
 import { User } from "@/models";
 
-@post<TransactionClass>("save", (doc) => {
-  if (doc) {
-    doc.id = doc._id.toString();
-    doc._id = doc.id;
-  }
-})
-@post<TransactionClass[]>(/^find/, (docs) => {
-  // @ts-ignore
-  if (this.op === "find") {
-    docs.forEach((doc) => {
-      doc.id = doc._id.toString();
-      doc._id = doc.id;
-    });
-  }
-})
+// @post<TransactionClass>("save", (doc) => {
+//   if (doc) {
+//     doc.id = doc._id.toString();
+//     doc._id = doc.id;
+//   }
+// })
+// @post<TransactionClass[]>(/^find/, (docs) => {
+//   // @ts-ignore
+//   if (this.op === "find") {
+//     docs.forEach((doc) => {
+//       doc.id = doc._id.toString();
+//       doc._id = doc.id;
+//     });
+//   }
+// })
 @ModelOptions({
   schemaOptions: {
     timestamps: true,
@@ -46,8 +46,20 @@ class TransactionClass {
   @prop({ required: true })
   public date: Date;
 
-  @prop({ enum: ["deposit", "withdrawal", "transfer"] })
-  public type: string;
+  @prop({
+    required: true,
+    enum: ["deposit", "withdrawal", "transfer", "airtime", "data"],
+  })
+  public type: "deposit" | "withdrawal" | "transfer" | "airtime" | "data";
+
+  @prop({
+    required: true,
+    enum: ["successful", "declined"],
+  })
+  status: "successful" | "declined";
+
+  @prop({ required: true })
+  public title: string;
 
   _id: mongoose.Types.ObjectId | string;
 

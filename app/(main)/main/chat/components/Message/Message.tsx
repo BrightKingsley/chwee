@@ -1,5 +1,3 @@
-"use client";
-
 import {
   XMarkIcon,
   EllipsisVerticalIcon,
@@ -94,7 +92,7 @@ export default function Message({
         const offset = info.offset.x;
         console.log(offset);
         sender !== userID &&
-          offset > 200 &&
+          offset > 100 &&
           setReplyMessage({
             sender: sender === userID ? session.user.name! : username,
             textContent,

@@ -1,4 +1,5 @@
-import {useCallback, useRef} from "react"
+"use client";
+import { useCallback, useRef } from "react";
 
 export default function useLongPress({
   callback,
@@ -13,13 +14,13 @@ export default function useLongPress({
     (event: MouseEvent | TouchEvent) => {
       event.preventDefault();
 
-    // @ts-ignore TODO
+      // @ts-ignore TODO
       timeout.current = setTimeout(() => callback(event), duration);
     },
     [callback, duration]
   );
 
-    // @ts-ignore TODO
+  // @ts-ignore TODO
   const cancelTimeout = useCallback(() => clearTimeout(timeout.current), []);
 
   return {

@@ -1,6 +1,4 @@
 // @ts-nocheck
-"use client";
-
 import React, {
   ChangeEvent,
   ChangeEventHandler,
@@ -177,18 +175,20 @@ export default function SendMessage({
             } left-0 w-full bg-white pt-2 px-2 absolute -top-0 rounded-t-xl text-gray-500 `}
           >
             <div className="relative p-1 px-3  rounded-md bg-primary/10 after:absolute after:left-1 after:inset-0 after:bg-primary after:h-[80%] after:w-1 after:my-auto top-full mx-auto after:rounded-full">
-              <IconButton
-                onClick={() =>
-                  setReplyMessage({
-                    sender: "",
-                    imageContent: [],
-                    textContent: "",
-                  })
-                }
-                className="absolute top-0 right-0 p-2 cursor-pointer active:opacity-50 active:scale-90"
-              >
-                <XMarkIcon className="w-5 h-5" />
-              </IconButton>
+              <div className="absolute top-0 right-0">
+                <IconButton
+                  onClick={() =>
+                    setReplyMessage({
+                      sender: "",
+                      imageContent: [],
+                      textContent: "",
+                    })
+                  }
+                  className="p-2 cursor-pointer active:opacity-50 active:scale-90"
+                >
+                  <XMarkIcon className="w-5 h-5" />
+                </IconButton>
+              </div>
               <small className="text-xs">
                 {replyMessage.sender.toString() ===
                 session?.user.name?.toString()
@@ -306,7 +306,7 @@ export default function SendMessage({
           type="submit"
           title="send message"
           aria-label="send message"
-          className="flex items-center justify-center active:scale-90 active:opacity-40 stroke-primary"
+          className="flex items-center justify-center bg-body stroke-primary"
         >
           {/* <Send className="w-8 h-8 " /> */}
           <svg

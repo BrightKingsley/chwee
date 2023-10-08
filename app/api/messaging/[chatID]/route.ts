@@ -6,6 +6,7 @@ import {
   connectDB,
   getUserByID,
   getChat,
+  transferToChweeWallet,
 } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { MessageClass } from "@/models/Message";
@@ -93,9 +94,18 @@ export async function POST(
 
       console.log("====REACHED-3 P2P=====");
 
+      if (message.funds) {
+        const {} = message;
+        transferToChweeWallet({
+          amount: message.funds.amount,
+          receiverTag: message.funds.receiver,
+          senderID: message.sender.toString(),
+        });
+      }
+
       // Check if the chat exists and if the members Set includes the memberIdToCheck
       if (chat && chat.members.includes(parsedSenderID)) {
-        const senderDoc = await User.findById(parsedSenderID);
+        const senderDoc = await getUserByID({ userID: parsedSenderID });
 
         if (!senderDoc) throw new Error("Couldn't retrieve sender document");
 
@@ -103,7 +113,6 @@ export async function POST(
           username: senderDoc.username,
           id: senderDoc._id,
           tag: senderDoc.tag,
-          email: senderDoc.email,
           photo: senderDoc.photo,
         };
 
@@ -181,9 +190,7 @@ export async function GET(
 
         const senderInfo = {
           username: senderDoc.username,
-          id: senderDoc._id,
           tag: senderDoc.tag,
-          email: senderDoc.email,
           photo: senderDoc.photo,
         };
 

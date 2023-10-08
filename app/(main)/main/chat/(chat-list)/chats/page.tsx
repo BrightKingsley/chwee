@@ -10,10 +10,9 @@ import { ChatClass, UserClass } from "@/models";
 import { BASE_URL } from "@/constants/routes";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getToken } from "next-auth/jwt";
 import { UserIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { getChats } from "@/lib/db";
-import {ClientChat, ClientUser} from "@/types/models"
+import { ClientChat, ClientUser } from "@/types/models";
 
 const actions: number[] = [];
 
@@ -43,7 +42,7 @@ type MessageType = {
 export default async function Chats() {
   const serverSession = await getServerSession(authOptions);
   if (!serverSession || !serverSession.user || !serverSession.user.id)
-    return null;
+    return <h1>NO USER</h1>;
 
   // const res = await fetch("http://localhost:3000/api/chats")
   const res = await getChats({

@@ -5,7 +5,10 @@ export default function DashBoardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <main className="h-screen md:flex md:flex-col">
-    <Header imgShown title="Dashboard" />
-    {children}</main>;
+  return (
+    <main className="h-screen md:flex md:flex-col">
+      <Header imgShown title="Dashboard" />
+      {children}
+    </main>
+  );
 }
