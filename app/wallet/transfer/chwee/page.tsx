@@ -212,7 +212,7 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
         className="space-y-2"
       >
         {connectionsModal.connections.map((connection, i) => (
-          <ListTile onClick={() => setTagInput(connection.tag)}>
+          <ListTile key={i} onClick={() => setTagInput(connection.tag)}>
             {connection.tag}
           </ListTile>
         ))}
