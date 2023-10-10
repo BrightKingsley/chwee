@@ -1,5 +1,6 @@
-import { User } from "@/models";
+import { Chat, User } from "@/models";
 import { stringToObjectId } from "../utils";
+import { Conversation } from "@/models/Conversation";
 
 export async function getUserConnections({ userID }: { userID: string }) {
   try {
@@ -37,11 +38,16 @@ export async function createUserConnection({
       { new: true }
     ).exec();
 
-    const newConnectionDoc = await User.findByIdAndUpdate(parsedConnectionID, {
-      $push: {
-        connections: parsedUserID,
-      },
-    }).select("connections");
+    const newConnectionDoc = await User.findByIdAndUpdate(
+      { _id: parsedConnectionID, connections: { $nin: [parsedUserID] } },
+      { $addToSet: { connections: parsedUserID } },
+      { new: true }
+      // {
+      //   $push: {
+      //     connections: parsedUserID,
+      //   },
+      // }
+    ).select("connections");
     if (!(newUserDoc && newConnectionDoc))
       throw new Error("No Connections Found");
     newUserDoc?.save();
@@ -70,6 +76,22 @@ export async function deleteUserConnection({
     const parsedConnectionID = stringToObjectId(connectionID);
     if (!parsedUserID) throw new Error("Invalid User Id");
 
+    const chatDoc = await Chat.findOneAndDelete({
+      members: {
+        $all: [parsedUserID, parsedConnectionID],
+        $size: 2,
+      },
+    }).exec();
+
+    const conversationDoc = await Conversation.findOneAndDelete({
+      chatID: chatDoc?._id,
+    });
+
+    console.log({
+      __CHAT_DOC_TO_DELETE__: chatDoc,
+      __CONVERSATION_DOC_TO_DELETE__: conversationDoc,
+    });
+
     const newUserDoc = await User.findOneAndUpdate(
       {
         _id: parsedUserID,
@@ -78,6 +100,7 @@ export async function deleteUserConnection({
       {
         $pull: {
           connections: parsedConnectionID,
+          chats: chatDoc?._id,
         },
       },
       { new: true }
@@ -87,6 +110,7 @@ export async function deleteUserConnection({
       {
         _id: parsedConnectionID,
         connections: parsedUserID,
+        chats: chatDoc?._id,
       },
       {
         $pull: {

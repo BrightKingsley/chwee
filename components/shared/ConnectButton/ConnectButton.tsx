@@ -39,7 +39,9 @@ export default function ConnectButton({
 
   return (
     <IconButton
+      title="connect"
       variant="filled"
+      aria-label="connect with user"
       onClick={() =>
         triggerModal({
           message: (

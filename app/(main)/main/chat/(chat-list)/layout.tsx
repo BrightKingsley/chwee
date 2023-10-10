@@ -14,8 +14,6 @@ export default function ChatLayout({
 
   return (
     <div className="relative w-full h-full">
-      {/* {!pathname.includes(`${CHATS}/` || `${GROUPS}/`) && (
-        <> */}
       <Header imgShown={false} title="Chat" />
 
       <SubHeader
@@ -38,9 +36,6 @@ export default function ChatLayout({
           },
         ]}
       />
-      {/* </>
-      )} */}
-      {/* <div className="mx-2">{page}</div> */}
       <FloatingActionButton pathname={pathname} />
       <div className="mx-2">{children}</div>
     </div>

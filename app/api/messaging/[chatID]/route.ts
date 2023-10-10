@@ -29,6 +29,7 @@ type GetProps = {
   };
 };
 
+// TODO refactor this shit
 export async function POST(
   request: NextRequest,
   { params: { chatID } }: PostProps
@@ -76,9 +77,23 @@ export async function POST(
         group &&
         group.members.includes(parsedSenderID || group.owner === parsedSenderID)
       ) {
+        const senderDoc = await getUserByID({ userID: parsedSenderID });
+
+        if (!senderDoc) throw new Error("Couldn't retrieve sender document");
+
+        const senderInfo = {
+          username: senderDoc.username,
+          id: senderDoc._id,
+          tag: senderDoc.tag,
+          photo: senderDoc.photo,
+        };
+
         console.log("<==========REACHED=========> 2");
 
-        pusherServer.trigger(chatID, "incoming-message", message);
+        pusherServer.trigger(chatID, "incoming-message", {
+          message,
+          senderInfo,
+        });
 
         await sendMessage({ chatID, message });
 

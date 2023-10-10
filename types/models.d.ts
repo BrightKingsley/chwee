@@ -10,6 +10,17 @@ interface ClientUser {
   _id: string;
 }
 
+interface ClientGroup {
+  name: string;
+  tag: string;
+  owner: string;
+  photo: string;
+  description: string;
+  admins: (string | mongoose.Types.ObjectId)[];
+  members: (string | mongoose.Types.ObjectId)[];
+  _id: string;
+}
+
 interface ClientChat {
   _id: string;
   members: (string | mongoose.Types.ObjectId)[];

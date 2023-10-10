@@ -1,6 +1,6 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { ListTile } from "@/components/shared";
-import { getUserByID } from "@/lib/db";
+import { ListTile, MessageButton } from "@/components/shared";
+import { getChatsByMembersID, getUserByID } from "@/lib/db";
 import { UserIcon } from "@heroicons/react/20/solid";
 import { getServerSession } from "next-auth";
 import { ConnectButton } from "@/components/shared";
@@ -25,7 +25,12 @@ export default async function MyConnections() {
   const connections = user.connections;
   return connections.length > 0 ? (
     connections.map(async (connection, i) => (
-      <Connection index={i} userID={connection.toString()} key={i} />
+      <Connection
+        index={i}
+        userID={user._id}
+        connectionID={connection.toString()}
+        key={i}
+      />
     ))
   ) : (
     <p className="text-center">You have no connections available</p>
@@ -38,17 +43,36 @@ const getUserConnection = async (userID: string) => {
   });
 };
 
-function Connection({ userID, index }: { userID: string; index: number }) {
-  const res = use(getUserConnection(userID));
+const getConnectionChat = async (members: [string, string]) => {
+  return await getChatsByMembersID(members);
+};
 
+function Connection({
+  connectionID,
+  userID,
+  index,
+}: {
+  connectionID: string;
+  index: number;
+  userID: string;
+}) {
+  const res = use(getUserConnection(connectionID));
   const user = res;
+  const chat = use(getConnectionChat([userID, connectionID]));
+
+  console.log({ GOTTEN_CHAT: chat });
+
   if (!user) return null;
   return (
     <ListTile
       key={index}
       slide
       trailing={[
-        <ConnectButton key={Math.random()} receiverID={user._id.toString()} />,
+        <MessageButton
+          key={user._id.toString()}
+          chatID={chat ? chat._id : null}
+          users={[userID, connectionID]}
+        />,
       ]}
       index={index}
       className="w-full gap-2 pr-2 bg-white rounded-xl md:col-span-1"

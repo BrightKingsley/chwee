@@ -27,7 +27,7 @@ export const NotificationContextProvider = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowNotification(false);
-    }, 3000);
+    }, 4000);
     return () => clearTimeout(timer);
   }, [showNotification, setShowNotification]);
 

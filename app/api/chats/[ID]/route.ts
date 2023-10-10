@@ -41,6 +41,7 @@ type PostProps = {
   };
 };
 
+// TODO check and remove/Keep this route
 export async function POST(
   request: NextRequest,
   { params: { ID: senderID } }: PostProps

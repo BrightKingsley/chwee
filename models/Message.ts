@@ -40,17 +40,17 @@ class MessageClass {
   @prop({ required: true })
   public sender: mongoose.Types.ObjectId | string;
 
-  @prop({ default: "" })
+  @prop({ default: [] })
   public imageContent: string[];
 
   @prop({ default: "" })
   public textContent: string;
 
   @prop({ default: null })
-  public funds:{
-    receiver: string
+  public funds: {
+    receiver: string;
     amount: number;
-  }
+  };
 
   @prop({ required: true, default: {} })
   public replyTo?: {

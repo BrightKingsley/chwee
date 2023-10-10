@@ -231,7 +231,7 @@ export default function Message({
             </Link>
           )}
           <div className="flex items-end justify-between w-full gap-4">
-            {imageContent.length > 0
+            {imageContent && imageContent.length > 0
               ? imageContent.map((image, i) => (
                   // <></>
                   <div key={i} className="w-52 h-52">
