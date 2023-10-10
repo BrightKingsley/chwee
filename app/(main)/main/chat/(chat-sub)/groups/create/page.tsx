@@ -1,22 +1,27 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { BASE_URL } from "@/constants/routes";
+import { BASE_URL, GROUPS } from "@/constants/routes";
 import { TextareaAutosize } from "@mui/material";
 import Image from "next/image";
 import { Button, IconButton, Switch } from "@/components/mui";
-
+import { useUploadThing } from "@/lib/uploadThing";
 import Group from "@mui/icons-material/Group";
 import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
+import { useDropzone } from "@uploadthing/react/hooks";
+import { FileWithPath } from "@uploadthing/react";
+import { generateClientDropzoneAccept } from "uploadthing/client";
+import { NotificationContext } from "@/context";
+import Link from "next/link";
+import { ClientGroup } from "@/types/models";
 
 type GroupCreate = {
   description: string;
   name: string;
   owner: string;
   tag: string;
-  photo: string;
   password: boolean;
 };
 
@@ -24,19 +29,55 @@ export default function CreateGroup() {
   const { data } = useSession();
   const session: Session | any = data;
 
+  const { triggerNotification } = useContext(NotificationContext);
+
   const [groupData, setGroupData] = useState<GroupCreate>({
     description: "",
     name: "",
     tag: "",
     owner: session?.user.id,
     password: false,
-    photo: "",
+  });
+  const [previewImage, setPreviewImage] = useState<any>("");
+  const [selectedImage, setSelectedImage] = useState<File[]>([]);
+
+  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
+    setSelectedImage(acceptedFiles);
+  }, []);
+
+  const { startUpload, isUploading, permittedFileInfo } = useUploadThing(
+    "groupPhoto",
+    {
+      onUploadProgress: (e) => {
+        console.log("PROGRESS", e);
+      },
+      onClientUploadComplete: () => {},
+      onUploadError: (e) => {
+        console.log("ERROR", e);
+        triggerNotification("error occurred while uploading group photo");
+      },
+      onUploadBegin: (e) => {
+        // TODO remove thi notification
+        triggerNotification("upload has begun");
+        console.log("E:Upload Begin", e);
+      },
+    }
+  );
+
+  const fileTypes = permittedFileInfo?.config
+    ? Object.keys(permittedFileInfo?.config)
+    : [];
+
+  const { getInputProps, getRootProps } = useDropzone({
+    onDrop,
+    onDropAccepted(files, event) {
+      console.log({ files, event });
+      setGroupData((prev) => ({ ...prev, photo: files }));
+    },
+    accept: fileTypes ? generateClientDropzoneAccept(fileTypes) : undefined,
   });
 
-  const [previewImage, setPreviewImage] = useState<any>("");
-
   const readURI = (img: any) => {
-    console.log("READ_REACHED", previewImage);
     if (img) {
       let reader = new FileReader();
       reader.onload = function (ev: ProgressEvent<FileReader>) {
@@ -51,28 +92,63 @@ export default function CreateGroup() {
     setGroupData((prev) => ({ ...prev, owner: session?.user.id }));
   }, [session]);
 
+  useEffect(() => {
+    console.log("CHECK_IMAGE", selectedImage);
+  }, [selectedImage]);
+
   const handleCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    console.log(groupData);
+    console.log("SUBMIT REACHED");
+
+    // const uploadImage = await handleUploadImage();
+
+    const uploadImage = await startUpload(selectedImage);
+
+    console.log({ uploadImage });
+
+    if (!uploadImage || uploadImage.length < 1)
+      return triggerNotification("Couldn't create group, please retry");
 
     const response = await fetch(`${BASE_URL}/api/groups/${groupData.owner}`, {
       method: "POST",
-      body: JSON.stringify(groupData),
+      body: JSON.stringify({ ...groupData, photo: uploadImage[0].url }),
     });
 
     const data = await response.json();
 
-    console.log("GROP_POST_DATA", data, response);
+    const group: ClientGroup = data;
+
+    if (group)
+      triggerNotification(<Link href={`${GROUPS}/${group._id}`}>Success. Click to go to group chat</Link>);
+    return triggerNotification("Failed to create group, try again.");
   };
+
+  // async function handleUploadImage() {
+  //   try {
+  //     console.log("IMAGECONTENT: ", selectedImage);
+  //     if (selectedImage.length < 1) return;
+  //     const res = await startUpload(selectedImage as File[]);
+
+  //     console.log("UPLOADED_RES: ", res);
+  //     //   const upload = await res.json();
+  //     return res;
+  //     //   console.log(upload);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
   return (
     <div className="">
       <form
         onSubmit={(e: React.SyntheticEvent) => handleCreate(e)}
-        className="mx-2 md:mx-14 mt-20 shadow-lg bg-white p-4 rounded-lg space-y-3"
+        className="mx-2 md:mx-14 mt-20 shadow-lg bg-white p-4 rounded-lg space-y-3 border"
       >
-        <div className="w-fit mx-auto relative">
+        <div
+          className="w-fit mx-auto relative cursor-pointer"
+          {...getRootProps()}
+        >
           <div className="border w-24 h-24 rounded-full flex items-center justify-center overflow-clip">
             {previewImage ? (
               <Image src={previewImage} alt="new" fill />
@@ -93,25 +169,24 @@ export default function CreateGroup() {
                 <AddPhotoAlternateOutlined className="w-6 h-6 fill-primary" />
               </label>
               <input
+                required
                 // value={""}
+                {...getInputProps()}
                 type="file"
                 id="image"
                 accept="image/*"
                 hidden
-                onChange={(e: any) => {
+                onInput={(e: any) => {
                   const target = e.target as HTMLInputElement;
 
                   // @ts-ignore TODO
                   const img = Object.values<any>(target.files)[0];
 
-                  console.log("IMGS", img);
+                  console.log({ e });
                   readURI(img);
                   //TODO COMEBACK ADD_TYPES
                   //@ts-ignore
-                  return setGroupData((prev) => ({
-                    ...prev,
-                    photo: target.value,
-                  }));
+                  return setSelectedImage(img);
                 }}
               />
             </IconButton>
@@ -121,6 +196,7 @@ export default function CreateGroup() {
         <div>
           <small>name</small>
           <input
+            required
             value={groupData.name}
             type="text"
             onChange={(e) => {
@@ -132,6 +208,7 @@ export default function CreateGroup() {
         <div>
           <small>tag</small>
           <input
+            required
             value={groupData.tag}
             type="text"
             onChange={(e) => {
@@ -170,7 +247,9 @@ export default function CreateGroup() {
         </div>
 
         <div className="rounded-md overflow-clip">
-          <Button fullWidth>Submit</Button>
+          <Button type="submit" fullWidth>
+            Submit
+          </Button>
         </div>
       </form>
     </div>

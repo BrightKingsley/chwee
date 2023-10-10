@@ -6,8 +6,8 @@ import { BASE_URL } from "@/constants/routes";
 import { NotificationContext } from "@/context";
 import { ClientUser } from "@/types/models";
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
-import { useSwiper } from "swiper/react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 // import { NumberPad, Input } from "../../components";
 import { Input as MInput } from "@/components/mui";
@@ -29,6 +29,26 @@ export default function TranferToChwee() {
     receiverTag: true,
     loading: false,
   });
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  const swiper = useSwiper();
+  const sliderRef = useRef<any>(null);
+
+  const handleNext = () => {
+    if (currentSlide < 3) {
+      setCurrentSlide(currentSlide + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentSlide > 0) {
+      setCurrentSlide(currentSlide - 1);
+    }
+  };
+
+  useEffect(() => {
+    sliderRef.current.swiper.slideTo(currentSlide, 500, false);
+  }, [currentSlide]);
 
   // @Bright16952225372230.36
   // mikeog7dX6
@@ -48,7 +68,8 @@ export default function TranferToChwee() {
     e.preventDefault();
     if (!receiverTag) return triggerNotification("Invalid User tag");
     setValues((prev) => ({ ...prev, receiverTag }));
-    setShowEntries((prev) => ({ ...prev, amount: true, receiverTag: false }));
+    // setShowEntries((prev) => ({ ...prev, amount: true, receiverTag: false }));
+    return handleNext();
   };
 
   const handleAmountSubmit = async (
@@ -59,7 +80,8 @@ export default function TranferToChwee() {
     if (!amount) return triggerNotification("Invalid amount");
     setValues((prev) => ({ ...prev, amount }));
 
-    setShowEntries((prev) => ({ ...prev, pin: true, amount: false }));
+    // setShowEntries((prev) => ({ ...prev, pin: true, amount: false }));
+    return handleNext();
   };
   const handlePinSubmit = (e: React.SyntheticEvent, pin: number) => {
     e.preventDefault();
@@ -112,7 +134,31 @@ export default function TranferToChwee() {
             <Spinner />
           </div>
         )}
-        <AnimateInOut
+        <Swiper
+          allowTouchMove={currentSlide < 2 ? false : true}
+          ref={sliderRef}
+        >
+          <SwiperSlide>
+            <div className="rounded-md w-full h-full relative pt-16">
+              <TagInput handleSubmit={handleTagSubmit} />
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="rounded-md w-full h-full relative pt-16">
+              <AmountInput handleSubmit={handleAmountSubmit} />{" "}
+            </div>
+          </SwiperSlide>
+          <SwiperSlide>
+            <div className="rounded-md w-full h-full relative pt-16">
+              <PinInput
+                show={showEntries.pin}
+                setShow={setShowEntries}
+                handleSubmit={handlePinSubmit}
+              />
+            </div>
+          </SwiperSlide>
+        </Swiper>
+        {/* <AnimateInOut
           init={{
             opacity: 0,
             translateX: 100,
@@ -171,7 +217,7 @@ export default function TranferToChwee() {
             setShow={setShowEntries}
             handleSubmit={handlePinSubmit}
           />
-        </AnimateInOut>
+        </AnimateInOut> */}
       </div>
     </div>
   );
@@ -214,7 +260,7 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
     <div className="relative w-full h-full">
       <form
         onSubmit={(e) => handleSubmit(e, receiverTagInput)}
-        className="space-y-3 px-4 mt-16"
+        className="space-y-3 px-4 "
       >
         {/* <label htmlFor="receiverTag">input {"recipient's"} Tag</label> */}
         <Input
@@ -285,10 +331,11 @@ function AmountInput({ handleSubmit }: { handleSubmit: Function }) {
   const [loading, setLoading] = useState(false);
 
   return (
+    // <div className="w-full h-full relative">
     <>
       <form
         onSubmit={(e) => handleSubmit(e, amountInput)}
-        className="mt-16 space-y-3 px-4"
+        className=" space-y-3 px-4"
       >
         {/* <label htmlFor="amount">enter amount in naira</label> */}
         <Input
@@ -331,6 +378,7 @@ function AmountInput({ handleSubmit }: { handleSubmit: Function }) {
         valueInput={amountInput}
         setValueInput={setAmountInput}
       />
+      {/* </div> */}
     </>
   );
 }
@@ -357,7 +405,7 @@ function PinInput({
     <>
       <form
         onSubmit={(e) => handleSubmit(e, pinInput)}
-        className="space-y-3 px-4 mt-16"
+        className="space-y-3 px-4 "
       >
         <label htmlFor="pin"></label>
         <Input
@@ -418,7 +466,7 @@ function NumberPad({
       show={showAmountModal}
       animate={{ translateY: 0 }}
       transition={{ type: "keyframes" }}
-      className="fixed top-[40%] flex flex-col left-0 space-y-2 bg-body rounded-t-3xl h-[60%] overflow-y-auto mx-auto w-full"
+      className="absolute top-[40%]_ bottom-0 flex flex-col left-0 space-y-2 bg-body rounded-t-3xl h-[60%] overflow-y-auto mx-auto w-full"
     >
       <div className="bg-gray-300 rounded-full w-1/3 h-1 mx-auto my-3" />
       <div className="grid gap-4 px-2 pb-2 grid-cols-3 grid-rows-4 flex-1 shrink-0">

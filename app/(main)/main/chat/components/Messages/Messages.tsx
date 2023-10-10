@@ -46,10 +46,6 @@ export default function Messages({ setReplyMessage, chatID, roomType }: any) {
   }, []);
 
   useEffect(() => {
-    console.log("RUNNNININIIININ");
-  }, []);
-
-  useEffect(() => {
     setLoading(true);
     (async () => {
       //TODO remove hard-coded password

@@ -9,6 +9,7 @@ import { createConversation } from ".";
 import { ConversationClass } from "@/models/Conversation";
 import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { ClientChat } from "@/types/models";
 
 // Define the number of salt rounds for password hashing
 const saltRounds = 10;
@@ -28,40 +29,47 @@ export async function createChat({ members }: { members: string[] }) {
     // Connect to the database
     await connectDB();
 
+    const existingChat = await getChatsByMembersID([members[0], members[1]]);
+    if (existingChat) throw new Error("Chat already exists");
+
     // Parse the owner's ID
     const parsedIDs = members.map((memberID) => stringToObjectId(memberID));
 
     // Create the chat without a password
-    const chat = await Chat.create({
+    const chatDoc = await Chat.create({
       members: parsedIDs,
     });
 
-    if (!chat) return null;
+    if (!chatDoc) throw new Error("Couldn't find chat");
 
     // Create a conversation for the chat
     const conversation: ConversationClass | any = await createConversation({
-      chatID: chat._id,
+      chatID: chatDoc._id,
     });
 
     // Check if the conversation was created successfully
-    if (!conversation.id)
-      return { error: { message: "Couldn't Create Chat Conversation" } };
+    if (!conversation.id) throw new Error("Couldn't Create Chat Conversation");
 
     console.log("CREATED_CONVO", conversation);
 
     parsedIDs.forEach(async (id) => {
       const updatedUser = await User.findByIdAndUpdate(id, {
         $push: {
-          chats: chat._id,
+          chats: chatDoc._id,
         },
       });
       console.log("UPDATED USER", updatedUser);
       updatedUser?.save();
     });
 
-    return { chat };
+    const chat: ClientChat = {
+      _id: chatDoc._id.toString(),
+      members: chatDoc.members,
+    };
+    return chat;
   } catch (error) {
-    return { error } as any;
+    console.error({ error });
+    return null;
   }
 }
 
@@ -122,6 +130,30 @@ export async function getChat({
     return chat;
   } catch (error) {
     return { error };
+  }
+}
+
+export async function getChatsByMembersID(members: [string, string]) {
+  const parsedMembersIDs = members.map((member) => stringToObjectId(member));
+  try {
+    const chatDoc = await Chat.findOne({
+      members: {
+        $all: parsedMembersIDs,
+        $size: 2,
+      },
+    }).exec();
+
+    if (!chatDoc) throw new Error("Chat not Found");
+
+    const chat: ClientChat = {
+      _id: chatDoc._id.toString(),
+      members: chatDoc.members,
+    };
+
+    return chat;
+  } catch (error) {
+    console.log({ error });
+    return null;
   }
 }
 

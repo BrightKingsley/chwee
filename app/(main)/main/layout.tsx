@@ -7,9 +7,9 @@ import {
 } from "@/components/shared";
 import {
   AuthContextProvider,
-  ChatContextProvider,
   ModalContextProvider,
   NotificationContextProvider,
+  ScreenContext,
   ThemeContextProvider,
 } from "@/context";
 import "@/public/css/globals.css";
@@ -81,7 +81,7 @@ export default function RootLayout({
         <ThemeContextProvider>
           <NotificationContextProvider>
             <ModalContextProvider>
-              <ChatContextProvider>
+              <ScreenContext>
                 <main className="md:flex h-scree w-screen">
                   <Navbar />
                   <div className="w-screen md:w-[calc(100vw-3.5rem)]">
@@ -91,7 +91,7 @@ export default function RootLayout({
                     <PortalElements />
                   </div>
                 </main>
-              </ChatContextProvider>
+              </ScreenContext>
             </ModalContextProvider>
           </NotificationContextProvider>
         </ThemeContextProvider>

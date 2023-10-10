@@ -5,4 +5,4 @@ export {
   NotificationContextProvider,
 } from "./Notification";
 export { default as AuthContextProvider } from "./Auth";
-export { default as ChatContext, ChatContextProvider } from "./Chat";
+export { default as ScreenContext } from "./ScreenWidth";

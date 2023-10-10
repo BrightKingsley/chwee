@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { createConversation } from ".";
 import { ConversationClass } from "@/models/Conversation";
+import { ClientGroup } from "@/types/models";
 
 // Define the number of salt rounds for password hashing
 const saltRounds = 10;
@@ -26,11 +27,15 @@ export async function createGroup({
   name,
   description,
   password = false,
+  photo,
+  tag,
 }: {
   ownerID: string;
   name: string;
   description: string;
   password?: boolean;
+  photo: string;
+  tag: string;
 }) {
   console.log("CREATED_WALLET_OWNER", ownerID);
   try {
@@ -59,6 +64,8 @@ export async function createGroup({
         description: description.trimEnd(),
         password: hashedPassword,
         members: [parsedID],
+        photo,
+        tag,
       });
 
       if (!group) return null;
@@ -70,7 +77,7 @@ export async function createGroup({
 
       // Check if the conversation was created successfully
       if (!conversation.id)
-        return { error: { message: "Couldn't Create Group Conversation" } };
+        throw new Error("Couldn't Create Group Conversation");
 
       console.log("CREATED_CONVO", conversation);
 
@@ -83,6 +90,8 @@ export async function createGroup({
       name: name.trimEnd(),
       description: description.trimEnd(),
       members: [parsedID],
+      photo,
+      tag,
     });
 
     // Create a conversation for the group
@@ -91,8 +100,7 @@ export async function createGroup({
     });
 
     // Check if the conversation was created successfully
-    if (!conversation.id)
-      return { error: { message: "Couldn't Create Group Conversation" } };
+    if (!conversation.id) throw new Error("Couldn't Create Group Conversation");
 
     console.log("CREATED_CONVO", conversation);
 
@@ -171,7 +179,7 @@ export async function getGroupByID({
         console.log("password available");
 
         // Check if a password is provided and compare it with the hashed password
-        if (!password) return { error: { message: "Password Incorrect" } };
+        if (!password) throw new Error("Password Incorrect");
 
         const match = await bcrypt.compare(password, group.password);
 
@@ -249,9 +257,20 @@ export async function getGroups({ filter }: { filter?: GroupFilter }) {
     const skip = (page - 1) * limit;
 
     // Find and retrieve groups with optional pagination
-    const groups = await Group.find().skip(skip).limit(limit).lean().exec();
+    const groupDocs = await Group.find().skip(skip).limit(limit).lean().exec();
 
-    if (!groups) throw new Error("Couldnt get Groups");
+    if (!groupDocs) throw new Error("Couldnt get Groups");
+
+    const groups: ClientGroup[] = groupDocs.map((group) => ({
+      _id: group._id.toString(),
+      admins: group.admins,
+      description: group.description,
+      members: group.members,
+      name: group.name,
+      owner: group.owner.toString(),
+      photo: group.photo,
+      tag: group.tag,
+    }));
 
     console.log("GROUPSS:", groups);
     return groups;

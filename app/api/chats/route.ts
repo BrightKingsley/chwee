@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 
-import { deleteAllChats, getChats, getUserByID } from "@/lib/db";
+import { createChat, deleteAllChats, getChats, getUserByID } from "@/lib/db";
 import { headers } from "next/headers";
 import { getServerSession } from "next-auth/next";
 
@@ -17,6 +17,27 @@ export async function GET(request: NextRequest, response: any) {
   const res = await getChats({});
 
   NextResponse.json({ res });
+}
+
+type PostReq = {
+  members: [string, string];
+};
+
+export async function POST(request: NextRequest) {
+  try {
+    const data: PostReq = await request.json();
+
+    const members = data.members;
+
+    if (!members) throw new Error("Invalid Members Ids");
+
+    const res = await createChat({ members });
+
+    return NextResponse.json(res);
+  } catch (error) {
+    console.error({ error });
+    return NextResponse.json(null);
+  }
 }
 
 export async function DELETE() {

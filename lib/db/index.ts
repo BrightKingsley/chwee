@@ -27,6 +27,7 @@ export {
 export {
   createChat,
   getChat,
+  getChatsByMembersID,
   getChats,
   deleteChat,
   deleteAllChats,

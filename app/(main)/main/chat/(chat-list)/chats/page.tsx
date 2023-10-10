@@ -14,44 +14,16 @@ import { UserIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { getChats } from "@/lib/db";
 import { ClientChat, ClientUser } from "@/types/models";
 
-const actions: number[] = [];
-
-for (let i = 0; i < 10; i++) {
-  actions.push(i);
-}
-
-// const getChats = async (session: Session): Promise<MessageType[] | null> => {
-//   if (!session.user.id) return null;
-//   // const res = await fetch(`${BASE_URL}/api/chats`, {
-//   const res = await getChats({ userID: "" });
-
-//   const data = await res.json();
-
-//   console.log("CHAT_DATA===>", data);
-
-//   if (!data) return null;
-
-//   return data;
-// };
-
-type MessageType = {
-  chatData: ChatClass;
-  memberUserData: UserClass;
-};
-
 export default async function Chats() {
   const serverSession = await getServerSession(authOptions);
   if (!serverSession || !serverSession.user || !serverSession.user.id)
     return <h1>NO USER</h1>;
 
-  // const res = await fetch("http://localhost:3000/api/chats")
   const res = await getChats({
     userID: serverSession.user.id,
   });
 
   const chats = res as { chatData: ClientChat; memberUserData: ClientUser }[];
-
-  // if (!chats) return <h1>NO CHATS</h1>;
 
   console.log("GOTTEN_CHATS", chats);
 

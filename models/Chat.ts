@@ -49,6 +49,7 @@ class ChatClass {
     type: [mongoose.Types.ObjectId],
     max: 2,
     ref: "user",
+    unique: true,
   })
   public members: mongoose.Types.ObjectId[];
 

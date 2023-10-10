@@ -34,8 +34,7 @@ export async function GET(request: NextRequest, { params: { ID } }: GetProps) {
 
     console.log("GROUP", group);
 
-    if (!group)
-      return NextResponse.json({ error: { message: "Couldnt get Groups" } });
+    if (!group) throw new Error("Couldnt get Groups");
 
     return NextResponse.json({ group });
   } catch (error) {
@@ -59,8 +58,23 @@ export async function POST(
       name,
       description,
       password,
-    }: { name: string; description: string; password: string } =
-      await request.json();
+      photo,
+      tag,
+    }: {
+      name: string;
+      description: string;
+      password: string;
+      photo: string;
+      tag: string;
+    } = await request.json();
+
+    console.log({
+      name,
+      description,
+      password,
+      photo,
+      tag,
+    });
 
     if (!ID)
       return NextResponse.json({
@@ -85,7 +99,7 @@ export async function POST(
     )
       return NextResponse.json({
         error: {
-          message: 'The name "general chat" is a reserved name',
+          message: '"general chat" is a reserved name',
         },
       });
     const group = await createGroup({
@@ -93,15 +107,16 @@ export async function POST(
       name,
       description,
       password: password ? true : false,
+      photo,
+      tag,
     });
 
-    if (!group)
-      return NextResponse.json({ error: { message: "Couldnt Create Groups" } });
+    if (!group) throw new Error("Couldnt Create Group");
 
     return NextResponse.json(group);
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error });
+    console.error({ error });
+    return NextResponse.json(null);
   }
 }
 
@@ -239,7 +254,7 @@ export async function PATCH(
       console.log("========REACHEDDDD=========");
       return NextResponse.json(group);
     }
-    return NextResponse.json({ error: { message: "invalid action" } });
+    throw new Error("invalid action");
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error });
@@ -266,8 +281,7 @@ export async function DELETE(
 
     console.log("GROUP", groupDeleted);
 
-    if (groupDeleted !== true)
-      return NextResponse.json({ error: { message: "Couldn't Delete Group" } });
+    if (groupDeleted !== true) throw new Error("Couldn't Delete Group");
 
     return NextResponse.json({
       success: {
