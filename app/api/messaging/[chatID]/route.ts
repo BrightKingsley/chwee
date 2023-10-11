@@ -181,6 +181,8 @@ export async function GET(
 
     const roomType = searchParams.get("roomType") as "group" | "p2p" | null;
 
+    console.log({ roomType });
+
     if (!roomType || !(roomType === "group" || roomType === "p2p"))
       throw new Error("Invalid RoomType");
 
