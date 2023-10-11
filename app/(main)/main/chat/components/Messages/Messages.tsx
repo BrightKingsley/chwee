@@ -1,4 +1,5 @@
 // @ts-nocheck
+"use client";
 import Message from "../Message";
 import { MessageClass } from "@/models/Message";
 import poor from "@/assets/images/poor.png";
@@ -11,20 +12,7 @@ import { BASE_URL } from "@/constants/routes";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import LoadingMessages from "../LoadingMessages";
-// const messages: MessageModel[] = [];
-
-// for (let i = 0; i < 10; i++) {
-// app/api/route.ts//   messages.push({
-//     id: `msgID${i}chkDSk`,
-//     photo: nft,
-//     name: `my Name - ${i}`,
-//     text: `I dont trust anybody - ${i}`,
-//     image: poor,
-//     senderId: `userID${i}chkDSk`,
-//     createdAt: new Date(),
-//   });
-// }
-
+import LocalHotelOutlinedIcon from '@mui/icons-material/LocalHotelOutlined';
 //TODO typecheck
 export default function Messages({ setReplyMessage, chatID, roomType }: any) {
   const [messages, setMessages] = useState<MessageClass[]>([]);
@@ -50,7 +38,7 @@ export default function Messages({ setReplyMessage, chatID, roomType }: any) {
     (async () => {
       //TODO remove hard-coded password
       const response = await fetch(
-        `${BASE_URL}/api/messaging/${chatID}?password=V6XBvBjX`,
+        `${BASE_URL}/api/messaging/${chatID}?roomType=${roomType}&password=V6XBvBjX`,
         {
           cache: "no-cache",
         }
@@ -75,12 +63,12 @@ export default function Messages({ setReplyMessage, chatID, roomType }: any) {
   }, [chatID]);
 
   return (
-    <div className="flex flex-col flex-1 mx-2 space-y-4 overflow-y-auto">
+    <div className="flex flex-col flex-1 mx-2 mt-1 space-y-4 overflow-y-auto">
       {loading ? (
         <LoadingMessages />
       ) : messages.length < 1 || !session || !session.user.id ? (
         <div className="flex items-center justify-center w-full h-full">
-          <h1>NO MESSAGES AVAILABLE</h1>
+          <p className="font-bold">no messages available <LocalHotelOutlinedIcon className="w-6 h-6 text-brand-lightblue" /> </p>
         </div>
       ) : (
         messages.map(({ id, ...message }, i) => (

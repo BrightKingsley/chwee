@@ -82,7 +82,7 @@ export default function RootLayout({
           <NotificationContextProvider>
             <ModalContextProvider>
               <ScreenContext>
-                <main className="md:flex h-scree w-screen">
+                <main className="md:flex h-screen w-screen">
                   <Navbar />
                   <div className="w-screen md:w-[calc(100vw-3.5rem)]">
                     {children}

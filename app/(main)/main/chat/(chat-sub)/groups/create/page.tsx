@@ -20,7 +20,6 @@ import { ClientGroup } from "@/types/models";
 type GroupCreate = {
   description: string;
   name: string;
-  owner: string;
   tag: string;
   password: boolean;
 };
@@ -35,7 +34,6 @@ export default function CreateGroup() {
     description: "",
     name: "",
     tag: "",
-    owner: session?.user.id,
     password: false,
   });
   const [previewImage, setPreviewImage] = useState<any>("");
@@ -87,22 +85,10 @@ export default function CreateGroup() {
     }
   };
 
-  useEffect(() => {
-    console.log("CHECK_SESSION", session);
-    setGroupData((prev) => ({ ...prev, owner: session?.user.id }));
-  }, [session]);
-
-  useEffect(() => {
-    console.log("CHECK_IMAGE", selectedImage);
-  }, [selectedImage]);
-
   const handleCreate = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     console.log("SUBMIT REACHED");
-
-    // const uploadImage = await handleUploadImage();
-
     const uploadImage = await startUpload(selectedImage);
 
     console.log({ uploadImage });
@@ -110,7 +96,7 @@ export default function CreateGroup() {
     if (!uploadImage || uploadImage.length < 1)
       return triggerNotification("Couldn't create group, please retry");
 
-    const response = await fetch(`${BASE_URL}/api/groups/${groupData.owner}`, {
+    const response = await fetch(`${BASE_URL}/api/groups`, {
       method: "POST",
       body: JSON.stringify({ ...groupData, photo: uploadImage[0].url }),
     });
@@ -119,8 +105,14 @@ export default function CreateGroup() {
 
     const group: ClientGroup = data;
 
+    console.log("createdGroup", { group });
+
     if (group)
-      triggerNotification(<Link href={`${GROUPS}/${group._id}`}>Success. Click to go to group chat</Link>);
+      triggerNotification(
+        <Link href={`${GROUPS}/${group._id}`}>
+          Success. Click to go to group chat
+        </Link>
+      );
     return triggerNotification("Failed to create group, try again.");
   };
 
@@ -143,7 +135,7 @@ export default function CreateGroup() {
     <div className="">
       <form
         onSubmit={(e: React.SyntheticEvent) => handleCreate(e)}
-        className="mx-2 md:mx-14 mt-20 shadow-lg bg-white p-4 rounded-lg space-y-3 border"
+        className="mx-2 md:mx-14 mt-20 md:shadow-lg bg-white p-4 rounded-lg space-y-3 md:border"
       >
         <div
           className="w-fit mx-auto relative cursor-pointer"
@@ -170,7 +162,7 @@ export default function CreateGroup() {
               </label>
               <input
                 required
-                // value={""}
+                // value={}
                 {...getInputProps()}
                 type="file"
                 id="image"

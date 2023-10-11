@@ -1,3 +1,5 @@
+"use client";
+
 import {
   XMarkIcon,
   EllipsisVerticalIcon,
@@ -9,7 +11,7 @@ import { Ref, memo, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { MEMBER_INFO, USER_PROFILE } from "@/constants/routes";
+import { CONNECT, MEMBER_INFO, USER_PROFILE } from "@/constants/routes";
 import { MessageClass } from "@/models/Message";
 import { useLongPress } from "@/hooks";
 import { UserClass } from "@/models";
@@ -44,7 +46,7 @@ export default function Message({
     console.log("runnninnnnn");
   }, []);
 
-  const { textContent, imageContent, sender, username, photo, replyTo } = {
+  const { textContent, imageContent, sender, username, photo, tag, replyTo } = {
     ...messageWithSenderData.senderInfo,
     ...messageWithSenderData.message,
   };
@@ -174,9 +176,7 @@ export default function Message({
       )}
       <div className="relative flex flex-col">
         <div
-          className={`absolute ${sender === userID ? "-left-10" : "-right-10"}
-           ${imageContent?.length > 0 ? "top-10_" : "bottom-[2px]_"}
-            text-2xl`}
+          className={`absolute bottom-0 ${sender === userID ? "-left-10" : "-right-10"} text-2xl`}
         >
           {
             <IconButton
@@ -220,17 +220,17 @@ export default function Message({
         >
           {roomType === "group" && sender !== userID && (
             <Link
-              href={`${USER_PROFILE}/${sender}`}
+              href={`${CONNECT}/${tag}`}
               className="flex items-center justify-center p-1 rounded-full w-7 h-7 translate-y-2_ shrink-0 bg-primary overflow-clip "
             >
               {photo ? (
-                <Image src={photo} alt="{user}" draggable={false} />
+                <Image src={photo} alt={username} fill draggable={false} />
               ) : (
                 <UserIcon className="w-5 h-5 fill-gray-300" />
               )}
             </Link>
           )}
-          <div className="flex items-end justify-between w-full gap-4">
+          <div className="flex items-end justify-between w-full gap-4_">
             {imageContent && imageContent.length > 0
               ? imageContent.map((image, i) => (
                   // <></>
@@ -247,7 +247,7 @@ export default function Message({
                   height={300}
                 />
               )} */}
-            <p className={`p-1 flex-1`}>{textContent}</p>
+            <p className={`p-1 flex-1 pr-4`}>{textContent}</p>
             <small className="bottom-0 right-0 text-xs font-semibold text-gray-500">
               02:30
             </small>

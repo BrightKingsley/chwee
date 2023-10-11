@@ -1,10 +1,17 @@
 import { NextResponse, NextRequest } from "next/server";
 import { headers } from "next/headers";
-import { getGroupByID, createGroup, deleteGroup } from "@/lib/db";
+import {
+  getGroupByID,
+  createGroup,
+  deleteGroup,
+  addMemberToGroupByID,
+} from "@/lib/db";
 import { Group, GroupClass } from "@/models";
 import { stringToObjectId } from "@/lib/utils";
 import bcrypt from "bcrypt";
 import { group } from "console";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 const saltRounds = 10;
 
@@ -49,77 +56,6 @@ type PostProps = {
   };
 };
 
-export async function POST(
-  request: NextRequest,
-  { params: { ID } }: PostProps
-) {
-  try {
-    const {
-      name,
-      description,
-      password,
-      photo,
-      tag,
-    }: {
-      name: string;
-      description: string;
-      password: string;
-      photo: string;
-      tag: string;
-    } = await request.json();
-
-    console.log({
-      name,
-      description,
-      password,
-      photo,
-      tag,
-    });
-
-    if (!ID)
-      return NextResponse.json({
-        error: {
-          message: "Please Provide a name and description for the group",
-        },
-      });
-
-    console.log("CREATE_GROUP-data", name, description, password);
-
-    if (!(name && description))
-      return NextResponse.json({
-        error: {
-          message: "Please Provide a name and description for the group",
-        },
-      });
-
-    if (
-      description.toLocaleLowerCase() === "general chat" ||
-      description.toLocaleLowerCase() === "generalchat" ||
-      description.toLocaleLowerCase() === "gegeneralchat"
-    )
-      return NextResponse.json({
-        error: {
-          message: '"general chat" is a reserved name',
-        },
-      });
-    const group = await createGroup({
-      ownerID: ID,
-      name,
-      description,
-      password: password ? true : false,
-      photo,
-      tag,
-    });
-
-    if (!group) throw new Error("Couldnt Create Group");
-
-    return NextResponse.json(group);
-  } catch (error) {
-    console.error({ error });
-    return NextResponse.json(null);
-  }
-}
-
 type PatchProps = {
   name?: string;
   description?: string;
@@ -130,6 +66,28 @@ type PatchProps = {
   };
   prop: "name" | "description" | "password" | "member";
 };
+
+export async function PUT(request: NextRequest, { params: { ID } }: PostProps) {
+  try {
+    const serverSession = await getServerSession(authOptions);
+
+    const user = serverSession?.user;
+
+    if (!(user && user.id)) throw new Error("Unauthorized Access");
+
+    const group = await addMemberToGroupByID({
+      groupID: ID,
+      userID: user.id,
+    });
+
+    if (!group) throw new Error("Could'n add member to group");
+
+    return NextResponse.json(group);
+  } catch (error) {
+    console.error({ error });
+    return NextResponse.json(null);
+  }
+}
 
 export async function PATCH(
   request: NextRequest,

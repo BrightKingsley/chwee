@@ -1,4 +1,5 @@
 // @ts-nocheck
+"use client";
 import React, {
   ChangeEvent,
   ChangeEventHandler,
@@ -158,7 +159,7 @@ export default function SendMessage({
         // TODO COMEBACK ADD_TYPES
         //@ts-ignore
         onSubmit={(e) => handleSend(e)}
-        className="relative flex items-end w-full max-w-md gap-2 pt-1 pb-1 mx-auto mt-auto"
+        className="relative flex items-end w-full max-w-md gap-2 pt-1 pb-1 mx-auto mt-auto px-2"
       >
         <div
           className={`relative bg-white rounded-xl flex items-center w-full gap-2 p-2 ${

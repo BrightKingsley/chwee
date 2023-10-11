@@ -2,7 +2,7 @@ import NextAuth, { Session, NextAuthOptions } from "next-auth";
 import GoogleProvider, { GoogleProfile } from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import {
-  addMemberToGroup,
+  addMemberToGroupByTag,
   connectDB,
   createUser,
   createWallet,

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import GoogleProvider, { GoogleProfile } from "next-auth/providers/google";
 import {
-  addMemberToGroup,
+  addMemberToGroupByTag,
   connectDB,
   createUser,
   createWallet,

@@ -1,5 +1,5 @@
 // Import necessary modules and dependencies
-import { Group } from "@/models";
+import { Group, User } from "@/models";
 import connectDB from "./connect-db";
 import { generatePassword, stringToObjectId } from "../utils";
 import { GroupClass } from "@/models/Group";
@@ -58,7 +58,7 @@ export async function createGroup({
       console.log("HASHED_PASS", hashedPassword);
 
       // Create the group with a hashed password
-      const group = await Group.create({
+      const groupDoc = await Group.create({
         owner: parsedID,
         name: name.trimEnd(),
         description: description.trimEnd(),
@@ -68,12 +68,22 @@ export async function createGroup({
         tag,
       });
 
-      if (!group) return null;
+      if (!groupDoc) return null;
 
       // Create a conversation for the group
       const conversation: ConversationClass | any = await createConversation({
-        chatID: group._id,
+        chatID: groupDoc._id,
       });
+
+      const group = {
+        owner: groupDoc.owner,
+        name: groupDoc.name,
+        description: groupDoc.description,
+        password: genPass,
+        members: groupDoc.members,
+        photo: groupDoc.photo,
+        tag: groupDoc.tag,
+      };
 
       // Check if the conversation was created successfully
       if (!conversation.id)
@@ -81,11 +91,11 @@ export async function createGroup({
 
       console.log("CREATED_CONVO", conversation);
 
-      return { group, password: genPass };
+      return group;
     }
 
     // Create the group without a password
-    const group = await Group.create({
+    const groupDoc = await Group.create({
       owner: parsedID,
       name: name.trimEnd(),
       description: description.trimEnd(),
@@ -96,17 +106,27 @@ export async function createGroup({
 
     // Create a conversation for the group
     const conversation: ConversationClass | any = await createConversation({
-      chatID: group._id,
+      chatID: groupDoc._id,
     });
+
+    const group = {
+      owner: groupDoc.owner,
+      name: groupDoc.name,
+      description: groupDoc.description,
+      members: groupDoc.members,
+      photo: groupDoc.photo,
+      tag: groupDoc.tag,
+    };
 
     // Check if the conversation was created successfully
     if (!conversation.id) throw new Error("Couldn't Create Group Conversation");
 
     console.log("CREATED_CONVO", conversation);
 
-    return { group };
+    return group;
   } catch (error) {
-    return { error } as any;
+    console.error({ error });
+    return null;
   }
 }
 
@@ -288,11 +308,11 @@ export async function getGroups({ filter }: { filter?: GroupFilter }) {
  * @param {string} params.userID - ID of the user to add to the group.
  * @returns {Promise<object>} - The updated group or an error object.
  */
-export async function addMemberToGroup({
-  name,
+export async function addMemberToGroupByTag({
+  tag,
   userID,
 }: {
-  name: string;
+  tag: string;
   userID: string;
 }) {
   try {
@@ -300,19 +320,97 @@ export async function addMemberToGroup({
     await connectDB();
 
     // Parse the user's ID
-    const parsedID = stringToObjectId(userID);
+    const parsedUserID = stringToObjectId(userID);
 
-    if (!parsedID) throw new Error("Invalid UserId");
+    if (!parsedUserID) throw new Error("Invalid UserId");
 
-    // Find the group by name and add the user as a member
-    const group = await Group.findOneAndUpdate(
+    // Find the group by tag and add the user as a member
+    const groupDoc = await Group.findOneAndUpdate(
       {
-        name,
+        tag,
+        members: { $nin: [parsedUserID] },
       },
-      { $push: { members: parsedID } }
-    );
+      { $addToSet: { members: parsedUserID } },
+      { new: true }
+    ).exec();
 
-    if (!group) return null;
+    if (!groupDoc) throw new Error("Couldn't Update Group doc");
+
+    const userDoc = await User.findOneAndUpdate(
+      { _id: parsedUserID, groups: { $nin: [groupDoc._id] } },
+      { $addToSet: { groups: groupDoc._id } },
+      { new: true }
+    ).exec();
+
+    if (!userDoc) throw new Error("Couldn't Update User doc");
+
+    console.log({ groupDoc, userDoc });
+
+    groupDoc.save();
+    userDoc.save();
+
+    // const groupMembers = groupDoc.members;
+    const group = {
+      _id: groupDoc._id,
+      members: groupDoc.members,
+    };
+
+    return group;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function addMemberToGroupByID({
+  groupID,
+  userID,
+}: {
+  groupID: string;
+  userID: string;
+}) {
+  try {
+    // Connect to the database
+    await connectDB();
+
+    // Parse the user's ID
+    const parsedUserID = stringToObjectId(userID);
+    const parsedGroupID = stringToObjectId(groupID);
+
+    if (!parsedUserID) throw new Error("Invalid UserId");
+
+    // Find the group by groupID and add the user as a member
+
+    const groupDoc = await Group.findOneAndUpdate(
+      {
+        _id: parsedGroupID,
+        members: { $nin: [parsedUserID] },
+      },
+      { $addToSet: { members: parsedUserID } },
+      { new: true }
+    ).exec();
+
+    if (!groupDoc) throw new Error("Couldn't Update Group doc");
+
+    const userDoc = await User.findOneAndUpdate(
+      { _id: parsedUserID, groups: { $nin: [groupDoc._id] } },
+      { $addToSet: { groups: groupDoc._id } },
+      { new: true }
+    ).exec();
+
+    if (!userDoc) throw new Error("Couldn't Update Group doc");
+
+    console.log({ groupDoc, userDoc });
+
+    groupDoc.save();
+    userDoc.save();
+
+    // const groupMembers = groupDoc.members;
+
+    const group = {
+      _id: groupDoc._id,
+      members: groupDoc.members,
+    };
 
     return group;
   } catch (error) {
