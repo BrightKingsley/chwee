@@ -17,8 +17,6 @@ export default function ClientOnlyPortal({
 
   const { actionCancel } = useContext(ModalContext);
 
-  console.log("CLIENT_ONLY_REACHED", actionCancel);
-
   useEffect(() => {
     ref.current = document.querySelector(selector);
     setMounted(true);

@@ -89,11 +89,17 @@ export async function POST(
         };
 
         console.log("<==========REACHED=========> 2");
-
-        await pusherServer.trigger(chatID, "incoming-message", {
-          message,
-          senderInfo,
-        });
+        if (process.env.NODE_ENV === "production") {
+          await pusherServer.trigger(chatID, "incoming-message", {
+            message,
+            senderInfo,
+          });
+        } else {
+          pusherServer.trigger(chatID, "incoming-message", {
+            message,
+            senderInfo,
+          });
+        }
 
         await sendMessage({ chatID, message });
 
@@ -131,10 +137,17 @@ export async function POST(
           photo: senderDoc.photo,
         };
 
-        await pusherServer.trigger(chatID, "incoming-message", {
-          message,
-          senderInfo,
-        });
+        if (process.env.NODE_ENV === "production") {
+          await pusherServer.trigger(chatID, "incoming-message", {
+            message,
+            senderInfo,
+          });
+        } else {
+          pusherServer.trigger(chatID, "incoming-message", {
+            message,
+            senderInfo,
+          });
+        }
 
         console.log("====REACHED-4 PUSHER=====", { ...message, ...senderInfo });
 
@@ -158,42 +171,47 @@ export async function GET(
   { params: { chatID } }: GetProps
 ) {
   try {
-    console.log(
-      "///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"
-    );
-
     const session = await getServerSession(authOptions);
-
     const userID = session?.user.id;
 
     if (!userID)
       return NextResponse.json({ error: { message: "Access Denied" } });
 
+    const { searchParams } = new URL(request.url);
+
+    const roomType = searchParams.get("roomType") as "group" | "p2p" | null;
+
+    if (!roomType || !(roomType === "group" || roomType === "p2p"))
+      throw new Error("Invalid RoomType");
+
     const parsedUserID = stringToObjectId(userID);
     const parsedChatID = stringToObjectId(chatID);
 
-    if (!parsedUserID || !parsedChatID)
+    const userDoc = await User.findById(parsedUserID);
+
+    if (!parsedUserID || !parsedChatID || !userDoc)
       return NextResponse.json({ error: { message: "Access Denied" } });
 
     console.log("CHAT_ID", chatID);
 
+    const chatDoc = await Chat.findById(parsedChatID);
+    if (!chatDoc) throw new Error("Chat document not found");
+
+    if (roomType === "p2p") {
+      if (!chatDoc.members.map((chat) => chat.toString()).includes(userID))
+        throw new Error("User Unauthorized");
+    } else {
+      if (!userDoc.groups.map((group) => group.toString()).includes(chatID))
+        throw new Error("User Unauthorized");
+    }
+    // if (
+    //   !userDoc.chats.map((chat) => chat.toString()).includes(chatID) &&
+    //   !userDoc.groups.map((group) => group.toString()).includes(chatID)
+    // )
+    //   throw new Error("User Unauthorized");
+
     const messageResult = await Conversation.findOne({ chatID });
-
-    if (!messageResult)
-      return NextResponse.json(
-        { error: { message: "Conversation not found" } },
-        { status: 404 }
-      );
-    const chatResult = await Chat.findById(parsedChatID);
-
-    if (!chatResult?.members.includes(parsedUserID))
-      if (!userID)
-        return NextResponse.json(
-          { error: { message: "Access Denied" } },
-          {
-            status: 401,
-          }
-        );
+    if (!messageResult) throw new Error("Conversation not found");
 
     const messages = await Promise.all(
       messageResult.messages.map(async (message) => {
@@ -208,22 +226,6 @@ export async function GET(
           tag: senderDoc.tag,
           photo: senderDoc.photo,
         };
-
-        // const combined = {
-        //   sender: message.sender,
-        //   imageContent: message.imageContent,
-        //   textContent: message.textContent,
-        //   replyTo: message.replyTo,
-        //   sendDate: message.sendDate,
-        //   _id: message._id,
-        //   createdAt: message.createdAt,
-        //   updatedAt: message.updatedAt,
-        //   username: senderDoc.username,
-        //   id: senderDoc._id,
-        //   tag: senderDoc.tag,
-        //   email: senderDoc.email,
-        photo: senderDoc.photo;
-        // };
 
         console.log("COMBINED: ", {
           message,

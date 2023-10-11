@@ -1,6 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
 
-import { deleteAllGroups, getGroups } from "@/lib/db";
+import { createGroup, deleteAllGroups, getGroups } from "@/lib/db";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET() {
   try {
@@ -27,5 +29,87 @@ export async function DELETE() {
     });
   } catch (error) {
     return NextResponse.json({ error });
+  }
+}
+
+type PostProps = {
+  params: {
+    ID: string;
+  };
+};
+
+export async function POST(request: NextRequest) {
+  try {
+    const {
+      name,
+      description,
+      password,
+      photo,
+      tag,
+    }: {
+      name: string;
+      description: string;
+      password: string;
+      photo: string;
+      tag: string;
+    } = await request.json();
+
+    console.log({
+      name,
+      description,
+      password,
+      photo,
+      tag,
+    });
+
+    const serverSession = await getServerSession(authOptions);
+
+    const user = serverSession?.user;
+
+    console.log("CREATE_GROUP_USER_SESSSION", { user });
+
+    if (!(user && user.id)) throw new Error("Unauthorized Access");
+
+    // if (!ID)
+    //   return NextResponse.json({
+    //     error: {
+    //       message: "Please Provide a name and description for the group",
+    //     },
+    //   });
+
+    console.log("CREATE_GROUP-data", name, description, password);
+
+    if (!(name && description))
+      return NextResponse.json({
+        error: {
+          message: "Please Provide a name and description for the group",
+        },
+      });
+
+    if (
+      description.toLocaleLowerCase() === "general chat" ||
+      description.toLocaleLowerCase() === "generalchat" ||
+      description.toLocaleLowerCase() === "gegeneralchat"
+    )
+      return NextResponse.json({
+        error: {
+          message: '"general chat" is a reserved name',
+        },
+      });
+    const group = await createGroup({
+      ownerID: user.id,
+      name,
+      description,
+      password: password ? true : false,
+      photo,
+      tag,
+    });
+
+    if (!group) throw new Error("Couldnt Create Group");
+
+    return NextResponse.json(group);
+  } catch (error) {
+    console.error({ error });
+    return NextResponse.json(null);
   }
 }

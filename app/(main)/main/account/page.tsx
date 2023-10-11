@@ -114,7 +114,7 @@ export default async function Account({
               <SignOutButton />
             </div>
             <AccountEditForm
-              show={searchParams ? searchParams.edit === "true" : false}
+              show={searchParams && searchParams.edit === "true" ? true : false}
             />
           </div>
         )}

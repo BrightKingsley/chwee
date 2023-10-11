@@ -21,7 +21,8 @@ export {
   getGroups,
   deleteGroup,
   deleteAllGroups,
-  addMemberToGroup,
+  addMemberToGroupByTag,
+  addMemberToGroupByID,
 } from "./groups";
 
 export {

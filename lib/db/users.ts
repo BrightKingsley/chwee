@@ -3,7 +3,7 @@ import connectDB from "./connect-db";
 import { dbToClientUser, generatePassword, stringToObjectId } from "../utils";
 import { UserClass } from "@/models/User";
 import bcrypt from "bcrypt";
-import { addMemberToGroup, createWallet } from ".";
+import { addMemberToGroupByTag, createWallet } from ".";
 import mongoose from "mongoose";
 import { ClientUser } from "@/types/models";
 
@@ -49,8 +49,8 @@ export async function createUser({
 
       const newUserWallet = await createWallet({ ownerID: user._id });
 
-      const group: any = addMemberToGroup({
-        name: "general chat",
+      const group: any = addMemberToGroupByTag({
+        tag: "general chat",
         userID: user.id,
       });
 
@@ -66,8 +66,8 @@ export async function createUser({
 
     const newUserWallet = await createWallet({ ownerID: user._id });
 
-    const group = addMemberToGroup({
-      name: "general chat",
+    const group = addMemberToGroupByTag({
+      tag: "generalChat",
       // Check this "toString". Is it needed?
       userID: user._id.toString(),
     });

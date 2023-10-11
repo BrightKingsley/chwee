@@ -8,8 +8,8 @@ export default function ScreenWidth({
   children: React.ReactNode;
 }) {
   return (
-    // <Media queries={{ small: { maxWidth: 640 } }}>
-    <Media queries={{ small: { maxWidth: 1200 } }}>
+    <Media queries={{ small: { maxWidth: 640 } }}>
+    {/* <Media queries={{ small: { maxWidth: 1200 } }}> */}
       {(matches) => {
         return matches.small ? children : <div>Screen Too big</div>;
       }}

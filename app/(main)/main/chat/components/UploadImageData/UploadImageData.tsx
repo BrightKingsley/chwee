@@ -1,3 +1,5 @@
+"use client";
+
 import { AnimateInOut, Close } from "@/components/shared";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
