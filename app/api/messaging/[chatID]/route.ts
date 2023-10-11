@@ -90,7 +90,7 @@ export async function POST(
 
         console.log("<==========REACHED=========> 2");
 
-        pusherServer.trigger(chatID, "incoming-message", {
+        await pusherServer.trigger(chatID, "incoming-message", {
           message,
           senderInfo,
         });
@@ -131,7 +131,7 @@ export async function POST(
           photo: senderDoc.photo,
         };
 
-        pusherServer.trigger(chatID, "incoming-message", {
+        await pusherServer.trigger(chatID, "incoming-message", {
           message,
           senderInfo,
         });
