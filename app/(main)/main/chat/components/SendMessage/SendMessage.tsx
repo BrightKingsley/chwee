@@ -103,7 +103,7 @@ export default function SendMessage({
       sendDate: null,
     }));
     setReplyMessage({ sender: "", imageContent: [], textContent: "" });
-    setPreviewImages([]);
+    setPreviewImages({ images: [], show: false });
     setSelectedImages([]);
   };
 
@@ -135,6 +135,7 @@ export default function SendMessage({
       const result = await res.json();
 
       console.log("MSG_RESULT", result);
+      resetInput();
     } catch (error) {
       console.error(error);
     }
