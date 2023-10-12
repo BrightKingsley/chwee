@@ -1,33 +1,48 @@
 // @ts-nocheck
-"use client";
 
-import { useState } from "react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getGroupByID } from "@/lib/db";
 import { Header } from "@/components/shared";
-import { Messages, SendMessage } from "../../../components";
-import { SendMessageType } from "@/app/chat/components/SendMessage/types";
+import GroupChat from "./groupChat";
+import Image from "next/image";
+import { GroupOptions } from "../../../components";
+import Link from "next/link";
+import { GROUPS } from "@/constants/routes";
 
-export default function Group({ params }: { params: { groupID: string } }) {
-  const [replyMessage, setReplyMessage] = useState<
-    SendMessageType["replyMessage"]
-  >({ sender: "", imageContent: [], textContent: "" });
-  const [inputRef, setInputRef] = useState<React.MutableRefObject<undefined>>();
+export default async function Group({
+  params,
+}: {
+  params: { groupID: string };
+}) {
+  const serverSession = await getServerSession(authOptions);
+  if (!serverSession || !serverSession.user || !serverSession.user.id)
+    return <h1>NO USER</h1>;
+
+  const group = await getGroupByID({ groupID: params.groupID });
+  if (!group) return null;
 
   return (
-    <main className="flex flex-col w-full h-screen bg-primary/10">
-      <Header title="Group" imgShown />
-      <Messages
-        chatID={params.groupID}
-        roomType="group"
-        setReplyMessage={setReplyMessage}
-        inputRef={inputRef}
+    <>
+      {/* <main className="flex flex-col w-full h-screen bg-primary/10"> */}
+      <Header
+        title={group.name}
+        imgShown
+        leading={[
+          <Link href={`${GROUPS}/info/${group.tag}`} key={Math.random()}>
+            <Image
+              src={group.photo}
+              width={150}
+              height={150}
+              className="rounded-full w-8 h-8 bg-gray-700"
+              alt="group photo"
+            />
+          </Link>,
+        ]}
+        trailing={[<GroupOptions key={Math.random()} groupID={params.groupID} />]}
       />
-      <SendMessage
-        replyMessage={replyMessage}
-        setReplyMessage={setReplyMessage}
-        chatID={params.groupID}
-        roomType="group"
-        getInputRef={setInputRef}
-      />
-    </main>
+      <GroupChat params={params} />
+      {/* </main> */}
+    </>
   );
 }

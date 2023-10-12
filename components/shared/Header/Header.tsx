@@ -35,10 +35,10 @@ export default function Header({
   };
 
   return (
-    <header className="relative pl-14 md:pl-0 z-10 flex items-center w-full px-3 py-1 bg-white border-b h-14 font-druk-wide-bold">
-      {leading && leading.map((item) => item)}
+    <header className="relative pl-14 md:pl-0 z-10 flex items-center w-full px-3 py-1 bg-white border-b h-14">
+      {leading && <div>{leading.map((item) => item)}</div>}
       <div className="ml-4 font-bold capitalize">
-        <h1>{title}</h1>
+        <h1 className="flex-1 font-druk-wide-bold">{title}</h1>
       </div>
       {/* {imgShown && (
         <button
@@ -58,9 +58,11 @@ export default function Header({
           )}
         </button>
       )} */}
-      <div className="ml-auto flex gap-2 items-center">
-        {trailing && trailing.map((item) => item)}
-      </div>
+      {trailing && (
+        <div className="ml-auto flex gap-2 items-center">
+          {trailing.map((item) => item)}
+        </div>
+      )}
     </header>
   );
 }

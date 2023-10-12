@@ -58,7 +58,7 @@ export default function ConnectionCard({ userID }: { userID: string }) {
       </div>
     </div>
   ) : (
-    <ListItem className="aspect-square !p-0 col-span-1 row-span-1 overflow-clip border-[1px]">
+    <ListItem className="aspect-square !p-0 col-span-1 row-span-1 overflow-clip border-[1px] !whitespace-nowrap !overflow-ellipsis">
       <Link href={`${CONNECT}/${user?.tag}`} className="w-full h-full">
         <div className="w-full h-full relative after:absolute a">
           <Image

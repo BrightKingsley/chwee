@@ -159,9 +159,7 @@ export async function getGroupByID({
     console.log("parsedID", parsedID);
 
     // Check if the group's ID is valid
-    if (!parsedID) {
-      return { error: "Group not Found" };
-    }
+    if (!parsedID) throw new Error("Group not Found");
 
     // Find the group by its ID
     const group = await Group.findById(parsedID);
@@ -169,7 +167,7 @@ export async function getGroupByID({
     console.log("FOUND_GROUP", group);
 
     // If the group is not found, return an error
-    if (!group) return { error: "Group not found" };
+    if (!group) throw new Error("Group not found");
 
     if (group) {
       if (group.password) {
@@ -180,15 +178,54 @@ export async function getGroupByID({
 
         const match = await bcrypt.compare(password, group.password);
 
-        return match
-          ? { group, password }
-          : { error: { message: "Password Incorrect" } };
+        if (!match) throw new Error("Password Incorrect");
+
+        return {
+          group,
+          password,
+        };
       }
     }
 
     return group;
   } catch (error) {
-    return { error };
+    console.error({ error });
+    return null;
+  }
+}
+
+export async function exitGroup({
+  userID,
+  groupID,
+}: {
+  userID: string;
+  groupID: string;
+}) {
+  try {
+    const parsedUserID = stringToObjectId(userID);
+    const parsedGroupID = stringToObjectId(groupID);
+
+    if (!(parsedUserID && parsedGroupID))
+      throw new Error("Invalid User or group ID");
+
+    const updatedGroup = await User.findOneAndUpdate(
+      { _id: parsedGroupID, members: parsedUserID }, // Check if userIdToRemove exists in connections array
+      { $pull: { members: parsedUserID } }, // Remove userIdToRemove from connections
+      { new: true } // Return the updated user document
+    ).exec();
+
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: parsedUserID, groups: parsedGroupID }, // Check if groupIdToRemove exists in groups array
+      { $pull: { groups: parsedGroupID } }, // Remove groupIdToRemove from groups
+      { new: true } // Return the updated user document
+    ).exec();
+
+    if (!(updatedGroup && updatedUser)) throw new Error("Couldn't exit group");
+
+    return "success";
+  } catch (error) {
+    console.error({ error });
+    return null;
   }
 }
 

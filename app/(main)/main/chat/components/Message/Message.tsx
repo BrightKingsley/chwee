@@ -34,6 +34,12 @@ interface ClientMessage {
 
 interface MessageProps extends ClientMessage {
   inputRef: any;
+  getViewImages: React.Dispatch<
+    React.SetStateAction<{
+      images: string[];
+      clickedImage: number;
+    }>
+  >;
 }
 
 const emotes = ["😂", "💩", "😢", "😭", "💔"];
@@ -44,6 +50,7 @@ export default function Message({
   message: messageWithSenderData,
   roomType,
   inputRef,
+  getViewImages,
 }: MessageProps) {
   const [showMore, setShowMore] = useState({ options: false, emojis: false });
 
@@ -152,7 +159,7 @@ export default function Message({
       </AnimateInOut>
       {replyTo?.sender && (
         <div
-          className={`flex gap-2 bg-white my-[2px] pl-3 rounded-lg ___ relative_ p-1_ after:absolute after:left-1 w-full after:inset-0 ${
+          className={`flex gap-2 bg-white/90 my-[2px] pl-3 rounded-lg ___ relative_ p-1_ after:absolute after:left-1 w-full after:inset-0 ${
             sender === userID
               ? "after:bg-brand-yellow"
               : "after:bg-brand-darkblue"
@@ -202,75 +209,76 @@ export default function Message({
               )}
             </IconButton>
           }
-          <OptionsMenu
-            show={showMore.options}
-            options={[
-              {
-                label: "reply",
-                onClick: () => {
-                  setReplyMessage({
-                    sender: sender === userID ? session.user.name! : username,
-                    textContent,
-                    imageContent,
-                  });
+          <div className="text- fixed -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2">
+            <OptionsMenu
+              show={showMore.options}
+              options={[
+                {
+                  label: "reply",
+                  onClick: () => {
+                    setReplyMessage({
+                      sender: sender === userID ? session.user.name! : username,
+                      textContent,
+                      imageContent,
+                    });
+                  },
                 },
-              },
-              {
-                label: "start",
-                onClick: () => {},
-              },
-              { label: "block", onClick: () => {} },
-            ]}
-          />
+                {
+                  label: "start",
+                  onClick: () => {},
+                },
+                { label: "block", onClick: () => {} },
+              ]}
+            />
+          </div>
         </div>
         <div
           className={`flex gap-2 ${
             sender === userID ? "flex-row-reverse" : ""
           }`}
         >
-          {roomType === "group" && sender !== userID && (
-            // <Link
-            //   href={`${CONNECT}/${tag}`}
-            //   className="flex items-center justify-center p-1 rounded-full w-7 h-7 translate-y-2_ shrink-0 bg-primary overflow-clip "
-            // >
-            //   {photo ? (
-            //     <Image src={photo} alt={username} fill draggable={false} />
-            //   ) : (
-            //     <UserIcon className="w-5 h-5 fill-gray-300" />
-            //   )}
-            // </Link>
-            <></>
+          {roomType === "group" && sender != userID && (
+            <Link
+              href={`${CONNECT}/${tag}`}
+              className="flex items-center justify-center p-1 rounded-full w-7 h-7 translate-y-2_ shrink-0 bg-primary overflow-clip "
+            >
+              {photo ? (
+                <Image src={photo} alt={username} fill draggable={false} />
+              ) : (
+                <UserIcon className="w-5 h-5 fill-gray-300" />
+              )}
+            </Link>
           )}
           <div className="flex flex-col w-full items-end_ justify-between_ gap-4_">
-            {imageContent && imageContent.length > 0
-              ? imageContent.map((image, i) => (
+            {imageContent && imageContent.length > 0 && (
+              <div className="grid rounded-md bg-brand-yellow/70 grid-cols-2 w-52 h-52 gap-[2px]">
+                {imageContent.map((image, i) => (
                   // <></>
-                  <div key={i} className="rounded-md w-52 h-52 overflow-clip">
+                  <div
+                    onClick={() =>
+                      getViewImages((prev) => ({
+                        ...prev,
+                        clickedImage: i,
+                        images: imageContent,
+                      }))
+                    }
+                    key={i}
+                    className={`rounded-md overflow-clip cursor-pointer ${
+                      imageContent.length > 1 ? "col-auto" : "col-span-full"
+                    }`}
+                  >
                     <Image src={image} alt="message img" fill />
                   </div>
-                ))
-              : null}
-            {/* {imageContent.length > 0 && (
-                <img
-                  src={imageContent[0]}
-                  alt="message img"
-                  width={300}
-                  height={300}
-                />
-              )} */}
-            {textContent && <p className={`p-1 flex-1 pr-4`}>{textContent}</p>}
+                ))}
+              </div>
+            )}
+
+            {textContent && <p className={`p-1 flex-1 pr-7`}>{textContent}</p>}
             <small className="absolute bottom-0 text-xs font-semibold text-gray-500 right-1">
               02:30
             </small>
           </div>
         </div>
-        {/* {imageContent?.length > 0 && (
-          <div className="w-40 h-32 rounded-md overflow-clip self-end_">
-            {imageContent.map((image) => (
-              <Image key={image} src={image} alt="sent by {user}" fill draggable={false} />
-            ))}
-          </div>
-        )} */}
       </div>
     </motion.div>
   );

@@ -1,4 +1,5 @@
 import { ListTile } from "@/components/shared";
+import { IconButton } from "@/components/mui";
 import Image from "next/image";
 import nft from "@/assets/images/nft.jpg";
 import Link from "next/link";
@@ -7,12 +8,17 @@ import { Suspense } from "react";
 import { BASE_URL } from "@/constants/routes";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { UserIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import {
+  InformationCircleIcon,
+  UserIcon,
+  XMarkIcon,
+} from "@heroicons/react/20/solid";
 import { getGroups } from "@/lib/db";
 import { ClientGroup } from "@/types/models";
 import { stringToObjectId } from "@/lib/utils";
 import { JoinGroupTrigger } from "../../components";
 import { User } from "@/models";
+import InfoOutlined from "@mui/icons-material/InfoOutlined";
 
 export default async function Groups({
   params,
@@ -85,6 +91,11 @@ export default async function Groups({
                     {group.description}
                   </p>
                 </div>
+                <IconButton className="rounded-full !p-3">
+                  <Link href={`${GROUPS}/info/${group.tag}`}>
+                    {<InfoOutlined className="w-8 h-8" />}
+                  </Link>
+                </IconButton>
               </Link>
             </ListTile>
           );

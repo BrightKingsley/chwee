@@ -15,14 +15,15 @@ export { createEvent, getEvent, getEvents, deleteEvent } from "./events";
 export { createConversation } from "./conversations";
 
 export {
-  createGroup,
-  getGroupInfo,
-  getGroupByID,
-  getGroups,
-  deleteGroup,
-  deleteAllGroups,
-  addMemberToGroupByTag,
   addMemberToGroupByID,
+  addMemberToGroupByTag,
+  createGroup,
+  exitGroup,
+  deleteAllGroups,
+  deleteGroup,
+  getGroupByID,
+  getGroupInfo,
+  getGroups,
 } from "./groups";
 
 export {
