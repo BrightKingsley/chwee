@@ -4,6 +4,9 @@ export type SendMessageType = {
     textContent?: string;
     imageContent?: string[];
   };
+  getInputRef: Dispatch<
+    SetStateAction<MutableRefObject<undefined> | undefined>
+  >;
   setReplyMessage: React.Dispatch<
     React.SetStateAction<{
       sender: string;

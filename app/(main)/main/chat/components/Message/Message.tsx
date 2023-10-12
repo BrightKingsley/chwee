@@ -32,6 +32,10 @@ interface ClientMessage {
   roomType: "group" | "p2p";
 }
 
+interface MessageProps extends ClientMessage {
+  inputRef: any;
+}
+
 const emotes = ["😂", "💩", "😢", "😭", "💔"];
 
 export default function Message({
@@ -39,7 +43,8 @@ export default function Message({
   userID, //TODO typecheck
   message: messageWithSenderData,
   roomType,
-}: ClientMessage) {
+  inputRef,
+}: MessageProps) {
   const [showMore, setShowMore] = useState({ options: false, emojis: false });
 
   useEffect(() => {
@@ -107,8 +112,9 @@ export default function Message({
             textContent,
             imageContent,
           });
+        inputRef.current.focus();
       }}
-      className={`relative min-w-[10rem] cursor-grab active:cursor-grabbing transition-colors duration-100 flex px-2 py-1 flex-col max-w-[90%] ${
+      className={`relative min-w-[8rem] cursor-grab active:cursor-grabbing transition-colors duration-100 flex px-1 py-1 flex-col max-w-[90%] ${
         sender === userID
           ? "bg-primary text-white TODO"
           : "bg-brand-lightblue text-white"
@@ -116,7 +122,9 @@ export default function Message({
         sender === userID
           ? "flex-row-reverse self-end rounded-l-xl"
           : "rounded-r-xl"
-      } w-fit rounded-b-[0.2rem] `}
+      } w-fit rounded-b-[0.2rem] ${
+        imageContent.length > 0 && !textContent && "!rounded-xl"
+      } `}
     >
       <AnimateInOut
         show={showMore.emojis}
@@ -176,7 +184,9 @@ export default function Message({
       )}
       <div className="relative flex flex-col">
         <div
-          className={`absolute bottom-0 ${sender === userID ? "-left-10" : "-right-10"} text-2xl`}
+          className={`absolute -bottom-2 ${
+            sender === userID ? "-left-8" : "-right-8"
+          } text-2xl`}
         >
           {
             <IconButton
@@ -219,22 +229,23 @@ export default function Message({
           }`}
         >
           {roomType === "group" && sender !== userID && (
-            <Link
-              href={`${CONNECT}/${tag}`}
-              className="flex items-center justify-center p-1 rounded-full w-7 h-7 translate-y-2_ shrink-0 bg-primary overflow-clip "
-            >
-              {photo ? (
-                <Image src={photo} alt={username} fill draggable={false} />
-              ) : (
-                <UserIcon className="w-5 h-5 fill-gray-300" />
-              )}
-            </Link>
+            // <Link
+            //   href={`${CONNECT}/${tag}`}
+            //   className="flex items-center justify-center p-1 rounded-full w-7 h-7 translate-y-2_ shrink-0 bg-primary overflow-clip "
+            // >
+            //   {photo ? (
+            //     <Image src={photo} alt={username} fill draggable={false} />
+            //   ) : (
+            //     <UserIcon className="w-5 h-5 fill-gray-300" />
+            //   )}
+            // </Link>
+            <></>
           )}
-          <div className="flex items-end justify-between w-full gap-4_">
+          <div className="flex flex-col w-full items-end_ justify-between_ gap-4_">
             {imageContent && imageContent.length > 0
               ? imageContent.map((image, i) => (
                   // <></>
-                  <div key={i} className="w-52 h-52">
+                  <div key={i} className="rounded-md w-52 h-52 overflow-clip">
                     <Image src={image} alt="message img" fill />
                   </div>
                 ))
@@ -247,8 +258,8 @@ export default function Message({
                   height={300}
                 />
               )} */}
-            <p className={`p-1 flex-1 pr-4`}>{textContent}</p>
-            <small className="bottom-0 right-0 text-xs font-semibold text-gray-500">
+            {textContent && <p className={`p-1 flex-1 pr-4`}>{textContent}</p>}
+            <small className="absolute bottom-0 text-xs font-semibold text-gray-500 right-1">
               02:30
             </small>
           </div>

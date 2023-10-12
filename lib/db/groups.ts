@@ -43,66 +43,35 @@ export async function createGroup({
     await connectDB();
 
     // Parse the owner's ID
-    const parsedID = stringToObjectId(ownerID.trimEnd());
+    const parsedOwnerID = stringToObjectId(ownerID.trimEnd());
 
+    let genPass = "";
+    let hashedPassword = "";
     if (password) {
       // Generate a random password
-      const genPass = generatePassword(8);
+      genPass = generatePassword(8);
 
       // Generate a salt for password hashing
       const salt = await bcrypt.genSalt(saltRounds);
 
       // Hash the generated password
-      const hashedPassword = await bcrypt.hash(genPass, salt);
+      hashedPassword = await bcrypt.hash(genPass, salt);
 
       console.log("HASHED_PASS", hashedPassword);
-
-      // Create the group with a hashed password
-      const groupDoc = await Group.create({
-        owner: parsedID,
-        name: name.trimEnd(),
-        description: description.trimEnd(),
-        password: hashedPassword,
-        members: [parsedID],
-        photo,
-        tag,
-      });
-
-      if (!groupDoc) return null;
-
-      // Create a conversation for the group
-      const conversation: ConversationClass | any = await createConversation({
-        chatID: groupDoc._id,
-      });
-
-      const group = {
-        owner: groupDoc.owner,
-        name: groupDoc.name,
-        description: groupDoc.description,
-        password: genPass,
-        members: groupDoc.members,
-        photo: groupDoc.photo,
-        tag: groupDoc.tag,
-      };
-
-      // Check if the conversation was created successfully
-      if (!conversation.id)
-        throw new Error("Couldn't Create Group Conversation");
-
-      console.log("CREATED_CONVO", conversation);
-
-      return group;
     }
 
-    // Create the group without a password
+    // Create the group with a hashed password
     const groupDoc = await Group.create({
-      owner: parsedID,
+      owner: parsedOwnerID,
       name: name.trimEnd(),
       description: description.trimEnd(),
-      members: [parsedID],
+      password: hashedPassword,
+      members: [parsedOwnerID],
       photo,
       tag,
     });
+
+    if (!groupDoc) return null;
 
     // Create a conversation for the group
     const conversation: ConversationClass | any = await createConversation({
@@ -113,6 +82,7 @@ export async function createGroup({
       owner: groupDoc.owner,
       name: groupDoc.name,
       description: groupDoc.description,
+      password: genPass,
       members: groupDoc.members,
       photo: groupDoc.photo,
       tag: groupDoc.tag,
@@ -120,6 +90,13 @@ export async function createGroup({
 
     // Check if the conversation was created successfully
     if (!conversation.id) throw new Error("Couldn't Create Group Conversation");
+
+    const userDoc = await User.findOneAndUpdate(
+      { _id: parsedOwnerID, groups: { $nin: [groupDoc._id] } },
+      { $addToSet: { groups: groupDoc._id } },
+      { new: true }
+    ).exec();
+    userDoc?.save;
 
     console.log("CREATED_CONVO", conversation);
 
@@ -380,7 +357,6 @@ export async function addMemberToGroupByID({
     if (!parsedUserID) throw new Error("Invalid UserId");
 
     // Find the group by groupID and add the user as a member
-
     const groupDoc = await Group.findOneAndUpdate(
       {
         _id: parsedGroupID,

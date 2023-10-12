@@ -12,6 +12,7 @@ import { getGroups } from "@/lib/db";
 import { ClientGroup } from "@/types/models";
 import { stringToObjectId } from "@/lib/utils";
 import { JoinGroupTrigger } from "../../components";
+import { User } from "@/models";
 
 export default async function Groups({
   params,
@@ -23,10 +24,11 @@ export default async function Groups({
   const serverSession = await getServerSession(authOptions);
   if (!serverSession || !serverSession.user || !serverSession.user.id)
     return null;
-
   const parsedUserID = stringToObjectId(serverSession.user.id);
+  const userDoc = await User.findById(parsedUserID);
+  if (!userDoc) return null;
 
-  console.log({ searchParams });
+  console.log({ searchParams, userDoc });
 
   const groups: ClientGroup[] | null = await getGroups({});
 
@@ -37,14 +39,12 @@ export default async function Groups({
       {groups?.length > 0 ? (
         groups.map((group, i) => {
           console.log({
-            __CONTAINS_:
-              //   group.members
-              //     .map((member) => member.toString())
-              //     .indexOf(serverSession.user.id!) !== -1,
-              // userID: serverSession.user.id!,
-              group.members
-                .map((member) => member.toString())
-                .includes(serverSession.user.id!),
+            // __CONTAINS_: group.members
+            //   .map((member) => member.toString())
+            //   .includes(serverSession.user.id!),
+            __CONTAINS_: userDoc.groups
+              .map((groupID) => groupID.toString())
+              .includes(group._id.toString()),
             userID: serverSession.user.id!,
 
             group,
@@ -52,10 +52,17 @@ export default async function Groups({
           return (
             <ListTile key={group._id.toString()} index={i}>
               <Link
+                // href={
+                //   group.members
+                //     .map((member) => member.toString())
+                //     .includes(serverSession.user.id!)
+                //     ? `${GROUPS}/${group._id}`
+                //     : `${GROUPS}?join=true&groupTag=${group.tag}`
+                // }
                 href={
-                  group.members
-                    .map((member) => member.toString())
-                    .includes(serverSession.user.id!)
+                  userDoc.groups
+                    .map((groupID) => groupID.toString())
+                    .includes(group._id.toString())
                     ? `${GROUPS}/${group._id}`
                     : `${GROUPS}?join=true&groupTag=${group.tag}`
                 }

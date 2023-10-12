@@ -6,6 +6,7 @@ import React, {
   FormHTMLAttributes,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -19,7 +20,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import { SendMessageType } from "./types";
 import { AnimateInOut, Close } from "@/components/shared";
-import { ChatContext } from "@/context";
+import { ChatContext, NotificationContext } from "@/context";
 import { useParams } from "next/navigation";
 import { MessageClass } from "@/models/Message";
 import { BASE_URL } from "@/constants/routes";
@@ -27,9 +28,9 @@ import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import Image from "next/image";
 import { StaticImport } from "next/dist/shared/lib/get-img-props";
-import { useUploadThing } from "@/lib/uploadThing";
 import { SendFunds, UploadImageData } from "..";
 import { IconButton, TextareaAutosize } from "@mui/material";
+import { useImageUpload } from "@/hooks";
 
 interface HTMLInputEvent extends Event {
   target: HTMLIFrameElement & EventTarget;
@@ -37,6 +38,7 @@ interface HTMLInputEvent extends Event {
 
 export default function SendMessage({
   replyMessage,
+  getInputRef,
   setReplyMessage,
   chatID,
   roomType,
@@ -44,7 +46,13 @@ export default function SendMessage({
   const { data } = useSession();
   const session: Session | null = data;
 
-  const uploadThing = useUploadThing("imageUploader", {});
+  const { triggerNotification } = useContext(NotificationContext);
+
+  const inputRef = useRef();
+
+  useEffect(() => {
+    getInputRef(inputRef);
+  }, []);
 
   const [message, setMessage] = useState<MessageBody>({
     textContent: "",
@@ -55,14 +63,31 @@ export default function SendMessage({
     replyTo: replyMessage,
   });
 
-  const [showOthers, setShowOthers] = useState(true);
+  const [showActionIcons, setShowActionIcons] = useState(true);
   const [toggleTransferForm, setToggleTransferForm] = useState(false);
   const [previewImages, setPreviewImages] = useState<{
     images: (string | any)[];
     show: boolean;
   }>({ images: [], show: false });
+  const [selectedImages, setSelectedImages] = useState<Files[]>([]);
 
-  // TODO COMEBACK
+  const { getInputProps, getRootProps, startUpload } = useImageUpload({
+    endpoint: "chatImageUploader",
+    setImg: setSelectedImages,
+    onClientUploadComplete(files) {
+      console.log("FILES: ", files);
+
+      const imageContent = files?.map((file) => file.url);
+
+      console.log("IMAGE_CONTENT", imageContent);
+      setMessage((prev) => ({
+        ...prev,
+        imageContent: imageContent as string[],
+      }));
+
+      sendMessage(imageContent);
+    },
+  });
 
   useEffect(() => {
     setMessage((prev) => ({ ...prev, replyTo: replyMessage }));
@@ -70,8 +95,16 @@ export default function SendMessage({
 
   const resetInput = () => {
     console.log("resetting!");
-    setMessage((prev) => ({ ...prev, textContent: "" }));
+    setMessage((prev) => ({
+      ...prev,
+      textContent: "",
+      imageContent: [],
+      replyTo: {},
+      sendDate: null,
+    }));
     setReplyMessage({ sender: "", imageContent: [], textContent: "" });
+    setPreviewImages([]);
+    setSelectedImages([]);
   };
 
   useEffect(() => {
@@ -112,7 +145,10 @@ export default function SendMessage({
 
     console.log("MSG_RES_TO_BE_SENT: ", message);
 
-    if (!message) return;
+    if (!message.textContent && message.imageContent < 1)
+      return triggerNotification("Invalid message data");
+
+    if (selectedImages.length > 0) return startUpload(selectedImages);
 
     const res = await sendMessage();
 
@@ -136,7 +172,9 @@ export default function SendMessage({
   };
 
   useEffect(() => {
-    return message.textContent ? setShowOthers(false) : setShowOthers(true);
+    return message.textContent
+      ? setShowActionIcons(false)
+      : setShowActionIcons(true);
   }, [message.textContent]);
 
   return (
@@ -144,6 +182,8 @@ export default function SendMessage({
       {previewImages.images.length > 0 && previewImages.show && (
         // NOTE Upload Image Data component
         <UploadImageData
+          startUpload={startUpload}
+          selectedImages={selectedImages}
           message={message}
           previewImages={previewImages}
           setMessage={setMessage}
@@ -159,7 +199,7 @@ export default function SendMessage({
         // TODO COMEBACK ADD_TYPES
         //@ts-ignore
         onSubmit={(e) => handleSend(e)}
-        className="relative flex items-end w-full max-w-md gap-2 pt-1 pb-1 mx-auto mt-auto px-2"
+        className="relative flex items-end w-full max-w-md gap-2 px-2 pt-1 pb-1 mx-auto mt-auto"
       >
         <div
           className={`relative bg-white rounded-xl flex items-center w-full gap-2 p-2 ${
@@ -175,8 +215,8 @@ export default function SendMessage({
               replyMessage.sender.length > 0 && "-translate-y-[99%]"
             } left-0 w-full bg-white pt-2 px-2 absolute -top-0 rounded-t-xl text-gray-500 `}
           >
-            <div className="relative p-1 px-3  rounded-md bg-primary/10 after:absolute after:left-1 after:inset-0 after:bg-primary after:h-[80%] after:w-1 after:my-auto top-full mx-auto after:rounded-full">
-              <div className="absolute top-0 right-0">
+            <div className="relative p-1_ pl-3  rounded-md min-h-[3.5rem] bg-primary/10 after:absolute after:left-1 after:inset-0 after:bg-primary after:h-[80%] after:w-1 after:my-auto top-full mx-auto after:rounded-full flex">
+              <div className="absolute top-0 right-0 z-10 w-fit">
                 <IconButton
                   onClick={() =>
                     setReplyMessage({
@@ -185,42 +225,41 @@ export default function SendMessage({
                       textContent: "",
                     })
                   }
-                  className="p-2 cursor-pointer active:opacity-50 active:scale-90"
+                  className="w-5 h-5 !p-0 bg-white rounded-full cursor-pointer active:opacity-50 active:scale-90"
                 >
                   <XMarkIcon className="w-5 h-5" />
                 </IconButton>
               </div>
-              <small className="text-xs">
-                {replyMessage.sender.toString() ===
-                session?.user.name?.toString()
-                  ? "You"
-                  : replyMessage.sender}
-              </small>
-              <span
-                onClick={() =>
-                  setReplyMessage({
-                    sender: "",
-                    imageContent: [],
-                    textContent: "",
-                  })
-                }
-                className="absolute top-0 right-0 p-2 cursor-pointer active:opacity-50 active:scale-90"
-              >
-                <XMarkIcon className="w-5 h-5" />
-              </span>
-              <div className="flex items-center">
-                {replyMessage.textContent && (
-                  <small className="font-bold">
-                    {replyMessage.textContent}
-                  </small>
-                )}
-                {replyMessage.imageContent &&
-                  replyMessage.imageContent?.length > 0 && (
-                    <>
+              <div className="flex flex-col justify-center gap-1">
+                <small className="text-xs text-primary">
+                  {replyMessage.sender.toString() ===
+                  session?.user.name?.toString()
+                    ? "You"
+                    : replyMessage.sender}
+                </small>
+                <div className="flex items-center">
+                  {replyMessage.textContent && (
+                    <small className="font-bold">
+                      {replyMessage.textContent}
+                    </small>
+                  )}
+                  {replyMessage.imageContent &&
+                    replyMessage.imageContent?.length > 0 && (
                       <small className="flex items-center gap-1">
                         <PhotoIcon className="w-4 h-4 fill-gray-500" />
                         Photo
                       </small>
+                    )}
+                </div>
+              </div>
+              <div className="ml-auto">
+                {replyMessage.imageContent &&
+                  replyMessage.imageContent?.length > 0 && (
+                    <>
+                      {/* <small className="flex items-center gap-1">
+                        <PhotoIcon className="w-4 h-4 fill-gray-500" />
+                        Photo
+                      </small> */}
                       <div className="ml-auto rounded-md w-14 h-14 overflow-clip bg-primary">
                         <Image
                           src={replyMessage.imageContent[0]}
@@ -235,7 +274,7 @@ export default function SendMessage({
           </AnimateInOut>
           {/* IMAGE & FUNDS */}
           <AnimateInOut
-            show={showOthers}
+            show={showActionIcons}
             init={{ width: 0, scale: 0 }}
             animate={{ width: "auto", scale: 1 }}
             out={{ width: 0, scale: 0 }}
@@ -243,6 +282,7 @@ export default function SendMessage({
             className="flex items-center -space-x-2"
           >
             <IconButton
+              {...getRootProps()}
               title="send funds"
               aria-label="send funds"
               onClick={() => setToggleTransferForm((prev) => !prev)}
@@ -259,12 +299,13 @@ export default function SendMessage({
               </label>
               <input
                 // value={""}
+                {...getInputProps()}
                 type="file"
                 id="image"
                 accept="image/*"
                 hidden
                 multiple
-                onChange={(e: any) => {
+                onInput={(e: any) => {
                   const target = e.target as HTMLInputElement;
 
                   // @ts-ignore TODO
@@ -272,14 +313,10 @@ export default function SendMessage({
                     (image) => image
                   );
 
-                  console.log("IMGS", imgs);
+                  console.log("IMGS", imgs, { files: target.files });
                   readURI(imgs);
-                  //TODO COMEBACK ADD_TYPES
-                  //@ts-ignore
-                  return setMessage((prev) => ({
-                    ...prev,
-                    imageContent: [target.value],
-                  }));
+
+                  // return setSelectedImage(img);
                 }}
               />
             </IconButton>
@@ -288,6 +325,7 @@ export default function SendMessage({
 
           {/* MESSAGE INPUT */}
           <TextareaAutosize
+            ref={inputRef}
             title="enter text"
             aria-label="enter message text"
             value={message.textContent}

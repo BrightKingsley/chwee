@@ -4,10 +4,14 @@ import { AnimateInOut, Close } from "@/components/shared";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { TextareaAutosize } from "@mui/material";
-import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
+import { IconButton } from "@/components/mui";
+import { PaperAirplaneIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { useUploadThing } from "@/lib/uploadThing";
 import { UploadButton } from "@uploadthing/react";
 import { OurFileRouter } from "@/app/api/uploadthing/core";
+import { useImageUpload } from "@/hooks";
+import { useState } from "react";
+import { UploadFileResponse } from "uploadthing/client";
 
 export default function UploadImageData({
   previewImages,
@@ -15,44 +19,28 @@ export default function UploadImageData({
   setMessage,
   message,
   sendMessage,
+  startUpload,
+  selectedImages,
 }: {
   previewImages: { images: (string | any)[]; show: boolean };
   setPreviewImages: React.Dispatch<
     React.SetStateAction<{ images: (string | any)[]; show: boolean }>
   >;
+  selectedImages: File[];
   sendMessage: Function;
   setMessage: React.Dispatch<React.SetStateAction<MessageBody>>;
   message: MessageBody;
+  startUpload: (
+    files: File[],
+    input?: undefined
+  ) => Promise<UploadFileResponse[] | undefined>;
 }): React.ReactNode {
-  const { startUpload, isUploading, permittedFileInfo } = useUploadThing(
-    "chatImageUploader",
-    {
-      onUploadProgress: (e) => {
-        console.log("E", e);
-      },
-      onClientUploadComplete: () => {
-        alert("uploaded successfully!");
-      },
-      onUploadError: () => {
-        alert("error occurred while uploading");
-      },
-      onUploadBegin: (e) => {
-        alert("upload has begun");
-        console.log("E:Upload Begin", e);
-      },
-    }
-  );
-
-  const handleUploadImage = async () => {
+  const handleUploadImage = async (e: React.SyntheticEvent) => {
     try {
-      console.log("IMAGECONTENT: ", message.imageContent);
-      if (message.imageContent.length < 1) return;
-      const res = await startUpload(message.imageContent);
-
-      console.log("UPLOADED_RES: ", res);
-      //   const upload = await res.json();
-
-      //   console.log(upload);
+      e.preventDefault();
+      console.log({ selectedImages });
+      const res = await startUpload(selectedImages);
+      console.log("FRON_UPLOAD_IMG", { res });
     } catch (error) {
       console.error(error);
     }
@@ -98,14 +86,22 @@ export default function UploadImageData({
             </SwiperSlide>
           ))}
         </Swiper>
-        <Close
-          close={() => {
-            setPreviewImages({ images: [], show: false });
-            setMessage((prev) => ({ ...prev, imageContent: [] }));
-          }}
-          className="absolute z-40 top-4 right-4 text-primary"
-        />
-        <div className="absolute z-40 flex items-center gap-2 mx-2 bottom-4">
+        <div className="absolute z-40 top-4 right-4">
+          <IconButton
+            onClick={() => {
+              setPreviewImages({ images: [], show: false });
+              setMessage((prev) => ({ ...prev, imageContent: [] }));
+            }}
+            className="text-gray-700 rounded-full"
+          >
+            <XMarkIcon className="w-8 h-8" />
+          </IconButton>
+        </div>
+
+        <form
+          onSubmit={handleUploadImage}
+          className="absolute z-40 flex items-center gap-2 mx-2 bottom-4"
+        >
           <TextareaAutosize
             value={message.textContent}
             // cols={5}
@@ -118,14 +114,28 @@ export default function UploadImageData({
             }
             className="relative w-full p-1 text-gray-700 border-none outline-none resize-none bg-primary/10 rounded-xl focus:outline-primary before:w-full before:h-full before:absolute before:top-0 before:left-0"
           />
-          ObjectId
-          {/* <button
-            className="mb-2 text-3xl active:scale-90 active:opacity-40 rounded-full bg-primary p-2 flex items-center justify-center mt-[0.65rem]"
-            onClick={handleUploadImage}
+          <IconButton
+            type="submit"
+            title="send image"
+            aria-label="send image"
+            className="flex items-center justify-center w-12 h-12 p-2 border rounded-full shadow-md shadow-primary/10 bg-body stroke-primary"
           >
-            <PaperAirplaneIcon className="w-6 h-6 fill-white" />
-          </button> */}
-          <UploadButton<OurFileRouter>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              // stroke="currentColor"
+              strokeWidth={2}
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+              />
+            </svg>{" "}
+          </IconButton>
+          {/* <UploadButton<OurFileRouter>
             endpoint="chatImageUploader"
             onUploadBegin={(req) => {
               console.log("BEGIN_REQ: ", req);
@@ -149,8 +159,8 @@ export default function UploadImageData({
 
               sendMessage(imageContent);
             }}
-          />
-        </div>
+          /> */}
+        </form>
       </div>
     </AnimateInOut>
   );

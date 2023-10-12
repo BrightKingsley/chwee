@@ -12,9 +12,14 @@ import { BASE_URL } from "@/constants/routes";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import LoadingMessages from "../LoadingMessages";
-import LocalHotelOutlinedIcon from '@mui/icons-material/LocalHotelOutlined';
+import LocalHotelOutlinedIcon from "@mui/icons-material/LocalHotelOutlined";
 //TODO typecheck
-export default function Messages({ setReplyMessage, chatID, roomType }: any) {
+export default function Messages({
+  setReplyMessage,
+  chatID,
+  roomType,
+  inputRef,
+}: any) {
   const [messages, setMessages] = useState<MessageClass[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -68,7 +73,10 @@ export default function Messages({ setReplyMessage, chatID, roomType }: any) {
         <LoadingMessages />
       ) : messages.length < 1 || !session || !session.user.id ? (
         <div className="flex items-center justify-center w-full h-full">
-          <p className="font-bold">no messages available <LocalHotelOutlinedIcon className="w-6 h-6 text-brand-lightblue" /> </p>
+          <p className="font-bold">
+            no messages available{" "}
+            <LocalHotelOutlinedIcon className="w-6 h-6 text-brand-lightblue" />{" "}
+          </p>
         </div>
       ) : (
         messages.map(({ id, ...message }, i) => (
@@ -79,6 +87,7 @@ export default function Messages({ setReplyMessage, chatID, roomType }: any) {
             roomType={roomType}
             userID={session.user.id}
             setReplyMessage={setReplyMessage}
+            inputRef={inputRef}
           />
         ))
       )}
