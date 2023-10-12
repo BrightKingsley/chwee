@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getGroupByID } from "@/lib/db";
 import { Header } from "@/components/shared";
-import GroupChat from "./groupChat";
+import GroupChat from "./GroupChat";
 import Image from "next/image";
 import { GroupOptions } from "../../../components";
 import Link from "next/link";
@@ -39,7 +39,9 @@ export default async function Group({
             />
           </Link>,
         ]}
-        trailing={[<GroupOptions key={Math.random()} groupID={params.groupID} />]}
+        trailing={[
+          <GroupOptions key={Math.random()} groupID={params.groupID} />,
+        ]}
       />
       <GroupChat params={params} />
       {/* </main> */}
