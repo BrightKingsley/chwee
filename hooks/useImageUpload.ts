@@ -1,3 +1,5 @@
+"use client";
+
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { NotificationContext } from "@/context";
 import { useUploadThing } from "@/lib/uploadThing";
