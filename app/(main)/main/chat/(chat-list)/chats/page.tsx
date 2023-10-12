@@ -33,7 +33,7 @@ export default async function Chats() {
         chats.map(
           (chat, i) =>
             chat.memberUserData && (
-              <ListTile key={Math.random()} index={i}>
+              <ListTile key={i} index={i}>
                 <Link
                   href={`${CHATS}/${chat.chatData._id}`}
                   className="flex items-center w-full gap-2 p-2 rounded-md bg-primary/10_"
@@ -59,6 +59,15 @@ export default async function Chats() {
                     <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[17rem] m-0 p-0">
                       last message, will do this soon
                     </p>
+                  </div>
+                  <div
+                    key={Math.random()}
+                    className="flex_ flex-col items-center"
+                  >
+                    <small className="mx-auto text-gray-700">17:00</small>
+                    <span className="rounded-full p-2 font-bold bg-primary shadow-md text-white w-5 h-5 shadow-primary/20 flex items-center  mx-auto justify-center">
+                      1
+                    </span>
                   </div>
                 </Link>
               </ListTile>

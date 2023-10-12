@@ -31,6 +31,7 @@ import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { SendFunds, UploadImageData } from "..";
 import { IconButton, TextareaAutosize } from "@mui/material";
 import { useImageUpload } from "@/hooks";
+import { Spinner } from "@/components/mui";
 
 interface HTMLInputEvent extends Event {
   target: HTMLIFrameElement & EventTarget;
@@ -70,6 +71,7 @@ export default function SendMessage({
     show: boolean;
   }>({ images: [], show: false });
   const [selectedImages, setSelectedImages] = useState<Files[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const { getInputProps, getRootProps, startUpload } = useImageUpload({
     endpoint: "chatImageUploader",
@@ -126,6 +128,7 @@ export default function SendMessage({
       messageData.imageContent = images;
     }
     try {
+      setLoading(true);
       console.log("SENDING_MESSAGE ==>", { messageData, message });
       const res = await fetch(`${BASE_URL}/api/messaging/${chatID}`, {
         method: "POST",
@@ -135,9 +138,11 @@ export default function SendMessage({
       const result = await res.json();
 
       console.log("MSG_RESULT", result);
+      setLoading(false);
       resetInput();
     } catch (error) {
-      console.error(error);
+      console.error({ error });
+      setLoading(false);
     }
   };
 
@@ -180,6 +185,16 @@ export default function SendMessage({
 
   return (
     <div className="relative w-full">
+      <AnimateInOut
+        init={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        out={{ opacity: 0 }}
+        show={loading}
+        className="fixed h-[calc(100vh-3.5rem)]_ w-[calc(100vw-3.5rem)]_ w-full bottom-4 bg-white/20 top-14_ right-0 z-50 flex items-center justify-center backdrop-blur_-sm h-fit"
+      >
+        <Spinner className="w-6 h-6" />
+      </AnimateInOut>
+
       {previewImages.images.length > 0 && previewImages.show && (
         // NOTE Upload Image Data component
         <UploadImageData

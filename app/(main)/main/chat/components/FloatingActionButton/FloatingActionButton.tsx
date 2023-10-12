@@ -4,8 +4,10 @@ import { useState } from "react";
 import { AnimateInOut } from "@/components/shared";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 import { CHATS, GROUPS, CHAT, CONNECT } from "@/constants/routes";
+import { Button, IconButton } from "@/components/mui";
 
 export default function FloatingActionButton({
   pathname,
@@ -22,36 +24,50 @@ export default function FloatingActionButton({
     <div
       className={`fixed z-10 flex items-center gap-2 p-1 text-xs bg-white ${
         expandButton ? "border" : ""
-      }  rounded-xl bottom-20 right-8 border-primary whitespace-nowrap transition-all duration-200`}
+      }  rounded-xl bottom-20 right-8 border-primary whitespace-nowrap`}
     >
-      <div
-        className={`flex items-center gap-3 rounded-xl transition-all duration-400 ${
-          expandButton ? "min-w-[5rem] opacity-100" : "w-0 opacity-0"
-        }`}
+      <motion.div
+        style={{ display: "flex" }}
+        animate={{ width: expandButton ? (groups ? "14rem" : "6.5rem") : 0 }}
+        className={`!flex items-center gap-3 rounded-xl `}
       >
-        {groups ? (
-          <Link
-            href={`${GROUPS}/create`}
-            className={`p-4 text-white cursor-pointer bg-gradient-primary opacity-50 scale-90 rounded-xl transition-all duration-100 ${
-              expandButton ? " scale-100" : "scale-0"
-            }`}
-          >
-            New Group
-          </Link>
-        ) : (
-          <></>
+        {groups && (
+          <motion.div animate={{ width: expandButton ? "6.5rem" : 0 }}>
+            <AnimateInOut
+              className="transition-transform duration-200"
+              init={{ opacity: 0, width: 0 }}
+              animate={{ opacity: 1, width: "6.5rem" }}
+              out={{ opacity: 0, width: 0 }}
+              transition={{ duration: expandButton ? 0.3 : 0.3 }}
+              show={expandButton}
+            >
+              <Link href={`${GROUPS}/create`}>
+                <Button className="!px-2" variant="gradient" fullWidth>
+                  {"New Group"}
+                </Button>
+              </Link>
+            </AnimateInOut>
+          </motion.div>
         )}
-
-        <Link
-          href={groups ? `${GROUPS}/discover` : `${CONNECT}`}
-          className={`p-4 text-white cursor-pointer bg-gradient-primary opacity-50 scale-90 rounded-xl transition-all duration-100 ${
-            expandButton ? " scale-100" : "scale-0"
-          }`}
-        >
-          {groups ? "Discover" : "Connect"}
-        </Link>
-      </div>
-      <button
+        <motion.div animate={{ width: expandButton ? "6.5rem" : 0 }}>
+          <AnimateInOut
+            className="transition-transform duration-200"
+            init={{ opacity: 0, width: 0 }}
+            animate={{ opacity: 1, width: "6.5rem" }}
+            out={{ opacity: 0, width: 0 }}
+            transition={{ duration: expandButton ? 0.3 : 0.3 }}
+            show={expandButton}
+          >
+            <Link href={groups ? `${GROUPS}/discover` : `${CONNECT}`}>
+              <Button className="!px-2" variant="gradient" fullWidth>
+                {groups ? "Discover" : "Connect"}
+              </Button>
+            </Link>
+          </AnimateInOut>
+        </motion.div>
+      </motion.div>
+      <IconButton
+        variant="gradient"
         onClick={() => setExpandButton((prev) => !prev)}
         className="p-1 transition-all duration-200 bg-gradient-primary rounded-xl"
       >
@@ -60,7 +76,7 @@ export default function FloatingActionButton({
             expandButton ? "rotate-45" : ""
           }`}
         />
-      </button>
+      </IconButton>
     </div>
   );
 }

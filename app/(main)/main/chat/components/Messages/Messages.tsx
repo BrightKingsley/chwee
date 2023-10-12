@@ -19,6 +19,7 @@ export default function Messages({
   chatID,
   roomType,
   inputRef,
+  getViewImages,
 }: any) {
   const [messages, setMessages] = useState<MessageClass[]>([]);
   const [loading, setLoading] = useState(false);
@@ -68,7 +69,7 @@ export default function Messages({
   }, [chatID]);
 
   return (
-    <div className="flex flex-col flex-1 mx-2 mt-1 space-y-4 overflow-y-auto">
+    <div className="flex flex-col flex-1 mx-2 mt-1 space-y-2 overflow-y-auto">
       {loading ? (
         <LoadingMessages />
       ) : messages.length < 1 || !session || !session.user.id ? (
@@ -88,6 +89,7 @@ export default function Messages({
             userID={session.user.id}
             setReplyMessage={setReplyMessage}
             inputRef={inputRef}
+            getViewImages={getViewImages}
           />
         ))
       )}
