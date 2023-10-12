@@ -44,7 +44,7 @@ export default function JoinGroupTrigger({
       confirm: () => joinGroup(),
       message: (
         <p>
-          Join <span className="text-primary font-bold">{groupName}</span>{" "}
+          Join <span className="font-bold text-primary">{groupName}</span>{" "}
           group?
         </p>
       ),

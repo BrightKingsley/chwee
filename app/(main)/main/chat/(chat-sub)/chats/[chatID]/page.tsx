@@ -13,6 +13,8 @@ export default function Chat({ params }: { params: { chatID: string } }) {
     imageContent?: string[];
   }>({ sender: "", textContent: "", imageContent: [] });
 
+  const [inputRef, setInputRef] = useState<React.MutableRefObject<undefined>>();
+
   return (
     <>
       <Header title={"Username"} />
@@ -21,12 +23,14 @@ export default function Chat({ params }: { params: { chatID: string } }) {
           chatID={params.chatID}
           setReplyMessage={setReplyMessage}
           roomType="p2p"
+          inputRef={inputRef}
         />
         <SendMessage
           replyMessage={replyMessage}
           setReplyMessage={setReplyMessage}
           chatID={params.chatID}
           roomType="p2p"
+          getInputRef={setInputRef}
         />
       </main>
     </>

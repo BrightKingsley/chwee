@@ -29,7 +29,6 @@ type GetProps = {
   };
 };
 
-// TODO refactor this shit
 export async function POST(
   request: NextRequest,
   { params: { chatID } }: PostProps
@@ -65,53 +64,30 @@ export async function POST(
 
     console.log("====REACHED-1=====");
 
+    const senderDoc = await getUserByID({ userID: parsedSenderID });
+
+    if (!senderDoc) throw new Error("Couldn't retrieve sender document");
+
+    let group;
+    let chat;
     if (roomType === "group") {
       console.log("ROOM_TYPE", roomType);
       // Find the group by its ID
-      const group = await Group.findById(parsedChatID);
+      group = await Group.findById(parsedChatID);
 
       console.log("GROUP", group, parsedSenderID);
 
       // Check if the group exists and if the members Set includes the memberIdToCheck
       if (
-        group &&
-        group.members.includes(parsedSenderID || group.owner === parsedSenderID)
-      ) {
-        const senderDoc = await getUserByID({ userID: parsedSenderID });
-
-        if (!senderDoc) throw new Error("Couldn't retrieve sender document");
-
-        const senderInfo = {
-          username: senderDoc.username,
-          id: senderDoc._id,
-          tag: senderDoc.tag,
-          photo: senderDoc.photo,
-        };
-
-        console.log("<==========REACHED=========> 2");
-        if (process.env.NODE_ENV === "production") {
-          await pusherServer.trigger(chatID, "incoming-message", {
-            message,
-            senderInfo,
-          });
-        } else {
-          pusherServer.trigger(chatID, "incoming-message", {
-            message,
-            senderInfo,
-          });
-        }
-
-        await sendMessage({ chatID, message });
-
-        return NextResponse.json({ success: true }); // The ID exists in the members Set
-      }
-
-      return NextResponse.json({ error: { message: "Access Denied" } }); // The ID does not exist in the members Set or the group doesn't exist
+        !group ||
+        !senderDoc.groups
+          .map((groupID) => groupID.toString())
+          .includes(group._id.toString())
+      )
+        throw new Error("Group not found or User Unauthorized");
     }
-
     if (roomType === "p2p") {
-      // Find the chat by its ID
-      const chat = await Chat.findById(parsedChatID);
+      chat = await Chat.findById(parsedChatID);
 
       console.log("====REACHED-3 P2P=====");
 
@@ -125,44 +101,41 @@ export async function POST(
       }
 
       // Check if the chat exists and if the members Set includes the memberIdToCheck
-      if (chat && chat.members.includes(parsedSenderID)) {
-        const senderDoc = await getUserByID({ userID: parsedSenderID });
-
-        if (!senderDoc) throw new Error("Couldn't retrieve sender document");
-
-        const senderInfo = {
-          username: senderDoc.username,
-          id: senderDoc._id,
-          tag: senderDoc.tag,
-          photo: senderDoc.photo,
-        };
-
-        if (process.env.NODE_ENV === "production") {
-          await pusherServer.trigger(chatID, "incoming-message", {
-            message,
-            senderInfo,
-          });
-        } else {
-          pusherServer.trigger(chatID, "incoming-message", {
-            message,
-            senderInfo,
-          });
-        }
-
-        console.log("====REACHED-4 PUSHER=====", { ...message, ...senderInfo });
-
-        await sendMessage({ chatID, message });
-
-        return NextResponse.json({ success: true }); // The ID exists in the members Set
-      }
-
-      return NextResponse.json({ error: { message: "Access Denied" } }); // The ID does not exist in the members Set or the chat doesn't exist
+      if (
+        !chat ||
+        !chat.members
+          .map((memberID) => memberID.toString())
+          .includes(message.sender.toString())
+      )
+        throw new Error("Group not found or User Unauthorized");
     }
-    return NextResponse.json({ error: { message: "Access Denied" } });
-  } catch (err) {
-    console.log("ERROR =>", err);
-    const error = err as Error;
-    return NextResponse.json(error);
+
+    const senderInfo = {
+      username: senderDoc.username,
+      id: senderDoc._id,
+      tag: senderDoc.tag,
+      photo: senderDoc.photo,
+    };
+
+    console.log("<==========REACHED=========> 2");
+    if (process.env.NODE_ENV === "production") {
+      await pusherServer.trigger(chatID, "incoming-message", {
+        message,
+        senderInfo,
+      });
+    } else {
+      pusherServer.trigger(chatID, "incoming-message", {
+        message,
+        senderInfo,
+      });
+    }
+
+    await sendMessage({ chatID, message });
+
+    return NextResponse.json({ success: true }); // The ID exists in
+  } catch (error) {
+    console.error({ error });
+    return NextResponse.json(null);
   }
 }
 
@@ -196,10 +169,9 @@ export async function GET(
 
     console.log("CHAT_ID", chatID);
 
-    const chatDoc = await Chat.findById(parsedChatID);
-    if (!chatDoc) throw new Error("Chat document not found");
-
     if (roomType === "p2p") {
+      const chatDoc = await Chat.findById(parsedChatID);
+      if (!chatDoc) throw new Error("Chat document not found");
       if (!chatDoc.members.map((chat) => chat.toString()).includes(userID))
         throw new Error("User Unauthorized");
     } else {

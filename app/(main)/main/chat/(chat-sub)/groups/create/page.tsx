@@ -16,6 +16,8 @@ import { generateClientDropzoneAccept } from "uploadthing/client";
 import { NotificationContext } from "@/context";
 import Link from "next/link";
 import { ClientGroup } from "@/types/models";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
+import { useImageUpload } from "@/hooks";
 
 type GroupCreate = {
   description: string;
@@ -39,41 +41,48 @@ export default function CreateGroup() {
   const [previewImage, setPreviewImage] = useState<any>("");
   const [selectedImage, setSelectedImage] = useState<File[]>([]);
 
-  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
-    setSelectedImage(acceptedFiles);
-  }, []);
-
-  const { startUpload, isUploading, permittedFileInfo } = useUploadThing(
-    "groupPhoto",
-    {
-      onUploadProgress: (e) => {
-        console.log("PROGRESS", e);
-      },
-      onClientUploadComplete: () => {},
-      onUploadError: (e) => {
-        console.log("ERROR", e);
-        triggerNotification("error occurred while uploading group photo");
-      },
-      onUploadBegin: (e) => {
-        // TODO remove thi notification
-        triggerNotification("upload has begun");
-        console.log("E:Upload Begin", e);
-      },
-    }
-  );
-
-  const fileTypes = permittedFileInfo?.config
-    ? Object.keys(permittedFileInfo?.config)
-    : [];
-
-  const { getInputProps, getRootProps } = useDropzone({
-    onDrop,
-    onDropAccepted(files, event) {
-      console.log({ files, event });
-      setGroupData((prev) => ({ ...prev, photo: files }));
-    },
-    accept: fileTypes ? generateClientDropzoneAccept(fileTypes) : undefined,
+  const { getInputProps, getRootProps, startUpload } = useImageUpload({
+    endpoint: "groupPhoto",
+    setImg: setSelectedImage,
   });
+
+  // const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
+  //   setSelectedImage(acceptedFiles);
+  // }, []);
+
+  // const { startUpload, isUploading, permittedFileInfo } = useUploadThing(
+  //   "groupPhoto",
+  //   {
+  //     onUploadProgress: (e) => {
+  //       console.log("PROGRESS", e);
+  //     },
+  //     onClientUploadComplete: () => {},
+  //     onUploadError: (e) => {
+  //       console.log("ERROR", e);
+  //       triggerNotification("error occurred while uploading group photo");
+  //     },
+  //     onUploadBegin: (e) => {
+  //       // TODO remove thi notification
+  //       triggerNotification("upload has begun");
+  //       console.log("E:Upload Begin", e);
+  //     },
+  //   }
+  // );
+
+  // console.log({ OURFILEROUTER: Object.keys(ourFileRouter) });
+
+  // const fileTypes = permittedFileInfo?.config
+  //   ? Object.keys(permittedFileInfo?.config)
+  //   : [];
+
+  // const { getInputProps, getRootProps } = useDropzone({
+  //   onDrop,
+  //   onDropAccepted(files, event) {
+  //     console.log({ files, event });
+  //     setSelectedImage(files);
+  //   },
+  //   accept: fileTypes ? generateClientDropzoneAccept(fileTypes) : undefined,
+  // });
 
   const readURI = (img: any) => {
     if (img) {
@@ -135,13 +144,13 @@ export default function CreateGroup() {
     <div className="">
       <form
         onSubmit={(e: React.SyntheticEvent) => handleCreate(e)}
-        className="mx-2 md:mx-14 mt-20 md:shadow-lg bg-white p-4 rounded-lg space-y-3 md:border"
+        className="p-4 mx-2 mt-20 space-y-3 bg-white rounded-lg md:mx-14 md:shadow-lg md:border"
       >
         <div
-          className="w-fit mx-auto relative cursor-pointer"
+          className="relative mx-auto cursor-pointer w-fit"
           {...getRootProps()}
         >
-          <div className="border w-24 h-24 rounded-full flex items-center justify-center overflow-clip">
+          <div className="flex items-center justify-center w-24 h-24 border rounded-full overflow-clip">
             {previewImage ? (
               <Image src={previewImage} alt="new" fill />
             ) : (
