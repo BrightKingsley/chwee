@@ -242,7 +242,7 @@ export default function Message({
           </div>
         </div>
         <div
-          className={` flex items-end gap-2_ ${
+          className={` flex items-start gap-2_ ${
             sender === userID ? "flex-row-reverse" : ""
           }`}
         >
@@ -274,10 +274,12 @@ export default function Message({
                     key={i}
                     className={`rounded-md relative fllex items-center justify-center overflow-clip cursor-pointer ${
                       imageContent.length > 1 ? "col-auto" : "col-span-full"
-                    }`}
+                    } ${imageContent.length > 4 && i === 3 && "bg-black/40"}`}
                   >
-                    {imageContent.length > 4 && (
-                      <p>+{imageContent.slice(4, -1).length}</p>
+                    {imageContent.length > 4 && i === 3 && (
+                      <p className="absolute z-10 text-2xl text-white">
+                        +{imageContent.slice(4, -1).length}
+                      </p>
                     )}
                     <Image src={image} alt="message img" fill />
                   </div>
