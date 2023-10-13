@@ -287,7 +287,7 @@ export default function Message({
                     }`}
                   >
                     {imageContent.length > 4 && i === 3 && (
-                      <div className="absolute z-10 flex items-center justify-center text-2xl text-white bg-black/40">
+                      <div className="absolute z-10 flex items-center justify-center w-full h-full text-2xl text-white bg-black/40">
                         +{imageContent.slice(3, -1).length}
                       </div>
                     )}
