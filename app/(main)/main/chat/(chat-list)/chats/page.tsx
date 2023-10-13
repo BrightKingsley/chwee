@@ -44,28 +44,28 @@ export default async function Chats() {
                       <Image
                         src={chat.memberUserData.photo}
                         alt=""
-                        fill
-                        sizes=""
+                        width={100}
+                        height={100}
                         priority
                       />
                     ) : (
                       <UserIcon className="w-8 h-8" />
                     )}
                   </div>
-                  <div className="w-full text-left ">
+                  <div className="flex-1 text-left w-full_ ">
                     <p className="font-semibold">
                       {chat.memberUserData.username}
                     </p>
-                    <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[17rem] m-0 p-0">
+                    <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[14rem] m-0 p-0">
                       last message, will do this soon
                     </p>
                   </div>
                   <div
                     key={Math.random()}
-                    className="pr-3 flex-col items-center"
+                    className="flex-col items-center pr-3"
                   >
                     <small className="mx-auto text-gray-700">17:00</small>
-                    <span className="rounded-full p-2 font-bold bg-primary shadow-md text-white w-5 h-5 shadow-primary/20 flex items-center  mx-auto justify-center">
+                    <span className="flex items-center justify-center w-5 h-5 p-2 mx-auto font-bold text-white rounded-full shadow-md bg-primary shadow-primary/20">
                       1
                     </span>
                   </div>

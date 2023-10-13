@@ -43,7 +43,7 @@ export default async function ChatPage({
               src={connectionDoc.photo}
               width={150}
               height={150}
-              className="rounded-full w-8 h-8 bg-gray-700"
+              className="rounded-full w-8 h-8 bg-primary"
               alt="group photo"
             />
           </Link>,

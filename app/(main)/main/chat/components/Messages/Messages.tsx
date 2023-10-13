@@ -69,7 +69,7 @@ export default function Messages({
   }, [chatID]);
 
   return (
-    <div className="flex flex-col flex-1 mx-2 mt-1 space-y-2 overflow-y-auto">
+    <div className="flex flex-col flex-1 pt-1 mx-2 space-y-2 overflow-y-auto">
       {loading ? (
         <LoadingMessages />
       ) : messages.length < 1 || !session || !session.user.id ? (

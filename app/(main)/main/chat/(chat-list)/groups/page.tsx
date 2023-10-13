@@ -72,7 +72,7 @@ export default async function Groups({
                     ? `${GROUPS}/${group._id}`
                     : `${GROUPS}?join=true&groupTag=${group.tag}`
                 }
-                className="flex items-center w-full gap-2 p-2 bg-white rounded-md bg-primary/10_"
+                className="flex items-center w-full gap-2 p-2 rounded-md bg-primary/10_"
               >
                 {searchParams &&
                   searchParams.join === "true" &&
@@ -85,13 +85,13 @@ export default async function Groups({
                 <div className="w-12 h-12 rounded-full overflow-clip shrink-0">
                   <Image src={group.photo} alt="" fill sizes="" priority />
                 </div>
-                <div className="w-full text-left ">
+                <div className="flex-1 text-left w-full_ ">
                   <p className="font-semibold">{group.name}</p>
-                  <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[17rem] m-0 p-0">
+                  <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[14rem] m-0 p-0">
                     {group.description}
                   </p>
                 </div>
-                <IconButton className="rounded-full w-6 h-6 !p-3">
+                <IconButton className="rounded-full !p-4">
                   <Link href={`${GROUPS}/info/${group.tag}`}>
                     {<InfoOutlined className="w-6 h-6" />}
                   </Link>

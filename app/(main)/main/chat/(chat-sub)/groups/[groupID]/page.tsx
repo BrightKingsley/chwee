@@ -22,6 +22,8 @@ export default async function Group({
   const group = await getGroupByID({ groupID: params.groupID });
   if (!group) return null;
 
+  // TODO try fetching messages here instead of a useEffect in the messages component
+
   return (
     <>
       {/* <main className="flex flex-col w-full h-screen bg-primary/10"> */}
@@ -34,7 +36,7 @@ export default async function Group({
               src={group.photo}
               width={150}
               height={150}
-              className="rounded-full w-8 h-8 bg-gray-700"
+              className="rounded-full w-8 h-8 bg-primary"
               alt="group photo"
             />
           </Link>,
