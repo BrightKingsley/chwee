@@ -91,9 +91,9 @@ export default async function Groups({
                     {group.description}
                   </p>
                 </div>
-                <IconButton className="rounded-full !p-3">
+                <IconButton className="rounded-full w-6 h-6 !p-3">
                   <Link href={`${GROUPS}/info/${group.tag}`}>
-                    {<InfoOutlined className="w-8 h-8" />}
+                    {<InfoOutlined className="w-6 h-6" />}
                   </Link>
                 </IconButton>
               </Link>
