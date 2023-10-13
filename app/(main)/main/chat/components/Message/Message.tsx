@@ -104,22 +104,26 @@ export default function Message({
       dragConstraints={{ left: 0, right: 0 }}
       onDragEnd={(e: PointerEvent, info) => {
         const offset = info.offset.x;
-        console.log(offset);
-        sender !== userID &&
-          offset > 100 &&
-          setReplyMessage({
-            sender: sender === userID ? session.user.name! : username,
-            textContent,
-            imageContent,
-          });
-        sender === userID &&
-          offset < -100 &&
-          setReplyMessage({
-            sender: sender === userID ? session.user.name! : username,
-            textContent,
-            imageContent,
-          });
-        inputRef.current.focus();
+        if (sender !== userID) {
+          if (offset > 100) {
+            setReplyMessage({
+              sender: sender === userID ? session.user.name! : username,
+              textContent,
+              imageContent,
+            });
+            inputRef.current.focus();
+          }
+        }
+        if (sender === userID) {
+          if (offset < -100) {
+            setReplyMessage({
+              sender: sender === userID ? session.user.name! : username,
+              textContent,
+              imageContent,
+            });
+            inputRef.current.focus();
+          }
+        }
       }}
       className={`relative min-w-[8rem] cursor-grab active:cursor-grabbing transition-colors duration-100 flex px-1 py-1 flex-col max-w-[90%] ${
         sender === userID
@@ -185,7 +189,13 @@ export default function Message({
         </div>
       )}
       {roomType === "group" && sender != userID && (
-        <small className={sender === userID ? "text-end" : "text-start"}>
+        <small
+          className={
+            sender === userID
+              ? "text-end text-brand-yellow"
+              : "text-start text-brand-darkblue"
+          }
+        >
           {username}
         </small>
       )}
@@ -200,7 +210,6 @@ export default function Message({
               onClick={() =>
                 setShowMore((prev) => ({ ...prev, options: !prev.options }))
               }
-              // className="p-3 text-gray-700 transition-all duration-200 rounded-full hover:bg-white/20 active:scale-75"
             >
               {showMore.options ? (
                 <XMarkIcon className="w-6 h-6 text-gray-600" />
@@ -233,7 +242,7 @@ export default function Message({
           </div>
         </div>
         <div
-          className={`flex gap-2 ${
+          className={`flex items-end gap-2 ${
             sender === userID ? "flex-row-reverse" : ""
           }`}
         >
@@ -273,8 +282,8 @@ export default function Message({
               </div>
             )}
 
-            {textContent && <p className={`p-1 flex-1 pr-7`}>{textContent}</p>}
-            <small className="absolute bottom-0 text-xs font-semibold text-gray-500 right-1">
+            {textContent && <p className={`p-1 flex-1 pr-9`}>{textContent}</p>}
+            <small className="absolute bottom-0 text-xs font-semibold text-gray-400 right-1">
               02:30
             </small>
           </div>

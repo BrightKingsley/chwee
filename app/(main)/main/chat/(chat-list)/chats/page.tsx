@@ -62,7 +62,7 @@ export default async function Chats() {
                   </div>
                   <div
                     key={Math.random()}
-                    className="flex_ flex-col items-center"
+                    className="pr-3 flex-col items-center"
                   >
                     <small className="mx-auto text-gray-700">17:00</small>
                     <span className="rounded-full p-2 font-bold bg-primary shadow-md text-white w-5 h-5 shadow-primary/20 flex items-center  mx-auto justify-center">

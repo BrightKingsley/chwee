@@ -107,7 +107,7 @@ export default function Navbar() {
             aria-label="open nav"
             onClick={() => setShowMenu((prev) => !prev)}
           >
-            <MenuOutlinedIcon className="w-8 h-8 fill-gray-600" />
+            <MenuOutlinedIcon className="w-8 h-8 fill-gray-600 text-gray-600" />
           </IconButton>
         </div>
       )}
@@ -129,7 +129,7 @@ export default function Navbar() {
                   onClick={() => setShowMenu((prev) => !prev)}
                   className="flex items-center justify-center mx-auto mt-3 md:hidden"
                 >
-                  <CloseOutlinedIcon className="w-8 h-8 fill-gray-600" />
+                  <CloseOutlinedIcon className="w-8 h-8 fill-gray-600 text-gray-600" />
                 </IconButton>
                 {navLinks.map(({ icon, link, name }) => (
                   <div key={Math.random()}>

@@ -14,7 +14,11 @@ import AccountBalanceWalletOutlined from "@mui/icons-material/AccountBalanceWall
 import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
 import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
 
-import { PhotoIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import {
+  ChevronRightIcon,
+  PhotoIcon,
+  XMarkIcon,
+} from "@heroicons/react/20/solid";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -177,12 +181,6 @@ export default function SendMessage({
     });
   };
 
-  useEffect(() => {
-    return message.textContent
-      ? setShowActionIcons(false)
-      : setShowActionIcons(true);
-  }, [message.textContent]);
-
   return (
     <div className="relative w-full">
       <AnimateInOut
@@ -295,17 +293,19 @@ export default function SendMessage({
             animate={{ width: "auto", scale: 1 }}
             out={{ width: 0, scale: 0 }}
             transition={{ type: "keyframes" }}
-            className="flex items-center -space-x-2"
+            className="flex items-center self-end -space-x-2"
           >
-            <IconButton
-              {...getRootProps()}
-              title="send funds"
-              aria-label="send funds"
-              onClick={() => setToggleTransferForm((prev) => !prev)}
-              className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
-            >
-              <LocalAtmOutlinedIcon className="w-6 h-6 fill-primary" />
-            </IconButton>
+            {roomType === "p2p" && (
+              <IconButton
+                {...getRootProps()}
+                title="send funds"
+                aria-label="send funds"
+                onClick={() => setToggleTransferForm((prev) => !prev)}
+                className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
+              >
+                <LocalAtmOutlinedIcon className="w-6 h-6 fill-primary" />
+              </IconButton>
+            )}
             <IconButton title="attach image">
               <label
                 htmlFor="image"
@@ -337,7 +337,15 @@ export default function SendMessage({
               />
             </IconButton>
           </AnimateInOut>
-          {/* <div className="relative z-10 flex items-end flex-1 transition-all duration-500 rounded-xl bg-primary/10_"> */}
+
+          {!showActionIcons && (
+            <IconButton
+              onClick={() => setShowActionIcons(true)}
+              className="self-end "
+            >
+              <ChevronRightIcon className="w-6 h-6 fill-primary text-primary" />
+            </IconButton>
+          )}
 
           {/* MESSAGE INPUT */}
           <TextareaAutosize
@@ -345,7 +353,12 @@ export default function SendMessage({
             title="enter text"
             aria-label="enter message text"
             value={message.textContent}
-            // cols={5}
+            onFocus={() => {
+              setShowActionIcons(false);
+            }}
+            onBlur={() => {
+              setShowActionIcons(true);
+            }}
             maxRows={5}
             onChange={(e) =>
               setMessage((prev) => ({

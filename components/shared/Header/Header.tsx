@@ -36,10 +36,10 @@ export default function Header({
 
   return (
     <header className="relative pl-14 md:pl-0 z-10 flex items-center w-full px-3 py-1 bg-white border-b h-14">
-      {leading && <div>{leading.map((item) => item)}</div>}
-      <div className="ml-4 font-bold capitalize">
-        <h1 className="flex-1 font-druk-wide-bold">{title}</h1>
-      </div>
+      {leading && <div className="mr-2">{leading.map((item) => item)}</div>}
+      <h1 className="flex-1 font-bold capitalize font-druk-wide-bold">
+        {title}
+      </h1>
       {/* {imgShown && (
         <button
           onClick={() => navigateToAccount()}
