@@ -161,7 +161,7 @@ export default function Message({
           </motion.div>
         ))}
       </AnimateInOut>
-      {replyTo?.sender && (
+      {replyTo && replyTo?.sender && (
         <div
           className={`flex gap-2 bg-white/90 my-[2px] pl-3 rounded-lg ___ relative_ p-1_ after:absolute after:left-1 w-full after:inset-0 ${
             sender === userID
@@ -181,11 +181,21 @@ export default function Message({
               {replyTo.textContent}
             </p>
           </div>
-          {replyTo.imageContent && replyTo.imageContent?.length > 0 && (
-            <div className="w-20 min-h-[5rem] h-full ml-auto">
-              <Image src={replyTo.imageContent[0]} alt="image content" fill />
-            </div>
-          )}
+          {replyTo &&
+            replyTo.imageContent &&
+            replyTo.imageContent.length > 0 && (
+              <div
+                onClick={() =>
+                  getViewImages((prev) => ({
+                    ...prev,
+                    images: replyTo.imageContent!,
+                  }))
+                }
+                className="w-20 min-h-[5rem] h-full ml-auto"
+              >
+                <Image src={replyTo.imageContent[0]} alt="image content" fill />
+              </div>
+            )}
         </div>
       )}
       {roomType === "group" && sender != userID && (
@@ -261,7 +271,7 @@ export default function Message({
           <div className="flex flex-col w-full items-end_ justify-between_ gap-4_">
             {imageContent && imageContent.length > 0 && (
               <div className="grid rounded-md bg-brand-yellow/70 grid-cols-2 w-52 h-52 gap-[2px]">
-                {imageContent.slice(0,4).map((image, i) => (
+                {imageContent.slice(0, 4).map((image, i) => (
                   // <></>
                   <div
                     onClick={() =>
