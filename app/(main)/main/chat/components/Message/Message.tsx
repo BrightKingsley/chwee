@@ -183,7 +183,7 @@ export default function Message({
           </div>
           {replyTo.imageContent && replyTo.imageContent?.length > 0 && (
             <div className="w-20 min-h-[5rem] h-full ml-auto">
-              <Image src={imageContent[0]} alt="image content" fill />
+              <Image src={replyTo.imageContent[0]} alt="image content" fill />
             </div>
           )}
         </div>
@@ -193,7 +193,7 @@ export default function Message({
           className={
             sender === userID
               ? "text-end text-brand-yellow"
-              : "text-start text-brand-darkblue"
+              : "text-start text-brand-darkblue_ text-brand-yellow  ml-12_"
           }
         >
           {username}
@@ -218,7 +218,7 @@ export default function Message({
               )}
             </IconButton>
           }
-          <div className="text- fixed -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2">
+          <div className="fixed -translate-x-1/2 -translate-y-1/2 text- left-1/2 top-1/2">
             <OptionsMenu
               show={showMore.options}
               options={[
@@ -242,14 +242,14 @@ export default function Message({
           </div>
         </div>
         <div
-          className={`flex items-end gap-2 ${
+          className={` flex items-end gap-2_ ${
             sender === userID ? "flex-row-reverse" : ""
           }`}
         >
           {roomType === "group" && sender != userID && (
             <Link
               href={`${CONNECT}/${tag}`}
-              className="flex items-center justify-center p-1 rounded-full w-7 h-7 translate-y-2_ shrink-0 bg-primary overflow-clip "
+              className="flex items-center justify-center mb-1 rounded-full w-7 h-7 translate-y-2_ shrink-0 bg-primary overflow-clip "
             >
               {photo ? (
                 <Image src={photo} alt={username} fill draggable={false} />
@@ -272,17 +272,20 @@ export default function Message({
                       }))
                     }
                     key={i}
-                    className={`rounded-md overflow-clip cursor-pointer ${
+                    className={`rounded-md relative fllex items-center justify-center overflow-clip cursor-pointer ${
                       imageContent.length > 1 ? "col-auto" : "col-span-full"
                     }`}
                   >
+                    {imageContent.length > 4 && (
+                      <p>+{imageContent.slice(4, -1).length}</p>
+                    )}
                     <Image src={image} alt="message img" fill />
                   </div>
                 ))}
               </div>
             )}
 
-            {textContent && <p className={`p-1 flex-1 pr-9`}>{textContent}</p>}
+            {textContent && <p className={`p-1 flex-1 pr-10`}>{textContent}</p>}
             <small className="absolute bottom-0 text-xs font-semibold text-gray-400 right-1">
               02:30
             </small>
