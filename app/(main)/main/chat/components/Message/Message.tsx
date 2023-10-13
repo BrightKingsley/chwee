@@ -284,12 +284,12 @@ export default function Message({
                     key={i}
                     className={`rounded-md relative flex items-center justify-center overflow-clip cursor-pointer ${
                       imageContent.length > 1 ? "col-auto" : "col-span-full"
-                    } ${imageContent.length > 4 && i === 3 && "bg-black/40"}`}
+                    }`}
                   >
                     {imageContent.length > 4 && i === 3 && (
-                      <p className="absolute z-10 text-2xl text-white">
-                        +{imageContent.slice(4, -1).length}
-                      </p>
+                      <div className="absolute z-10 flex items-center justify-center text-2xl text-white bg-black/40">
+                        +{imageContent.slice(3, -1).length}
+                      </div>
                     )}
                     <Image src={image} alt="message img" fill />
                   </div>
