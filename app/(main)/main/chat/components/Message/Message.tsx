@@ -261,7 +261,7 @@ export default function Message({
           <div className="flex flex-col w-full items-end_ justify-between_ gap-4_">
             {imageContent && imageContent.length > 0 && (
               <div className="grid rounded-md bg-brand-yellow/70 grid-cols-2 w-52 h-52 gap-[2px]">
-                {imageContent.map((image, i) => (
+                {imageContent.slice(0,4).map((image, i) => (
                   // <></>
                   <div
                     onClick={() =>
@@ -272,7 +272,7 @@ export default function Message({
                       }))
                     }
                     key={i}
-                    className={`rounded-md relative fllex items-center justify-center overflow-clip cursor-pointer ${
+                    className={`rounded-md relative flex items-center justify-center overflow-clip cursor-pointer ${
                       imageContent.length > 1 ? "col-auto" : "col-span-full"
                     } ${imageContent.length > 4 && i === 3 && "bg-black/40"}`}
                   >
