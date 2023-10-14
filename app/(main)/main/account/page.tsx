@@ -146,13 +146,13 @@ function GroupAvatar({ groupID }: { groupID: string }) {
           <div>
             <p className="font-bold">{group.name}</p>
             <small className="text-primary">{group.tag}</small>
-            <div className="flex gap-1 items-center">
+            <div className="flex items-center gap-1">
               <small>{group.membersCount} members</small>
               <small>
                 {group.hasPassword ? (
-                  <LockOutlined className="w-3 h-3 fill-red-400 text-red-400" />
+                  <LockOutlined className="w-3 h-3 text-red-400 fill-red-400" />
                 ) : (
-                  <LockOpenOutlined className="w-3 h-3 fill-green-400 text-green-400" />
+                  <LockOpenOutlined className="w-3 h-3 text-green-400 fill-green-400" />
                 )}
               </small>
             </div>
