@@ -58,7 +58,7 @@ export default function ConnectOptions({ userID }: { userID: string }) {
           //   translateY: open ? `${(i + 1.2) * 100 + i * 8}%` : 0,
           //   opacity: open ? 1 : 0,
           // }}
-          // key={i}
+          key={i}
           animate={{ rotate: open ? `-${(i + 1) * 60}deg` : 0 }}
           transition={{ duration: 0.6, delay: (i + 1) * 0.1 }}
           className={`absolute w-fit h-full top-0 z-10`}
