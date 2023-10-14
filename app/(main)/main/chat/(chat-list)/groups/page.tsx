@@ -57,23 +57,7 @@ export default async function Groups({
           });
           return (
             <ListTile key={group._id.toString()} index={i}>
-              <Link
-                // href={
-                //   group.members
-                //     .map((member) => member.toString())
-                //     .includes(serverSession.user.id!)
-                //     ? `${GROUPS}/${group._id}`
-                //     : `${GROUPS}?join=true&groupTag=${group.tag}`
-                // }
-                href={
-                  userDoc.groups
-                    .map((groupID) => groupID.toString())
-                    .includes(group._id.toString())
-                    ? `${GROUPS}/${group._id}`
-                    : `${GROUPS}?join=true&groupTag=${group.tag}`
-                }
-                className="flex items-center w-full gap-2 p-2 rounded-md bg-primary/10_"
-              >
+              <div className="flex items-center w-full gap-2 p-2 rounded-md bg-primary/10_">
                 {searchParams &&
                   searchParams.join === "true" &&
                   searchParams.groupTag === group.tag && (
@@ -88,18 +72,27 @@ export default async function Groups({
                 >
                   <Image src={group.photo} alt="" fill sizes="" priority />
                 </Link>
-                <div className="flex-1 text-left w-full_ ">
+                <Link
+                  href={
+                    userDoc.groups
+                      .map((groupID) => groupID.toString())
+                      .includes(group._id.toString())
+                      ? `${GROUPS}/${group._id}`
+                      : `${GROUPS}?join=true&groupTag=${group.tag}`
+                  }
+                  className="flex-1 text-left w-full_ "
+                >
                   <p className="font-semibold">{group.name}</p>
                   <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[14rem] m-0 p-0">
                     {group.description}
                   </p>
-                </div>
+                </Link>
                 <IconButton className="rounded-full !p-4">
                   <Link href={`${GROUPS}/info/${group.tag}`}>
                     {<InfoOutlined className="w-6 h-6" />}
                   </Link>
                 </IconButton>
-              </Link>
+              </div>
             </ListTile>
           );
         })

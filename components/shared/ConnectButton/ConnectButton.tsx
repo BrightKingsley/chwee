@@ -56,9 +56,7 @@ export default function ConnectButton({
           confirm: () => connectWithUser(),
         })
       }
-      className={`${
-        color === "gray" ? "!bg-gray-600" : "bg-green-400_ bg-gray-600"
-      } ${
+      className={`${color === "gray" ? "bg-gray-600" : "bg-primary"} ${
         variant === "circle" ? "rounded-full" : "rounded-md"
       }  p-2 font-druk-wide-bold text-white !bg-gray-600 hover:border`}
     >

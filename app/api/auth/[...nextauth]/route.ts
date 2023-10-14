@@ -156,9 +156,13 @@ export const authOptions: NextAuthOptions = {
         if (!(userExists && user) && profile?.email && profile?.name) {
           const newUser = await createUser({
             email: profile.email.toString().trim(),
-            username: profile.name.toString().trim(),
+            username: profile.name.toString().trim().split("").reverse().join(),
             photo: googleProfile.picture,
-            tag: `@${profile.name.split(" ")[0]}${generatePassword(6)}`,
+            tag: `@${profile.name
+              .split(" ")[0]
+              .split("")
+              .reverse()
+              .join()}${generatePassword(6)}`,
           });
           if (!newUser) return false;
           user = newUser;
@@ -174,8 +178,7 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async jwt({ token, user, account, profile, session, trigger }) {
-      if (!token || !token.email || !token.id)
-        return { ...token, error: "UNAUTHORIZED" };
+      if (!token || !token.email || !token.id) return token;
 
       try {
         await connectDB();

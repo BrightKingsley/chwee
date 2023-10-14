@@ -18,7 +18,10 @@ export default function GroupAvatar({ groupID }: { groupID: string }) {
   if (!group) return null;
 
   return (
-    <Link href={group.tag} className="rounded-md shrink-0 w-60">
+    <Link
+      href={group.tag}
+      className="rounded-md shrink-0 w-60 !whitespace-nowrap !overflow-ellipsis px-[2px]"
+    >
       <Card className="border-[1px]">
         <ListItem className="flex items-center gap-2">
           <div className="w-16 h-16 rounded-full overflow-clip">
@@ -31,9 +34,9 @@ export default function GroupAvatar({ groupID }: { groupID: string }) {
               <small>{group.membersCount} members</small>
               <small>
                 {group.hasPassword ? (
-                  <LockOutlined className="w-3 h-3 fill-red-400" />
+                  <LockOutlined className="w-3 h-3 fill-red-400 text-red-400" />
                 ) : (
-                  <LockOpenOutlined className="w-3 h-3 fill-green-400" />
+                  <LockOpenOutlined className="w-3 h-3 fill-green-400 text-green-400" />
                 )}
               </small>
             </div>
