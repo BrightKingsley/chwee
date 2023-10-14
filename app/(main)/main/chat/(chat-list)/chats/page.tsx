@@ -34,10 +34,7 @@ export default async function Chats() {
           (chat, i) =>
             chat.memberUserData && (
               <ListTile key={i} index={i}>
-                <Link
-                  href={`${CHATS}/${chat.chatData._id}`}
-                  className="flex items-center w-full gap-2 p-2 rounded-md bg-primary/10_"
-                >
+                <div className="flex items-center w-full gap-2 p-2 rounded-md bg-primary/10_">
                   <Link
                     href={`${CONNECT}/${chat.memberUserData.tag}`}
                     className="flex items-center justify-center w-12 h-12 text-gray-200 rounded-full overflow-clip shrink-0 bg-deep-orange-400"
@@ -55,24 +52,24 @@ export default async function Chats() {
                       <UserIcon className="w-8 h-8" />
                     )}
                   </Link>
-                  <div className="flex-1 text-left w-full_ ">
+                  <Link
+                    href={`${CHATS}/${chat.chatData._id}`}
+                    className="flex-1 text-left w-full_ "
+                  >
                     <p className="font-semibold">
                       {chat.memberUserData.username}
                     </p>
                     <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[14rem] m-0 p-0">
                       last message, will do this soon
                     </p>
-                  </div>
-                  <div
-                    key={Math.random()}
-                    className="flex-col items-center pr-3"
-                  >
+                  </Link>
+                  <div className="flex-col items-center pr-3">
                     <small className="mx-auto text-gray-700">17:00</small>
                     <div className="flex items-center justify-center w-5 h-5 p-1 mx-auto text-xs font-bold text-white rounded-full shadow-md bg-primary shadow-primary/20">
                       <small>1</small>
                     </div>
                   </div>
-                </Link>
+                </div>
               </ListTile>
             )
         )
@@ -85,29 +82,3 @@ export default async function Chats() {
     </>
   );
 }
-
-/*
- {
-    chatData: {
-      _id: '650f75061fd5a15a2b6a7961',
-      password: '',
-      members: [Array],
-      createdAt: '2023-09-23T23:30:14.989Z',
-      updatedAt: '2023-09-23T23:30:14.989Z',
-      __v: 0
-    },
-    memberUserData: {
-      _id: '650b0b097ec0ca45ad0b631c',
-      username: 'Bright Kingsley',
-      email: 'briggskvngzz@gmail.com',
-      tag: '@Bright16952225372230.36',
-      connections: [],
-      groups: [],
-      photo: 'https://lh3.googleusercontent.com/a/ACg8ocK3vaDtlz1-pjVYVpFHq_bzsfPh24hA5uXyCMHCMJma6is=s96-c',
-      createdAt: '2023-09-20T15:08:57.233Z',
-      updatedAt: '2023-09-20T15:08:57.233Z',
-      __v: 0
-    }
-  }
- 
- */

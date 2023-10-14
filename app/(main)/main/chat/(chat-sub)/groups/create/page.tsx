@@ -46,44 +46,6 @@ export default function CreateGroup() {
     setImg: setSelectedImage,
   });
 
-  // const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
-  //   setSelectedImage(acceptedFiles);
-  // }, []);
-
-  // const { startUpload, isUploading, permittedFileInfo } = useUploadThing(
-  //   "groupPhoto",
-  //   {
-  //     onUploadProgress: (e) => {
-  //       console.log("PROGRESS", e);
-  //     },
-  //     onClientUploadComplete: () => {},
-  //     onUploadError: (e) => {
-  //       console.log("ERROR", e);
-  //       triggerNotification("error occurred while uploading group photo");
-  //     },
-  //     onUploadBegin: (e) => {
-  //       // TODO remove thi notification
-  //       triggerNotification("upload has begun");
-  //       console.log("E:Upload Begin", e);
-  //     },
-  //   }
-  // );
-
-  // console.log({ OURFILEROUTER: Object.keys(ourFileRouter) });
-
-  // const fileTypes = permittedFileInfo?.config
-  //   ? Object.keys(permittedFileInfo?.config)
-  //   : [];
-
-  // const { getInputProps, getRootProps } = useDropzone({
-  //   onDrop,
-  //   onDropAccepted(files, event) {
-  //     console.log({ files, event });
-  //     setSelectedImage(files);
-  //   },
-  //   accept: fileTypes ? generateClientDropzoneAccept(fileTypes) : undefined,
-  // });
-
   const readURI = (img: any) => {
     if (img) {
       let reader = new FileReader();
@@ -125,26 +87,11 @@ export default function CreateGroup() {
     return triggerNotification("Failed to create group, try again.");
   };
 
-  // async function handleUploadImage() {
-  //   try {
-  //     console.log("IMAGECONTENT: ", selectedImage);
-  //     if (selectedImage.length < 1) return;
-  //     const res = await startUpload(selectedImage as File[]);
-
-  //     console.log("UPLOADED_RES: ", res);
-  //     //   const upload = await res.json();
-  //     return res;
-  //     //   console.log(upload);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
   return (
     <div className="">
       <form
         onSubmit={(e: React.SyntheticEvent) => handleCreate(e)}
-        className="p-4 mx-2 mt-20 space-y-3 bg-white rounded-lg md:mx-14 md:shadow-lg md:border"
+        className="p-4 pt-20 mx-2 space-y-3 bg-white rounded-lg md:mx-14 md:shadow-lg md:border"
       >
         <div
           className="relative mx-auto cursor-pointer w-fit"

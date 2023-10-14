@@ -2,7 +2,7 @@
 
 import { ModalContext, NotificationContext } from "@/context";
 import { Input } from "@material-tailwind/react";
-import { Card, IconButton } from "@/components/mui";
+import { Card, IconButton, Spinner } from "@/components/mui";
 import { useSession } from "next-auth/react";
 import { useContext, useState } from "react";
 import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
@@ -14,26 +14,82 @@ import Image from "next/image";
 import { Overlay } from "@/components/shared";
 import { Button } from "@/components/mui";
 import Link from "next/link";
-import { ACCOUNT } from "@/constants/routes";
+import { ACCOUNT, BASE_URL } from "@/constants/routes";
+import { useRouter } from "next/navigation";
+import { useImageUpload } from "@/hooks";
 
 export default function AccountEditForm({ show }: { show: boolean }) {
   const { data } = useSession();
   const session = data;
 
   // Context
-  const {} = useContext(NotificationContext);
+  const { triggerNotification } = useContext(NotificationContext);
 
   // State
   const [previewImage, setPreviewImage] = useState<any>("");
+  const [selectedImage, setSelectedImage] = useState<File[]>([]);
 
-  const [updateUser, setUpdateUser] = useState({
+  const [updateUser, setUpdateUser] = useState<{
+    username: string;
+    tag: string;
+    loading: boolean;
+  }>({
     username: "",
     tag: "",
-    photo: "",
+    loading: false,
   });
 
+  const { getInputProps, getRootProps, startUpload } = useImageUpload({
+    endpoint: "userPhoto",
+    setImg: setSelectedImage,
+  });
+
+  const { push } = useRouter();
+
+  if (!(session && session.user && session.user.id)) return null;
+
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    setUpdateUser((prev) => ({ ...prev, loading: true }));
+    try {
+      let photoURL: string = "";
+      if (selectedImage.length > 0) {
+        triggerNotification("Image Uploading...");
+        const uploadImage = await startUpload(selectedImage);
+        console.log({ uploadImage });
+        if (!uploadImage || uploadImage.length < 1) {
+          setUpdateUser((prev) => ({ ...prev, loading: false }));
+          return triggerNotification("Couldn't  Update photo, please retry");
+        }
+        photoURL = uploadImage[0].url;
+      }
+
+      const response = await fetch(`${BASE_URL}/api/users/${session.user.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          username: updateUser.username,
+          tag: updateUser.tag,
+          photo: photoURL,
+        }),
+      });
+      const data = await response.json();
+      console.log({ data });
+      if (data.message !== "success") {
+        setUpdateUser((prev) => ({ ...prev, loading: false }));
+        return triggerNotification("Couldn't Update Details. Try again");
+      }
+      setUpdateUser((prev) => ({ ...prev, loading: false }));
+      triggerNotification("Details Updated Successfully");
+      setUpdateUser((prev) => ({ ...prev, tag: "", username: "" }));
+      return push(ACCOUNT);
+    } catch (error) {
+      console.error({ error });
+      setUpdateUser((prev) => ({ ...prev, loading: false }));
+      return triggerNotification("Couldn't Update Details. Try again");
+    }
+  };
+
   const readURI = (img: any) => {
-    console.log("READ_REACHED", previewImage);
     if (img) {
       let reader = new FileReader();
       reader.onload = function (ev: ProgressEvent<FileReader>) {
@@ -41,10 +97,6 @@ export default function AccountEditForm({ show }: { show: boolean }) {
       };
       return reader.readAsDataURL(img);
     }
-  };
-
-  const handleSubmit = async (e: React.SyntheticEvent) => {
-    e.preventDefault();
   };
 
   return (
@@ -60,11 +112,11 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                   aria-label="close edit form"
                   onClick={() => {
                     setPreviewImage("");
-                    setUpdateUser({
-                      photo: "",
+                    setUpdateUser((prev) => ({
+                      ...prev,
                       tag: "",
                       username: "",
-                    });
+                    }));
                   }}
                   className="rounded-full"
                 >
@@ -73,7 +125,10 @@ export default function AccountEditForm({ show }: { show: boolean }) {
               </Link>
             </div>
             <div className="relative mx-auto w-fit">
-              <div className="flex items-center justify-center w-24 h-24 border rounded-full overflow-clip">
+              <div
+                {...getRootProps()}
+                className="flex items-center justify-center w-24 h-24 border rounded-full overflow-clip"
+              >
                 {previewImage ? (
                   <Image src={previewImage} alt="new" fill />
                 ) : (
@@ -94,24 +149,24 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                   </label>
                   <input
                     // value={""}
+                    {...getInputProps()}
                     type="file"
                     id="image"
                     accept="image/*"
                     hidden
-                    onChange={(e: any) => {
+                    onInput={(e: any) => {
                       const target = e.target as HTMLInputElement;
 
                       // @ts-ignore TODO
                       const img = Object.values<any>(target.files)[0];
 
-                      console.log("IMGS", img);
                       readURI(img);
                       //TODO COMEBACK ADD_TYPES
                       //@ts-ignore
-                      return setUpdateUser((prev) => ({
-                        ...prev,
-                        photo: target.value,
-                      }));
+                      // return setUpdateUser((prev) => ({
+                      //   ...prev,
+                      //   photo: target.value,
+                      // }));
                     }}
                   />
                 </IconButton>
@@ -147,8 +202,17 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                 />
               </div>
             </div>
-            <Button type="reset" fullWidth>
-              Save Changes
+            <Button
+              type="submit"
+              fullWidth
+              className="flex items-center justify-center"
+            >
+              {updateUser.loading ? (
+                // @ts-ignore
+                <Spinner color="white" />
+              ) : (
+                "Save Changes"
+              )}
             </Button>
           </form>
         </Card>

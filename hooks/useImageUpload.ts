@@ -57,8 +57,8 @@ export default function useImageUpload({
         triggerNotification("error occurred while uploading group photo");
       },
       onUploadBegin: (e) => {
-        // TODO remove thi notification
-        triggerNotification("upload has begun");
+        // TODO remove this notification
+        // triggerNotification("upload has begun");
         console.log("E:Upload Begin", e);
       },
     }
