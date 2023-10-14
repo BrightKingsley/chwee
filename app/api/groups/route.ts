@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 
-import { createGroup, deleteAllGroups, getGroups } from "@/lib/db";
+import { createGroup, deleteAllGroups, exitGroup, getGroups } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
@@ -15,28 +15,6 @@ export async function GET() {
     return NextResponse.json({ error: "Server Error" });
   }
 }
-
-export async function DELETE() {
-  try {
-    const groupsDeleted = await deleteAllGroups();
-    if (groupsDeleted !== true)
-      return NextResponse.json({
-        error: { message: "Could not delete group documents" },
-      });
-
-    return NextResponse.json({
-      message: "Group documents deleted successfully",
-    });
-  } catch (error) {
-    return NextResponse.json({ error });
-  }
-}
-
-type PostProps = {
-  params: {
-    ID: string;
-  };
-};
 
 export async function POST(request: NextRequest) {
   try {
@@ -113,3 +91,43 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(null);
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const serverSession = await getServerSession(authOptions);
+
+    const {
+      userID,
+      groupID,
+    }: {
+      userID: string;
+      groupID: string;
+    } = await request.json();
+
+    const sessionUser = serverSession?.user.id;
+    if (!sessionUser) throw new Error("Invalid User ID");
+
+    const groupExited = await exitGroup({
+      groupID,
+      userID,
+      sessionUser,
+    });
+    // if (groupsDeleted !== true)
+    //   return NextResponse.json({
+    //     error: { message: "Could not delete group documents" },
+    //   });
+
+    return NextResponse.json({
+      message: "success",
+    });
+  } catch (error) {
+    console.error({ error });
+    return NextResponse.json(null);
+  }
+}
+
+type PostProps = {
+  params: {
+    ID: string;
+  };
+};

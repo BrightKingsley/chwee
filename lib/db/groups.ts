@@ -6,7 +6,7 @@ import { GroupClass } from "@/models/Group";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import { createConversation } from ".";
-import { ConversationClass } from "@/models/Conversation";
+import { Conversation, ConversationClass } from "@/models/Conversation";
 import { ClientGroup } from "@/types/models";
 
 // Define the number of salt rounds for password hashing
@@ -19,7 +19,7 @@ const saltRounds = 10;
  * @param {string} groupData.ownerID - ID of the group owner.
  * @param {string} groupData.name - Group name.
  * @param {string} groupData.description - Group description.
- * @param {boolean} groupData.password - Whether the group requires a password.
+ * @param {boolean} groupData.password - Wgether the group requires a password.
  * @returns {Promise<object>} - A new group or an error object.
  */
 export async function createGroup({
@@ -197,9 +197,11 @@ export async function getGroupByID({
 export async function exitGroup({
   userID,
   groupID,
+  sessionUser,
 }: {
   userID: string;
   groupID: string;
+  sessionUser: string;
 }) {
   try {
     const parsedUserID = stringToObjectId(userID);
@@ -208,7 +210,12 @@ export async function exitGroup({
     if (!(parsedUserID && parsedGroupID))
       throw new Error("Invalid User or group ID");
 
-    const updatedGroup = await User.findOneAndUpdate(
+    const group = await Group.findById(parsedGroupID);
+    if (!group) throw new Error("Group not found");
+    if (userID != sessionUser && sessionUser != group?.owner.toString())
+      throw new Error("Unauthorized!");
+
+    const updatedGroup = await Group.findOneAndUpdate(
       { _id: parsedGroupID, members: parsedUserID }, // Check if userIdToRemove exists in connections array
       { $pull: { members: parsedUserID } }, // Remove userIdToRemove from connections
       { new: true } // Return the updated user document
@@ -242,11 +249,18 @@ export async function deleteGroup({ groupID }: { groupID: string }) {
     await connectDB();
 
     // Find and delete the group by its ID
-    await Group.findByIdAndDelete(groupID);
+    const groupDoc = await Group.findByIdAndDelete(groupID);
+    if (!groupDoc) throw new Error("Couldn't get Group Document");
 
-    return true;
-  } catch (error: any) {
-    return { error };
+    const conversationDoc = await Conversation.findOneAndDelete({
+      chatID: groupDoc._id,
+    });
+    if (!conversationDoc) throw new Error("Couldn't get Conversation Document");
+
+    return "success";
+  } catch (error) {
+    console.error({ error });
+    return null;
   }
 }
 
@@ -393,6 +407,10 @@ export async function addMemberToGroupByID({
 
     if (!parsedUserID) throw new Error("Invalid UserId");
 
+    const groupDOcument = await Group.findById(parsedGroupID);
+    const userDOcument = await User.findById(parsedUserID);
+    console.log({ groupDOcument, userDOcument });
+
     // Find the group by groupID and add the user as a member
     const groupDoc = await Group.findOneAndUpdate(
       {
@@ -402,6 +420,7 @@ export async function addMemberToGroupByID({
       { $addToSet: { members: parsedUserID } },
       { new: true }
     ).exec();
+    console.log({ groupDoc });
 
     if (!groupDoc) throw new Error("Couldn't Update Group doc");
 
@@ -411,9 +430,8 @@ export async function addMemberToGroupByID({
       { new: true }
     ).exec();
 
-    if (!userDoc) throw new Error("Couldn't Update Group doc");
-
     console.log({ groupDoc, userDoc });
+    if (!userDoc) throw new Error("Couldn't Update User doc");
 
     groupDoc.save();
     userDoc.save();

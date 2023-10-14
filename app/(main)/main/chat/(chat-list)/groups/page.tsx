@@ -82,9 +82,12 @@ export default async function Groups({
                       groupName={group.name}
                     />
                   )}
-                <div className="w-12 h-12 rounded-full overflow-clip shrink-0">
+                <Link
+                  href={`${GROUPS}/info/${group.tag}`}
+                  className="w-12 h-12 rounded-full overflow-clip shrink-0"
+                >
                   <Image src={group.photo} alt="" fill sizes="" priority />
-                </div>
+                </Link>
                 <div className="flex-1 text-left w-full_ ">
                   <p className="font-semibold">{group.name}</p>
                   <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[14rem] m-0 p-0">

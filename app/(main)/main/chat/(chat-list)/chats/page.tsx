@@ -4,7 +4,7 @@ import { ListTile } from "@/components/shared";
 import Image from "next/image";
 import nft from "@/assets/images/nft.jpg";
 import Link from "next/link";
-import { CHATS } from "@/constants/routes";
+import { CHATS, CONNECT } from "@/constants/routes";
 import { Suspense } from "react";
 import { ChatClass, UserClass } from "@/models";
 import { BASE_URL } from "@/constants/routes";
@@ -38,7 +38,10 @@ export default async function Chats() {
                   href={`${CHATS}/${chat.chatData._id}`}
                   className="flex items-center w-full gap-2 p-2 rounded-md bg-primary/10_"
                 >
-                  <div className="flex items-center justify-center w-12 h-12 text-gray-200 rounded-full overflow-clip shrink-0 bg-deep-orange-400">
+                  <Link
+                    href={`${CONNECT}/${chat.memberUserData.tag}`}
+                    className="flex items-center justify-center w-12 h-12 text-gray-200 rounded-full overflow-clip shrink-0 bg-deep-orange-400"
+                  >
                     {chat.memberUserData.photo !== undefined &&
                     chat.memberUserData.photo ? (
                       <Image
@@ -51,7 +54,7 @@ export default async function Chats() {
                     ) : (
                       <UserIcon className="w-8 h-8" />
                     )}
-                  </div>
+                  </Link>
                   <div className="flex-1 text-left w-full_ ">
                     <p className="font-semibold">
                       {chat.memberUserData.username}
@@ -65,9 +68,9 @@ export default async function Chats() {
                     className="flex-col items-center pr-3"
                   >
                     <small className="mx-auto text-gray-700">17:00</small>
-                    <span className="flex items-center justify-center w-5 h-5 p-2 mx-auto font-bold text-white rounded-full shadow-md bg-primary shadow-primary/20">
-                      1
-                    </span>
+                    <div className="flex items-center justify-center w-5 h-5 p-1 mx-auto text-xs font-bold text-white rounded-full shadow-md bg-primary shadow-primary/20">
+                      <small>1</small>
+                    </div>
                   </div>
                 </Link>
               </ListTile>

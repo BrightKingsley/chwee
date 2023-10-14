@@ -228,7 +228,7 @@ export default function Message({
               )}
             </IconButton>
           }
-          <div className="fixed -translate-x-1/2 -translate-y-1/2 text- left-1/2 top-1/2">
+          <div className="fixed z-20 -translate-x-1/2 -translate-y-1/2 text- left-1/2 top-1/2">
             <OptionsMenu
               show={showMore.options}
               options={[

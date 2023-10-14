@@ -23,7 +23,7 @@ import {
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import { SendMessageType } from "./types";
-import { AnimateInOut, Close } from "@/components/shared";
+import { AnimateInOut, Close, UserListModal } from "@/components/shared";
 import { ChatContext, NotificationContext } from "@/context";
 import { useParams } from "next/navigation";
 import { MessageClass } from "@/models/Message";
@@ -55,10 +55,6 @@ export default function SendMessage({
 
   const inputRef = useRef();
 
-  useEffect(() => {
-    getInputRef(inputRef);
-  }, []);
-
   const [message, setMessage] = useState<MessageBody>({
     textContent: "",
     imageContent: [],
@@ -66,6 +62,18 @@ export default function SendMessage({
     //TODO check this (!)
     sender: session?.user.id!,
     replyTo: replyMessage,
+  });
+
+  const [membersModal, setMembersModal] = useState<{
+    loading: boolean;
+    show: boolean;
+    members: ClientUser[];
+    value: string;
+  }>({
+    loading: false,
+    show: false,
+    members: [],
+    value: "",
   });
 
   const [showActionIcons, setShowActionIcons] = useState(true);
@@ -95,9 +103,9 @@ export default function SendMessage({
     },
   });
 
-  useEffect(() => {
-    setMessage((prev) => ({ ...prev, replyTo: replyMessage }));
-  }, [replyMessage]);
+  const resetFunds = () => {
+    setMembersModal((prev) => ({ ...prev, value: "" }));
+  };
 
   const resetInput = () => {
     console.log("resetting!");
@@ -112,16 +120,6 @@ export default function SendMessage({
     setPreviewImages({ images: [], show: false });
     setSelectedImages([]);
   };
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      console.log("CHECK_SESSION", session);
-      // TODO check this(!)
-      setMessage((prev) => ({ ...prev, sender: session?.user.id! }));
-    }, 2000);
-
-    return () => clearTimeout(timeout);
-  }, [session, session?.user, message.textContent, message.imageContent]);
 
   const sendMessage = async (
     images?: MessageBody["imageContent"] = message.imageContent
@@ -165,6 +163,25 @@ export default function SendMessage({
     resetInput();
   };
 
+  const getMembers = async () => {
+    try {
+      setMembersModal((prev) => ({ ...prev, loading: true, show: true }));
+      const res = await fetch(`${BASE_URL}/api/groups/${chatID}/members`);
+      const data = await res.json();
+      console.log({ data });
+      const members = data as ClientUser[] | null;
+      if (!members) return;
+      setMembersModal((prev) => ({
+        ...prev,
+        loading: false,
+        members,
+      }));
+    } catch (error) {
+      console.error({ error });
+      setMembersModal((prev) => ({ ...prev, loading: false }));
+    }
+  };
+
   const readURI = (imgs: any[]) => {
     console.log("READ_REACHED", previewImages);
     imgs.forEach((img) => {
@@ -181,218 +198,257 @@ export default function SendMessage({
     });
   };
 
-  return (
-    <div className="relative w-full">
-      <AnimateInOut
-        init={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        out={{ opacity: 0 }}
-        show={loading}
-        className="fixed h-[calc(100vh-3.5rem)]_ w-[calc(100vw-3.5rem)]_ w-full bottom-4 bg-white/20 top-14_ right-0 z-50 flex items-center justify-center backdrop-blur_-sm h-fit"
-      >
-        <Spinner className="w-6 h-6" />
-      </AnimateInOut>
+  useEffect(() => {
+    getInputRef(inputRef);
+  }, []);
 
-      {previewImages.images.length > 0 && previewImages.show && (
-        // NOTE Upload Image Data component
-        <UploadImageData
-          startUpload={startUpload}
-          selectedImages={selectedImages}
-          message={message}
-          previewImages={previewImages}
-          setMessage={setMessage}
-          setPreviewImages={setPreviewImages}
-          sendMessage={sendMessage}
-        />
-      )}
-      <SendFunds
-        setToggleTransferForm={setToggleTransferForm}
-        toggleTransferForm={toggleTransferForm}
-      />
-      <form
-        // TODO COMEBACK ADD_TYPES
-        //@ts-ignore
-        onSubmit={(e) => handleSend(e)}
-        className="relative flex items-end w-full max-w-md gap-2 px-2 pt-1 pb-1 mx-auto mt-auto"
-      >
-        <div
-          className={`relative bg-white rounded-xl flex items-center w-full gap-2 p-2 ${
-            replyMessage.sender ? "rounded-t-none" : ""
-          }`}
+  useEffect(() => {
+    if (membersModal.value.length > 1) {
+      setMembersModal((prev) => ({ ...prev, show: false }));
+      setToggleTransferForm(true);
+    }
+  }, [membersModal.value]);
+
+  useEffect(() => {
+    setMessage((prev) => ({ ...prev, replyTo: replyMessage }));
+  }, [replyMessage]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      console.log("CHECK_SESSION", session);
+      // TODO check this(!)
+      setMessage((prev) => ({ ...prev, sender: session?.user.id! }));
+    }, 2000);
+
+    return () => clearTimeout(timeout);
+  }, [session, session?.user, message.textContent, message.imageContent]);
+
+  return (
+    <>
+      <div className="relative w-full">
+        <AnimateInOut
+          init={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          out={{ opacity: 0 }}
+          show={loading}
+          className="fixed h-[calc(100vh-3.5rem)]_ w-[calc(100vw-3.5rem)]_ w-full bottom-4 bg-white/20 top-14_ right-0 z-50 flex items-center justify-center backdrop-blur_-sm h-fit"
         >
-          <AnimateInOut
-            init={{ opacity: 0, left: 100 }}
-            animate={{ opacity: 1, left: 0 }}
-            out={{ opacity: 0, left: 100 }}
-            show={replyMessage && replyMessage.sender.length > 0}
-            className={`${
-              replyMessage.sender.length > 0 && "-translate-y-[99%]"
-            } left-0 w-full bg-white pt-2 px-2 absolute -top-0 rounded-t-xl text-gray-500 `}
+          <Spinner className="w-6 h-6" />
+        </AnimateInOut>
+
+        {previewImages.images.length > 0 && previewImages.show && (
+          // NOTE Upload Image Data component
+          <UploadImageData
+            startUpload={startUpload}
+            selectedImages={selectedImages}
+            message={message}
+            previewImages={previewImages}
+            setMessage={setMessage}
+            setPreviewImages={setPreviewImages}
+            sendMessage={sendMessage}
+          />
+        )}
+        <SendFunds
+          setToggleTransferForm={setToggleTransferForm}
+          toggleTransferForm={toggleTransferForm}
+        />
+        <form
+          // TODO COMEBACK ADD_TYPES
+          //@ts-ignore
+          onSubmit={(e) => handleSend(e)}
+          className="relative flex items-end w-full max-w-md gap-2 px-2 pt-1 pb-1 mx-auto mt-auto"
+        >
+          <div
+            className={`relative bg-white rounded-xl flex items-center w-full gap-2 p-2 ${
+              replyMessage.sender ? "rounded-t-none" : ""
+            }`}
           >
-            <div className="relative p-1_ pl-3  rounded-md min-h-[3.5rem] bg-primary/10 after:absolute after:left-1 after:inset-0 after:bg-primary after:h-[80%] after:w-1 after:my-auto top-full mx-auto after:rounded-full flex">
-              <div className="absolute top-0 right-0 z-10 w-fit">
-                <IconButton
-                  onClick={() =>
-                    setReplyMessage({
-                      sender: "",
-                      imageContent: [],
-                      textContent: "",
-                    })
-                  }
-                  className="w-5 h-5 !p-0 bg-white rounded-full cursor-pointer active:opacity-50 active:scale-90"
-                >
-                  <XMarkIcon className="w-5 h-5" />
-                </IconButton>
-              </div>
-              <div className="flex flex-col justify-center gap-1">
-                <small className="text-xs text-primary">
-                  {replyMessage.sender.toString() ===
-                  session?.user.name?.toString()
-                    ? "You"
-                    : replyMessage.sender}
-                </small>
-                <div className="flex items-center">
-                  {replyMessage.textContent && (
-                    <small className="font-bold">
-                      {replyMessage.textContent}
-                    </small>
-                  )}
-                  {replyMessage.imageContent &&
-                    replyMessage.imageContent?.length > 0 && (
-                      <small className="flex items-center gap-1">
-                        <PhotoIcon className="w-4 h-4 fill-gray-500" />
-                        Photo
+            <AnimateInOut
+              init={{ opacity: 0, left: 100 }}
+              animate={{ opacity: 1, left: 0 }}
+              out={{ opacity: 0, left: 100 }}
+              show={replyMessage && replyMessage.sender.length > 0}
+              className={`${
+                replyMessage.sender.length > 0 && "-translate-y-[99%]"
+              } left-0 w-full bg-white pt-2 px-2 absolute -top-0 rounded-t-xl text-gray-500 `}
+            >
+              <div className="relative p-1_ pl-3  rounded-md min-h-[3.5rem] bg-primary/10 after:absolute after:left-1 after:inset-0 after:bg-primary after:h-[80%] after:w-1 after:my-auto top-full mx-auto after:rounded-full flex">
+                <div className="absolute top-0 right-0 z-10 w-fit">
+                  <IconButton
+                    color="white"
+                    variant="filled"
+                    onClick={() =>
+                      setReplyMessage({
+                        sender: "",
+                        imageContent: [],
+                        textContent: "",
+                      })
+                    }
+                    className="w-5 h-5 !p-0 bg-white rounded-full"
+                  >
+                    <XMarkIcon className="w-5 h-5" />
+                  </IconButton>
+                </div>
+                <div className="flex flex-col justify-center gap-1">
+                  <small className="text-xs text-primary">
+                    {replyMessage.sender.toString() ===
+                    session?.user.name?.toString()
+                      ? "You"
+                      : replyMessage.sender}
+                  </small>
+                  <div className="flex items-center">
+                    {replyMessage.textContent && (
+                      <small className="font-bold">
+                        {replyMessage.textContent}
                       </small>
                     )}
+                    {replyMessage.imageContent &&
+                      replyMessage.imageContent?.length > 0 && (
+                        <small className="flex items-center gap-1">
+                          <PhotoIcon className="w-4 h-4 fill-gray-500" />
+                          Photo
+                        </small>
+                      )}
+                  </div>
                 </div>
-              </div>
-              <div className="ml-auto">
-                {replyMessage.imageContent &&
-                  replyMessage.imageContent?.length > 0 && (
-                    <>
-                      {/* <small className="flex items-center gap-1">
+                <div className="ml-auto">
+                  {replyMessage.imageContent &&
+                    replyMessage.imageContent?.length > 0 && (
+                      <>
+                        {/* <small className="flex items-center gap-1">
                         <PhotoIcon className="w-4 h-4 fill-gray-500" />
                         Photo
                       </small> */}
-                      <div className="ml-auto rounded-md w-14 h-14 overflow-clip bg-primary">
-                        <Image
-                          src={replyMessage.imageContent[0]}
-                          alt="reply img content"
-                          fill
-                        />
-                      </div>
-                    </>
-                  )}
+                        <div className="ml-auto rounded-md w-14 h-14 overflow-clip bg-primary">
+                          <Image
+                            src={replyMessage.imageContent[0]}
+                            alt="reply img content"
+                            fill
+                          />
+                        </div>
+                      </>
+                    )}
+                </div>
               </div>
-            </div>
-          </AnimateInOut>
-          {/* IMAGE & FUNDS */}
-          <AnimateInOut
-            show={showActionIcons}
-            init={{ width: 0, scale: 0 }}
-            animate={{ width: "auto", scale: 1 }}
-            out={{ width: 0, scale: 0 }}
-            transition={{ type: "keyframes" }}
-            className="flex items-center self-end -space-x-2"
-          >
-            {roomType === "p2p" && (
+            </AnimateInOut>
+            {/* IMAGE & FUNDS */}
+            <AnimateInOut
+              show={showActionIcons}
+              init={{ width: 0, scale: 0 }}
+              animate={{ width: "auto", scale: 1 }}
+              out={{ width: 0, scale: 0 }}
+              transition={{ type: "keyframes" }}
+              className="flex items-center self-end -space-x-2"
+            >
               <IconButton
                 {...getRootProps()}
                 title="send funds"
                 aria-label="send funds"
-                onClick={() => setToggleTransferForm((prev) => !prev)}
+                onClick={() => {
+                  if (roomType === "p2p")
+                    return setToggleTransferForm((prev) => !prev);
+                  getMembers();
+                }}
                 className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
               >
                 <LocalAtmOutlinedIcon className="w-6 h-6 fill-primary" />
               </IconButton>
-            )}
-            <IconButton title="attach image">
-              <label
-                htmlFor="image"
-                className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
+
+              <IconButton title="attach image">
+                <label
+                  htmlFor="image"
+                  className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
+                >
+                  <AddPhotoAlternateOutlined className="w-6 h-6 fill-primary" />
+                </label>
+                <input
+                  // value={""}
+                  {...getInputProps()}
+                  type="file"
+                  id="image"
+                  accept="image/*"
+                  hidden
+                  multiple
+                  onInput={(e: any) => {
+                    const target = e.target as HTMLInputElement;
+
+                    // @ts-ignore TODO
+                    const imgs = Object.values<any>(target.files).map(
+                      (image) => image
+                    );
+
+                    console.log("IMGS", imgs, { files: target.files });
+                    readURI(imgs);
+
+                    // return setSelectedImage(img);
+                  }}
+                />
+              </IconButton>
+            </AnimateInOut>
+
+            {!showActionIcons && (
+              <IconButton
+                onClick={() => setShowActionIcons(true)}
+                className="self-end "
               >
-                <AddPhotoAlternateOutlined className="w-6 h-6 fill-primary" />
-              </label>
-              <input
-                // value={""}
-                {...getInputProps()}
-                type="file"
-                id="image"
-                accept="image/*"
-                hidden
-                multiple
-                onInput={(e: any) => {
-                  const target = e.target as HTMLInputElement;
+                <ChevronRightIcon className="w-6 h-6 fill-primary text-primary" />
+              </IconButton>
+            )}
 
-                  // @ts-ignore TODO
-                  const imgs = Object.values<any>(target.files).map(
-                    (image) => image
-                  );
-
-                  console.log("IMGS", imgs, { files: target.files });
-                  readURI(imgs);
-
-                  // return setSelectedImage(img);
-                }}
-              />
-            </IconButton>
-          </AnimateInOut>
-
-          {!showActionIcons && (
-            <IconButton
-              onClick={() => setShowActionIcons(true)}
-              className="self-end "
-            >
-              <ChevronRightIcon className="w-6 h-6 fill-primary text-primary" />
-            </IconButton>
-          )}
-
-          {/* MESSAGE INPUT */}
-          <TextareaAutosize
-            ref={inputRef}
-            title="enter text"
-            aria-label="enter message text"
-            value={message.textContent}
-            onFocus={() => {
-              setShowActionIcons(false);
-            }}
-            onBlur={() => {
-              setShowActionIcons(true);
-            }}
-            maxRows={5}
-            onChange={(e) =>
-              setMessage((prev) => ({
-                ...prev,
-                textContent: e.target.value,
-              }))
-            }
-            className="w-full py-2 text-gray-700 bg-transparent border-none outline-none resize-none rounded-xl"
-          />
-          {/* </div> */}
-        </div>
-        <IconButton
-          type="submit"
-          title="send message"
-          aria-label="send message"
-          className="flex items-center justify-center bg-body stroke-primary"
-        >
-          {/* <Send className="w-8 h-8 " /> */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            // stroke="currentColor"
-            strokeWidth={2}
-            className="w-8 h-8"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+            {/* MESSAGE INPUT */}
+            <TextareaAutosize
+              ref={inputRef}
+              title="enter text"
+              aria-label="enter message text"
+              value={message.textContent}
+              onFocus={() => {
+                setShowActionIcons(false);
+              }}
+              onBlur={() => {
+                setShowActionIcons(true);
+              }}
+              maxRows={5}
+              onChange={(e) =>
+                setMessage((prev) => ({
+                  ...prev,
+                  textContent: e.target.value,
+                }))
+              }
+              className="w-full py-2 text-gray-700 bg-transparent border-none outline-none resize-none"
             />
-          </svg>
-        </IconButton>
-      </form>
-    </div>
+            {/* </div> */}
+          </div>
+          <IconButton
+            type="submit"
+            title="send message"
+            aria-label="send message"
+            className="flex items-center justify-center bg-body stroke-primary"
+          >
+            {/* <Send className="w-8 h-8 " /> */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              // stroke="currentColor"
+              strokeWidth={2}
+              className="w-8 h-8"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+              />
+            </svg>
+          </IconButton>
+        </form>
+      </div>
+      <UserListModal
+        loading={membersModal.loading}
+        show={membersModal.show}
+        userList={membersModal.members}
+        setModal={setMembersModal}
+        overlay
+      />
+    </>
   );
 }

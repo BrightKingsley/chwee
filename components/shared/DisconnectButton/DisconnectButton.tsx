@@ -41,6 +41,8 @@ export default function DisconnectButton({
     <IconButton
       variant="filled"
       color="gray"
+      title="disconect"
+      aria-label="disconect user"
       onClick={() =>
         triggerModal({
           message: (
@@ -53,7 +55,9 @@ export default function DisconnectButton({
           confirm: () => disconnectUser(),
         })
       }
-      className={`${color === "gray" ? "bg-primary" : "bg-primary"} ${
+      className={`${
+        color === "gray" ? "bg-primary_ bg-gray-600 " : "bg-primary"
+      } ${
         variant === "circle" ? "rounded-full" : "rounded-md"
       }  p-2 font-druk-wide-bold text-white hover:border`}
     >

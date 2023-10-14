@@ -2,7 +2,7 @@
 
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getGroupByID } from "@/lib/db";
+import { getGroupByID, getMessages } from "@/lib/db";
 import { Header } from "@/components/shared";
 import GroupChat from "./GroupChat";
 import Image from "next/image";
@@ -18,11 +18,13 @@ export default async function Group({
   const serverSession = await getServerSession(authOptions);
   if (!serverSession || !serverSession.user || !serverSession.user.id)
     return <h1>NO USER</h1>;
+  const userID = serverSession.user.id;
 
   const group = await getGroupByID({ groupID: params.groupID });
   if (!group) return null;
 
   // TODO try fetching messages here instead of a useEffect in the messages component
+  // _ _ _ _ did, did'nt work
 
   return (
     <>
@@ -36,13 +38,18 @@ export default async function Group({
               src={group.photo}
               width={150}
               height={150}
-              className="rounded-full w-8 h-8 bg-primary"
+              className="w-8 h-8 rounded-full bg-primary"
               alt="group photo"
             />
           </Link>,
         ]}
         trailing={[
-          <GroupOptions key={Math.random()} groupID={params.groupID} />,
+          <GroupOptions
+            key={Math.random()}
+            userID={userID}
+            groupID={params.groupID}
+            groupName={group.name}
+          />,
         ]}
       />
       <GroupChat params={params} />

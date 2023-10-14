@@ -1,6 +1,6 @@
 import { Header } from "@/components/shared";
 import P2pChat from "./P2pChat";
-import { getChat, getUserByID } from "@/lib/db";
+import { getChat, getMessages, getUserByID } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Chat } from "@/models";
@@ -10,19 +10,21 @@ import { CONNECT } from "@/constants/routes";
 
 export default async function ChatPage({
   params,
+  searchParams,
 }: {
   params: { chatID: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const serverSession = await getServerSession(authOptions);
   if (!serverSession || !serverSession.user || !serverSession.user.id)
     return <h1>NO USER</h1>;
 
-  const userId = serverSession.user.id;
+  const userID = serverSession.user.id;
 
   const chatDoc = await Chat.findById(params.chatID);
 
   const chatConnectionID = chatDoc?.members.filter(
-    (member) => member.toString() != userId
+    (member) => member.toString() != userID
   )[0];
 
   if (!chatConnectionID) return null;
@@ -30,8 +32,16 @@ export default async function ChatPage({
   const connectionDoc = await getUserByID({
     userID: chatConnectionID,
   });
-
   if (!connectionDoc) return null;
+
+  // const { searchParams } = new URL(request.url);
+  // if (!searchParams) return null;
+
+  // if (!roomType || !(roomType === "group" || roomType === "p2p"))
+  //   throw new Error("Invalid RoomType");
+
+  // TODO try fetching messages here instead of a useEffect in the messages component
+  // _ _ _ _ did, did'nt work
 
   return (
     <>

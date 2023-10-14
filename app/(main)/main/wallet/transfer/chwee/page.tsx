@@ -128,9 +128,9 @@ export default function TranferToChwee() {
       <div className="shrink-0">
         <Header imgShown={false} title="Transfer" />
       </div>
-      <div className="flex flex-1 shrink-0 w-full h-full bg-primary/10">
+      <div className="flex flex-1 w-full h-full shrink-0 bg-primary/10">
         {showEntries.loading && (
-          <div className="fixed top-0 flex items-center justify-center bg-white left-0 z-40 w-screen h-screen overflow-y-auto">
+          <div className="fixed top-0 left-0 z-40 flex items-center justify-center w-screen h-screen overflow-y-auto bg-white">
             <Spinner />
           </div>
         )}
@@ -139,17 +139,17 @@ export default function TranferToChwee() {
           ref={sliderRef}
         >
           <SwiperSlide>
-            <div className="rounded-md w-full h-full relative pt-16">
+            <div className="relative w-full h-full pt-16 rounded-md">
               <TagInput handleSubmit={handleTagSubmit} />
             </div>
           </SwiperSlide>
           <SwiperSlide>
-            <div className="rounded-md w-full h-full relative pt-16">
+            <div className="relative w-full h-full pt-16 rounded-md">
               <AmountInput handleSubmit={handleAmountSubmit} />{" "}
             </div>
           </SwiperSlide>
           <SwiperSlide>
-            <div className="rounded-md w-full h-full relative pt-16">
+            <div className="relative w-full h-full pt-16 rounded-md">
               <PinInput
                 show={showEntries.pin}
                 setShow={setShowEntries}
@@ -172,7 +172,7 @@ export default function TranferToChwee() {
             translateX: -100,
           }}
           show={showEntries.receiverTag}
-          className="rounded-md w-full"
+          className="w-full rounded-md"
         >
           <TagInput handleSubmit={handleTagSubmit} />
         </AnimateInOut>
@@ -190,7 +190,7 @@ export default function TranferToChwee() {
             translateX: -100,
           }}
           show={showEntries.amount}
-          className=" rounded-md w-full"
+          className="w-full rounded-md "
           transition={{ delay: 0.5 }}
         >
           <AmountInput handleSubmit={handleAmountSubmit} />
@@ -210,7 +210,7 @@ export default function TranferToChwee() {
           }}
           show={showEntries.pin}
           transition={{ delay: 0.7 }}
-          className="rounded-md w-full"
+          className="w-full rounded-md"
         >
           <PinInput
             show={showEntries.pin}
@@ -260,7 +260,7 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
     <div className="relative w-full h-full">
       <form
         onSubmit={(e) => handleSubmit(e, receiverTagInput)}
-        className="space-y-3 px-4 "
+        className="px-4 space-y-3 "
       >
         {/* <label htmlFor="receiverTag">input {"recipient's"} Tag</label> */}
         <Input
@@ -289,9 +289,9 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
         transition={{ type: "keyframes" }}
         className="fixed top-[40%] left-0 space-y-2 bg-body rounded-t-3xl h-full mx-auto w-full"
       >
-        <div className="bg-gray-300 rounded-full w-1/3 h-1 mx-auto my-3" />
+        <div className="w-1/3 h-1 mx-auto my-3 bg-gray-300 rounded-full" />
         {connectionsModal.loading ? (
-          <div className="w-fit mt-32 mx-auto">
+          <div className="mx-auto mt-32 w-fit">
             <Spinner className="" />
           </div>
         ) : (
@@ -304,7 +304,7 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
                       src={photo}
                       alt={username}
                       fill
-                      className="w-full h-full object-cover"
+                      className="object-cover w-full h-full"
                     />
                   ) : (
                     <AccountCircle className="w-20 h-20 text-gray-200" />
@@ -331,11 +331,11 @@ function AmountInput({ handleSubmit }: { handleSubmit: Function }) {
   const [loading, setLoading] = useState(false);
 
   return (
-    // <div className="w-full h-full relative">
+    // <div className="relative w-full h-full">
     <>
       <form
         onSubmit={(e) => handleSubmit(e, amountInput)}
-        className=" space-y-3 px-4"
+        className="px-4 space-y-3 "
       >
         {/* <label htmlFor="amount">enter amount in naira</label> */}
         <Input
@@ -367,7 +367,7 @@ function AmountInput({ handleSubmit }: { handleSubmit: Function }) {
               !(amountInput === "0" && amount === 0) &&
                 setAmountInput(amount.toString());
             }}
-            className="p-1 text-lg rounded-xl border"
+            className="p-1 text-lg border rounded-xl"
           >
             {amount}
           </Button>
@@ -405,7 +405,7 @@ function PinInput({
     <>
       <form
         onSubmit={(e) => handleSubmit(e, pinInput)}
-        className="space-y-3 px-4 "
+        className="px-4 space-y-3 "
       >
         <label htmlFor="pin"></label>
         <Input
@@ -420,7 +420,7 @@ function PinInput({
           name="pin"
           className="!text-center"
         />
-        <div className="space-x-2 flex">
+        <div className="flex space-x-2">
           <Button
             fullWidth
             variant="outlined"
@@ -468,8 +468,8 @@ function NumberPad({
       transition={{ type: "keyframes" }}
       className="absolute top-[40%]_ bottom-0 flex flex-col left-0 space-y-2 bg-body rounded-t-3xl h-[60%] overflow-y-auto mx-auto w-full"
     >
-      <div className="bg-gray-300 rounded-full w-1/3 h-1 mx-auto my-3" />
-      <div className="grid gap-4 px-2 pb-2 grid-cols-3 grid-rows-4 flex-1 shrink-0">
+      <div className="w-1/3 h-1 mx-auto my-3 bg-gray-300 rounded-full" />
+      <div className="grid flex-1 grid-cols-3 grid-rows-4 gap-4 px-2 pb-2 shrink-0">
         {numbers.map((number) => (
           <Button
             variant="text"

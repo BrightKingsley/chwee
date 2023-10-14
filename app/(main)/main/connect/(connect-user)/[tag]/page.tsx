@@ -6,9 +6,7 @@ import { ConnectOptions } from "@/components/shared";
 import Link from "next/link";
 import nft from "@/assets/images/nft.jpg";
 import { group } from "console";
-import { ConnectionCard, GroupAvatar } from "@/components/shared";
-
-const avatars = { groups: [1, 1, 1, 1] };
+import { ConnectionCard, UserGroup } from "../../components";
 
 export default async function UserInfo({
   params,
@@ -22,16 +20,16 @@ export default async function UserInfo({
 
   return (
     <div className="flex flex-col w-full p-2 pt-20 space-y-6">
-      <div className="mx-auto space-y-2 w-fit">
-        <div className="relative mx-auto w-fit">
+      <div className="mx-auto space-y-16 w-fit">
+        <div className="relative flex items-center justify-center w-32 h-32 mx-auto">
           <div className="w-32 h-32 rounded-full overflow-clip">
             <Image fill src={user.photo} alt={user.username} />
           </div>
-          <div className="absolute top-2 -right-6">
+          <div className="absolute w-60 h-60 bg-red-400_">
             <ConnectOptions userID={user._id.toString()} />
           </div>
         </div>
-        <div className="text-center">
+        <div className="text-center ">
           <h2 className="font-druk-wide-bold">{user.username}</h2>
           <p>{user.tag}</p>
         </div>
@@ -61,9 +59,9 @@ export default async function UserInfo({
       <div>
         <p className="font-bold">Groups</p>
         <div className="flex items-center gap-2 p-2 pt-0 overflow-auto w-full_">
-          {avatars.groups.length > 0 ? (
-            avatars.groups.map((group, i) => (
-              <GroupAvatar key={i} groupID={group.toString()} />
+          {user.groups.length > 0 ? (
+            user.groups.map((group, i) => (
+              <UserGroup key={i} groupID={group.toString()} />
             ))
           ) : (
             <p>This user {"doesn't"} belong to any groups</p>

@@ -11,9 +11,14 @@ export default function AnimateInOut({
   init,
   out,
   drag,
-  handleDragEnd,
+  onDragEnd,
   className,
   transition,
+  dragConstraints,
+  dragDirectionLock = true,
+  dragElastic,
+  onClick,
+  title,
 }: AnimateInOutType) {
   return (
     <AnimatePresence>
@@ -23,9 +28,15 @@ export default function AnimateInOut({
           animate={animate}
           exit={out}
           drag={drag}
-          onDragEnd={() => handleDragEnd && handleDragEnd()}
+          onClick={onClick}
+          onDragEnd={(e: PointerEvent, info) => onDragEnd && onDragEnd(e, info)}
+          dragConstraints={dragConstraints && dragConstraints}
+          dragElastic={dragElastic && dragElastic}
+          dragDirectionLock={dragDirectionLock}
           transition={transition}
           className={className}
+          title={title}
+          aria-label={title && title}
         >
           {children}
         </motion.div>

@@ -31,10 +31,14 @@ export default function SearchBar({
   collection,
   disabled = false,
   placeholder = "search",
+  onFocus,
+  onBlur,
 }: {
   collection: string;
   disabled?: boolean;
   placeholder?: string;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }) {
   const [state, dispatch] = useReducer(myreducer, initialState);
 
@@ -45,13 +49,15 @@ export default function SearchBar({
   return (
     <form
       onSubmit={(e) => handleSubmit(e)}
-      className="flex gap-2 items-center mx-2 mt-4"
+      className="flex items-center gap-2 mx-2 mt-4"
     >
       <input
         disabled={disabled}
         // value={message.textContent}
         // cols={5}
         // onChange={(e) => {}}
+        onFocus={onFocus}
+        onBlur={onBlur}
         className={`relative w-full p-2 bg-white/60 text-gray-700 border-none rounded-xl outline-none focus:bg-white outline-primary ${
           disabled &&
           "cursor-not-allowed bg-gray-200 outline-red-400 outline-dashed"
@@ -61,7 +67,7 @@ export default function SearchBar({
       <IconButton
         type="submit"
         disabled={disabled}
-        className="rounded-xl p-2 bg-primary"
+        className="p-2 rounded-xl bg-primary"
       >
         <Search className="w-8 h-8 text-white" />
       </IconButton>

@@ -43,7 +43,7 @@ class GroupClass {
   @prop({ required: true })
   public name: string;
 
-  @prop({ required: true })
+  @prop({ required: true, unique: true })
   public tag: string;
 
   @prop({ required: true })
