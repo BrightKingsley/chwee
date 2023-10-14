@@ -1,5 +1,5 @@
-import { ConnectionCard, GroupAvatar, Header } from "@/components/shared";
-import { Button, ListItem } from "@/components/mui";
+import { Header } from "@/components/shared";
+import { Button, ListItem, Card } from "@/components/mui";
 import Image from "next/image";
 import { Session, getServerSession } from "next-auth";
 import { UserIcon } from "@heroicons/react/20/solid";
@@ -7,8 +7,12 @@ import { AccountEditForm, SignOutButton } from "./components";
 import { authOptions } from "../../../api/auth/[...nextauth]/route";
 import { CONNECT } from "@/constants/routes";
 import { EditAccountButton } from "./components/Buttons";
-import { getUserByID } from "@/lib/db";
+import { getUserByID, getGroupInfo } from "@/lib/db";
 import Link from "next/link";
+import { use } from "react";
+import LockOutlined from "@mui/icons-material/LockOutlined";
+import LockOpenOutlined from "@mui/icons-material/LockOpenOutlined";
+import { UserGroup, ConnectionCard } from "./components";
 
 const avatars = { groups: [1, 1, 1, 1, 1] };
 
@@ -101,9 +105,9 @@ export default async function Account({
             <div>
               <p className="font-bold">Groups</p>
               <div className="flex items-center gap-2 p-2 pt-0 overflow-auto w-full_">
-                {avatars.groups.length > 0 ? (
-                  avatars.groups.map((group, i) => (
-                    <GroupAvatar key={i} groupID={group.toString()} />
+                {user.groups.length > 0 ? (
+                  user.groups.map((group, i) => (
+                    <UserGroup key={i} groupID={group.toString()} />
                   ))
                 ) : (
                   <p>This userFromSession {"doesn't"} belong to any groups</p>
@@ -120,5 +124,41 @@ export default async function Account({
         )}
       </div>
     </>
+  );
+}
+
+const getGroup = async (groupID: string) => {
+  return await getGroupInfo({ groupID });
+};
+
+function GroupAvatar({ groupID }: { groupID: string }) {
+  const group = use(getGroup(groupID));
+
+  if (!group) return null;
+
+  return (
+    <Link href={group.tag} className="rounded-md shrink-0 w-60">
+      <Card className="border-[1px]">
+        <ListItem className="flex items-center gap-2">
+          <div className="w-16 h-16 rounded-full overflow-clip">
+            <Image src={group.photo} alt={group.name} fill />
+          </div>
+          <div>
+            <p className="font-bold">{group.name}</p>
+            <small className="text-primary">{group.tag}</small>
+            <div className="flex gap-1 items-center">
+              <small>{group.membersCount} members</small>
+              <small>
+                {group.hasPassword ? (
+                  <LockOutlined className="w-3 h-3 fill-red-400 text-red-400" />
+                ) : (
+                  <LockOpenOutlined className="w-3 h-3 fill-green-400 text-green-400" />
+                )}
+              </small>
+            </div>
+          </div>
+        </ListItem>
+      </Card>
+    </Link>
   );
 }

@@ -41,13 +41,14 @@ export default function ConnectButton({
     <IconButton
       title="connect"
       variant="filled"
+      color="gray"
       aria-label="connect with user"
       onClick={() =>
         triggerModal({
           message: (
             <p>
               Send{" "}
-              <span className="font-bold text-green-400">connect request</span>{" "}
+              <span className="font-bold text-green-400_">connect request</span>{" "}
               to this user?
             </p>
           ),
@@ -55,9 +56,11 @@ export default function ConnectButton({
           confirm: () => connectWithUser(),
         })
       }
-      className={`${color === "gray" ? "bg-green-400" : "bg-primary"} ${
+      className={`${
+        color === "gray" ? "!bg-gray-600" : "bg-green-400_ bg-gray-600"
+      } ${
         variant === "circle" ? "rounded-full" : "rounded-md"
-      }  p-2 font-druk-wide-bold text-white hover:border`}
+      }  p-2 font-druk-wide-bold text-white !bg-gray-600 hover:border`}
     >
       <PersonAddOutlinedIcon className="w-8 h-8" />
     </IconButton>
