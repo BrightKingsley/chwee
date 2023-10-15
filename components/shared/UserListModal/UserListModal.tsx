@@ -48,18 +48,12 @@ export default function UsersModal({
         dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
         onDragEnd={(e: PointerEvent, info) => {
           const offset = info.offset.y;
-          if (fullHeight) {
-            if (offset > 350) {
-              SetFullHeight(false);
-              setModal((prev: any) => ({ ...prev, show: false }));
-            }
-          } else {
-            if (offset > 200) {
-              SetFullHeight(false);
-              setModal((prev: any) => ({ ...prev, show: false }));
-            }
+
+          if (offset > 100) {
+            SetFullHeight(false);
+            setModal((prev: any) => ({ ...prev, show: false }));
           }
-          if (offset < -150) {
+          if (offset < -100) {
             SetFullHeight(true);
           }
         }}

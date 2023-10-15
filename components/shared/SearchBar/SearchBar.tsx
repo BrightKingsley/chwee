@@ -65,6 +65,7 @@ export default function SearchBar({
         placeholder={placeholder}
       />
       <IconButton
+        variant="filled"
         type="submit"
         disabled={disabled}
         className="p-2 rounded-xl bg-primary"
