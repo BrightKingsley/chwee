@@ -11,13 +11,13 @@ export default function NotificationsLayout({
 
   const chatLinkFormatted = formatLink({
     string: CHAT_NOTIFICATIONS,
-    at: "s/",
+    at: "notifications/",
     get: "last",
   });
 
   const otherLinkFormatted = formatLink({
     string: OTHER,
-    at: "s/",
+    at: "notifications/",
     get: "last",
   });
 
@@ -28,7 +28,7 @@ export default function NotificationsLayout({
   // });
 
   return (
-    <div className="h-screen flex flex-col bg-primary/10">
+    <div className="flex flex-col h-screen bg-primary/10">
       <Header title={`Notifications`} />
       <SubHeader
         sublinks={[
@@ -38,7 +38,7 @@ export default function NotificationsLayout({
               replacement: " ",
               string: chatLinkFormatted,
             }),
-            link: OTHER,
+            link: CHAT_NOTIFICATIONS,
           },
           {
             label: replaceWith({
@@ -46,21 +46,12 @@ export default function NotificationsLayout({
               replacement: " ",
               string: otherLinkFormatted,
             }),
-            link: CHAT_NOTIFICATIONS,
+            link: OTHER,
           },
-
-          // {
-          //   label: replaceWith({
-          //     character: "-",
-          //     replacement: " ",
-          //     string: memberInfoLinkFormatted,
-          //   }),
-          //   link: MEMBER_ACTIONS,
-          // },
         ]}
       />
 
-      <div className="space-y-2 mx-2 overflow-y-auto h-full">{children}</div>
+      <div className="h-full mx-2 space-y-2 overflow-y-auto">{children}</div>
     </div>
   );
 }

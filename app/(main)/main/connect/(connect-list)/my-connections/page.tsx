@@ -11,7 +11,7 @@ import { use } from "react";
 
 export default async function MyConnections() {
   const serverSession = await getServerSession(authOptions);
-  if (!serverSession || !serverSession.user || !serverSession?.user.id)
+  if (!serverSession || !serverSession.user || !serverSession.user.id)
     return null;
   const res = await getUserByID({
     userID: serverSession.user.id,
@@ -27,7 +27,7 @@ export default async function MyConnections() {
     connections.map(async (connection, i) => (
       <Connection
         index={i}
-        userID={user._id}
+        userID={serverSession.user.id!}
         connectionID={connection.toString()}
         key={i}
       />
@@ -66,7 +66,6 @@ function Connection({
   return (
     <ListTile
       key={index}
-      slide
       trailing={[
         <MessageButton
           key={user._id.toString()}

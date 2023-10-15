@@ -10,10 +10,9 @@ for (let i = 0; i < 10; i++) {
 
 export default function MemberInfo() {
   return (
-    <div className="w-full overflow-hidden space-y-2">
+    <div className="w-full space-y-2 overflow-hidden">
       {members.map((_, i) => (
         <ListTile
-          slide
           key={Math.random()}
           index={i}
           className="w-full gap-2 bg-white rounded-xl"
