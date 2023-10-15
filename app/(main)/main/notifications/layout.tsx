@@ -7,8 +7,6 @@ export default function NotificationsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  let page = <></>;
-
   const chatLinkFormatted = formatLink({
     string: CHAT_NOTIFICATIONS,
     at: "notifications/",
@@ -20,12 +18,6 @@ export default function NotificationsLayout({
     at: "notifications/",
     get: "last",
   });
-
-  // const memberInfoLinkFormatted = formatLink({
-  //   string: MEMBER_ACTIONS,
-  //   at: "s/",
-  //   get: "last",
-  // });
 
   return (
     <div className="flex flex-col h-screen bg-primary/10">
