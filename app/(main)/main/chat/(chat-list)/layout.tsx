@@ -36,7 +36,7 @@ export default function ChatLayout({
           },
         ]}
       />
-      <FloatingActionButton pathname={pathname} />
+      <FloatingActionButton pathname={pathname ? pathname : ""} />
       <div className="mx-2">{children}</div>
     </div>
   );
