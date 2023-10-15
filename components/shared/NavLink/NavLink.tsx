@@ -32,7 +32,9 @@ function NavLink({ href, className, children }: NavLinkProps) {
     //     return setIsActive(false);
     //   }
     // })();
-    pathname.includes(href) ? setIsActive(true) : setIsActive(false);
+    pathname && pathname.includes(href)
+      ? setIsActive(true)
+      : setIsActive(false);
   }, [href, pathname]);
 
   return (
