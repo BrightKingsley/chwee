@@ -16,8 +16,6 @@ import { CONNECT, GROUPS } from "@/constants/routes";
 import { getGroupByTag } from "@/lib/db";
 // icons
 import { UserIcon } from "@heroicons/react/20/solid";
-import LockOpenOutlined from "@mui/icons-material/LockOpenOutlined";
-import LockOutlined from "@mui/icons-material/LockOutlined";
 import GroupOutlined from "@mui/icons-material/GroupOutlined";
 import { JoinGroupTrigger } from "../../../../components";
 
@@ -34,9 +32,11 @@ export default async function GroupInfo({
   if (!serverSession || !serverSession.user || !serverSession.user.id)
     return null;
 
+  const decodedTag = decodeURIComponent(params.groupTag);
+
   // get data
   const userFromSession = serverSession.user;
-  const group = await getGroupByTag({ tag: params.groupTag });
+  const group = await getGroupByTag({ tag: decodedTag });
   if (!group) return <h1>User Unavailable</h1>;
 
   return (
@@ -53,7 +53,7 @@ export default async function GroupInfo({
             </div>
             <div className="mx-auto text-center w-fit">
               <p className="text-3xl font-druk-wide-bold">{group.name}</p>
-              <p className="tetx-2xl">@{group.tag}</p>
+              <p className="tetx-2xl">{group.tag}</p>
               <p className="tetx-xl mt-6">{group.description}</p>
             </div>
           </div>

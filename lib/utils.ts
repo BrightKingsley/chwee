@@ -20,6 +20,18 @@ export const replaceWith = ({
   return formattedString;
 };
 
+export function lettersAndNumbersOnly(inputString: string) {
+  // Use a regular expression to remove non-alphanumeric characters
+  const formattedString = inputString.replace(/[^a-zA-Z0-9]/g, "");
+  return formattedString;
+}
+
+export function formatTag(tag: string): string {
+  // Add the "@" symbol in front of the tag
+  const userTag = `@${tag}`;
+  return userTag;
+}
+
 // STRING_TO_OBJECT_ID
 export function stringToObjectId(id: string): mongoose.Types.ObjectId | null {
   if (mongoose.Types.ObjectId.isValid(id)) {

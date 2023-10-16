@@ -105,7 +105,7 @@ export default function Message({
 
   return type === "notification" ? (
     <div className="mx-auto w-fit">
-      <p className="text-gray-800">{textContent}</p>
+      <p className="text-gray-600 text-xs">{textContent}</p>
     </div>
   ) : (
     // @ts-ignore TODO
