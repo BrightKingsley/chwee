@@ -1,5 +1,5 @@
-import { ListTile } from "@/components/shared";
-import { IconButton } from "@/components/mui";
+import { ListTile } from "@/app/components/client";
+import { IconButton } from "@/app/components/mui";
 import Image from "next/image";
 import nft from "@/assets/images/nft.jpg";
 import Link from "next/link";
@@ -64,6 +64,8 @@ export default async function Groups({
                     <JoinGroupTrigger
                       groupID={group._id.toString()}
                       groupName={group.name}
+                      returnURL={GROUPS}
+                      locked={group.hasPassWord}
                     />
                   )}
                 <Link

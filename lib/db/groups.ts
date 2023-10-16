@@ -107,7 +107,7 @@ export async function createGroup({
   }
 }
 
-export async function getGroupInfo({ groupID }: { groupID: string }) {
+export async function getGroupByID({ groupID }: { groupID: string }) {
   try {
     await connectDB();
 
@@ -122,7 +122,33 @@ export async function getGroupInfo({ groupID }: { groupID: string }) {
       description: group.description,
       photo: group.photo,
       tag: group.tag,
-      membersCount: group.members.length,
+      members: group.members,
+      owner: group.owner.toString(),
+      hasPassword: group.password.length > 0,
+    };
+
+    return groupInfo;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function getGroupByTag({ tag }: { tag: string }) {
+  try {
+    await connectDB();
+
+    const group = await Group.findOne({ tag });
+
+    if (!group) throw new Error("Group not found");
+
+    const groupInfo = {
+      id: group._id.toString(),
+      name: group.name,
+      description: group.description,
+      photo: group.photo,
+      tag: group.tag,
+      members: group.members,
       owner: group.owner.toString(),
       hasPassword: group.password.length > 0,
     };
@@ -142,6 +168,8 @@ export async function getGroupInfo({ groupID }: { groupID: string }) {
  * @param {string} query.password - Password for accessing a password-protected group.
  * @returns {Promise<object>} - The requested group or an error object.
  */
+
+/*
 export async function getGroupByID({
   groupID,
   password,
@@ -154,37 +182,35 @@ export async function getGroupByID({
     await connectDB();
 
     // Parse the group's ID
-    const parsedID = stringToObjectId(groupID);
+    const parsedGroupID = stringToObjectId(groupID);
 
-    console.log("parsedID", parsedID);
+    console.log("parsedGroupID", parsedGroupID);
 
     // Check if the group's ID is valid
-    if (!parsedID) throw new Error("Group not Found");
+    if (!parsedGroupID) throw new Error("Group not Found");
 
     // Find the group by its ID
-    const group = await Group.findById(parsedID);
+    const group = await Group.findById(parsedGroupID);
 
     console.log("FOUND_GROUP", group);
 
     // If the group is not found, return an error
     if (!group) throw new Error("Group not found");
 
-    if (group) {
-      if (group.password) {
-        console.log("password available");
+    if (group.password) {
+      console.log("password available");
 
-        // Check if a password is provided and compare it with the hashed password
-        if (!password) throw new Error("Password Incorrect");
+      // Check if a password is provided and compare it with the hashed password
+      if (!password) throw new Error("Password Incorrect");
 
-        const match = await bcrypt.compare(password, group.password);
+      const match = await bcrypt.compare(password, group.password);
 
-        if (!match) throw new Error("Password Incorrect");
+      if (!match) throw new Error("Password Incorrect");
 
-        return {
-          group,
-          password,
-        };
-      }
+      return {
+        group,
+        password,
+      };
     }
 
     return group;
@@ -193,6 +219,7 @@ export async function getGroupByID({
     return null;
   }
 }
+*/
 
 export async function exitGroup({
   userID,
@@ -207,13 +234,15 @@ export async function exitGroup({
     const parsedUserID = stringToObjectId(userID);
     const parsedGroupID = stringToObjectId(groupID);
 
-    if (!(parsedUserID && parsedGroupID))
-      throw new Error("Invalid User or group ID");
+    if (!(parsedUserID && parsedGroupID)) return "Invalid User or group ID";
 
     const group = await Group.findById(parsedGroupID);
-    if (!group) throw new Error("Group not found");
-    if (userID != sessionUser && sessionUser != group?.owner.toString())
-      throw new Error("Unauthorized!");
+    if (!group) return "Group not found";
+    if (userID != sessionUser && sessionUser != group.owner.toString())
+      return "Unauthorized!";
+
+    if (userID === sessionUser && userID === group.owner.toString())
+      return "The group Owner cannot exit a group";
 
     const updatedGroup = await Group.findOneAndUpdate(
       { _id: parsedGroupID, members: parsedUserID }, // Check if userIdToRemove exists in connections array
@@ -227,9 +256,9 @@ export async function exitGroup({
       { new: true } // Return the updated user document
     ).exec();
 
-    if (!(updatedGroup && updatedUser)) throw new Error("Couldn't exit group");
+    if (!(updatedGroup && updatedUser)) return "Couldn't exit group";
 
-    return "success";
+    return "exited group successfully";
   } catch (error) {
     console.error({ error });
     return null;
@@ -243,21 +272,43 @@ export async function exitGroup({
  * @param {string} params.groupID - ID of the group to delete.
  * @returns {Promise<boolean | object>} - True if deletion is successful or an error object.
  */
-export async function deleteGroup({ groupID }: { groupID: string }) {
+export async function deleteGroup({
+  groupID,
+  ownerID,
+}: {
+  groupID: string;
+  ownerID: string;
+}) {
   try {
+    const parsedGroupID = stringToObjectId(groupID);
     // Connect to the database
     await connectDB();
+    const groupDoc = await Group.findById(parsedGroupID);
+    if (!groupDoc) throw new Error("Couldn't get Group");
 
+    // Find the group by its ID
+    if (groupDoc.owner.toString() !== ownerID) return "Unauthorized access!";
     // Find and delete the group by its ID
-    const groupDoc = await Group.findByIdAndDelete(groupID);
-    if (!groupDoc) throw new Error("Couldn't get Group Document");
+    // const groupDoc = await Group.findByIdAndDelete(groupID);
 
     const conversationDoc = await Conversation.findOneAndDelete({
       chatID: groupDoc._id,
     });
     if (!conversationDoc) throw new Error("Couldn't get Conversation Document");
 
-    return "success";
+    groupDoc.members.forEach(async (member) => {
+      await User.findOneAndUpdate(
+        { _id: member, groups: parsedGroupID }, // Check if groupIdToRemove exists in groups array
+        { $pull: { groups: parsedGroupID } }, // Remove groupIdToRemove from groups
+        { new: true } // Return the updated user document
+      ).exec();
+    });
+
+    const deletedGroup = await groupDoc.deleteOne();
+
+    console.log({ deletedGroup });
+
+    return "Deleted Successfully";
   } catch (error) {
     console.error({ error });
     return null;
@@ -318,6 +369,7 @@ export async function getGroups({ filter }: { filter?: GroupFilter }) {
       owner: group.owner.toString(),
       photo: group.photo,
       tag: group.tag,
+      hasPassWord: group.password.length > 0,
     }));
 
     console.log("GROUPSS:", groups);
@@ -336,6 +388,8 @@ export async function getGroups({ filter }: { filter?: GroupFilter }) {
  * @param {string} params.userID - ID of the user to add to the group.
  * @returns {Promise<object>} - The updated group or an error object.
  */
+
+// TODO Check if this function is really needed
 export async function addMemberToGroupByTag({
   tag,
   userID,
@@ -448,4 +502,95 @@ export async function addMemberToGroupByID({
     console.error(error);
     return null;
   }
+}
+
+export async function requestMembership({
+  groupID,
+  userID,
+}: {
+  groupID: string;
+  userID: string;
+}) {
+  try {
+    // Connect to the database
+    await connectDB();
+
+    // Parse the user's ID
+    const parsedUserID = stringToObjectId(userID);
+    const parsedGroupID = stringToObjectId(groupID);
+
+    if (!parsedUserID) throw new Error("Invalid UserId");
+
+    // Find the group by groupID and add the user as a member
+    const groupDoc = await Group.findOneAndUpdate(
+      {
+        _id: parsedGroupID,
+        members: { $nin: [parsedUserID] },
+        joinRequests: { $nin: [parsedUserID] },
+      },
+      { $addToSet: { joinRequests: parsedUserID } },
+      { new: true }
+    ).exec();
+
+    if (!groupDoc) throw new Error("Couldn't Update Group doc");
+
+    const userDoc = await User.findOneAndUpdate(
+      {
+        _id: parsedUserID,
+        groups: { $nin: [groupDoc._id] },
+        groupsRequested: { $nin: [groupDoc._id] },
+      },
+      { $addToSet: { groupsRequested: groupDoc._id } },
+      { new: true }
+    ).exec();
+
+    if (!userDoc) throw new Error("Couldn't Update User doc");
+
+    console.log({ groupDoc, userDoc });
+
+    groupDoc.save();
+    userDoc.save();
+
+    return "success";
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function getMembers({
+  userID,
+  groupID,
+}: {
+  userID: string;
+  groupID: string;
+}) {
+  const parsedUserID = stringToObjectId(userID);
+  const parsedGroupID = stringToObjectId(groupID);
+
+  const user = await User.findById(parsedUserID);
+  if (!user?.groups.map((group) => group.toString()).includes(groupID))
+    throw new Error("User not a member of this Group");
+
+  const groupMembersDocument = await Group.findById(parsedGroupID).select(
+    "members"
+  );
+
+  if (!groupMembersDocument) throw new Error("Couldn't find group document");
+
+  const groupMembers = await Promise.all(
+    groupMembersDocument.members.map(async (memberID) => {
+      const userDoc = await User.findById(memberID);
+      if (!userDoc) throw new Error("Couldn't retrieve group document");
+      const userInfo = {
+        username: userDoc.username,
+        tag: userDoc.tag,
+        photo: userDoc.photo,
+      };
+
+      return userInfo;
+    })
+  );
+
+  if (!groupMembers) throw new Error("Could not get group members");
 }

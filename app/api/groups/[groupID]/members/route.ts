@@ -1,4 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { exitGroup, getMembers } from "@/lib/db";
 import { stringToObjectId } from "@/lib/utils";
 import { User, Group } from "@/models";
 import { getServerSession } from "next-auth";
@@ -17,42 +18,49 @@ export async function GET(
   try {
     const serverSession = await getServerSession(authOptions);
 
-    const sessionUser = serverSession?.user;
+    if (!serverSession || !serverSession.user || !serverSession.user.id)
+      throw new Error("Invalid user");
 
-    console.log({ sessionUserFromGETCONNECTIONS: sessionUser });
+    const userID = serverSession.user.id;
 
-    if (!sessionUser) throw new Error("Invalid user");
-
-    const parsedUserID = stringToObjectId(sessionUser.id!);
-    const parsedGroupID = stringToObjectId(groupID);
-
-    const user = await User.findById(parsedUserID);
-    if (!user?.groups.map((group) => group.toString()).includes(groupID))
-      throw new Error("User not a member of this Group");
-
-    const groupMembersDocument = await Group.findById(parsedGroupID).select(
-      "members"
-    );
-
-    if (!groupMembersDocument) throw new Error("Couldn't find group document");
-
-    const groupMembers = await Promise.all(
-      groupMembersDocument.members.map(async (memberID) => {
-        const userDoc = await User.findById(memberID);
-        if (!userDoc) throw new Error("Couldn't retrieve group document");
-        const userInfo = {
-          username: userDoc.username,
-          tag: userDoc.tag,
-          photo: userDoc.photo,
-        };
-
-        return userInfo;
-      })
-    );
-
-    if (!groupMembers) throw new Error("Could not get group members");
+    const groupMembers = await getMembers({ groupID, userID });
 
     return NextResponse.json(groupMembers);
+  } catch (error) {
+    console.error({ error });
+    return NextResponse.json(null);
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const serverSession = await getServerSession(authOptions);
+
+    const {
+      userID,
+      groupID,
+    }: {
+      userID: string;
+      groupID: string;
+    } = await request.json();
+
+    const sessionUser = serverSession?.user.id;
+    if (!sessionUser) throw new Error("Invalid User ID");
+
+    const groupExited = await exitGroup({
+      groupID,
+      userID,
+      sessionUser,
+    });
+    // if (groupsDeleted !== true)
+    //   return NextResponse.json({
+    //     error: { message: "Could not delete group documents" },
+    //   });
+    console.log({ groupExited });
+
+    return NextResponse.json({
+      message: groupExited,
+    });
   } catch (error) {
     console.error({ error });
     return NextResponse.json(null);

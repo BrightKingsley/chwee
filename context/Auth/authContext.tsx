@@ -1,5 +1,5 @@
 "use client";
-import { Rat } from "@/components/shared";
+import { Rat } from "@/app/components/client";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import React from "react";

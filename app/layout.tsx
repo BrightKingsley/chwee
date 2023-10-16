@@ -4,7 +4,7 @@ import {
   Navbar,
   Notification,
   PortalElements,
-} from "@/components/shared";
+} from "@/app/components/client";
 import { AuthContextProvider, ThemeContextProvider } from "@/context";
 import "@/public/css/globals.css";
 import "swiper/css";

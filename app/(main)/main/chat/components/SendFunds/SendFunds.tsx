@@ -1,5 +1,5 @@
-import { AnimateInOut } from "@/components/shared";
-import { Button } from "@/components/mui";
+import { AnimateInOut } from "@/app/components/client";
+import { Button } from "@/app/components/mui";
 
 export default function SendFunds({
   setToggleTransferForm,

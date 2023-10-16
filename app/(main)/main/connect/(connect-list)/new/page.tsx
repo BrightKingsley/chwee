@@ -8,14 +8,14 @@ import {
   SearchBar,
   Spinner,
   SubHeader,
-} from "@/components/shared";
+} from "@/app/components/client";
 import Image from "next/image";
 import Link from "next/link";
 import { BASE_URL, CONNECT, USER_PROFILE } from "@/constants/routes";
 import { User, UserClass } from "@/models";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { ConnectButton } from "@/components/shared";
+import { ConnectButton } from "@/app/components/client";
 import { findUsers, getUserByID } from "@/lib/db";
 
 // const getUsers = async (session: Session): Promise<UserClass[] | null> => {

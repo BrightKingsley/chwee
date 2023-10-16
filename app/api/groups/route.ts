@@ -92,40 +92,6 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
-  try {
-    const serverSession = await getServerSession(authOptions);
-
-    const {
-      userID,
-      groupID,
-    }: {
-      userID: string;
-      groupID: string;
-    } = await request.json();
-
-    const sessionUser = serverSession?.user.id;
-    if (!sessionUser) throw new Error("Invalid User ID");
-
-    const groupExited = await exitGroup({
-      groupID,
-      userID,
-      sessionUser,
-    });
-    // if (groupsDeleted !== true)
-    //   return NextResponse.json({
-    //     error: { message: "Could not delete group documents" },
-    //   });
-
-    return NextResponse.json({
-      message: "success",
-    });
-  } catch (error) {
-    console.error({ error });
-    return NextResponse.json(null);
-  }
-}
-
 type PostProps = {
   params: {
     ID: string;

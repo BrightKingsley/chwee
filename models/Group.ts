@@ -83,6 +83,13 @@ class GroupClass {
   })
   public members: mongoose.Types.ObjectId[];
 
+  @prop({
+    required: true,
+    // ref: () => UserClass,
+    default: [],
+  })
+  public joinRequests: mongoose.Types.ObjectId[];
+
   // @prop({
   //   required: true,
   //   ref: () => ConversationClass,

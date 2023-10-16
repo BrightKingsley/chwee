@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { HeaderWithoutNav, Spinner } from "@/components/shared";
+import { HeaderWithoutNav, Spinner } from "@/app/components/client";
 import Image from "next/image";
 
 export default function MemberInfo() {

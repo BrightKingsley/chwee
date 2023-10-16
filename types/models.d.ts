@@ -1,3 +1,4 @@
+import { MessageClass } from "@/models/Message";
 import mongoose from "mongoose";
 
 interface ClientUser {
@@ -16,6 +17,7 @@ interface ClientGroup {
   owner: string;
   photo: string;
   description: string;
+  hasPassWord: boolean;
   admins: (string | mongoose.Types.ObjectId)[];
   members: (string | mongoose.Types.ObjectId)[];
   _id: string;
@@ -43,18 +45,6 @@ interface ClientWallet {
   transactions: (string | mongoose.Types.ObjectId)[];
   _id: string;
 }
-
-interface ClientGroup {
-  owner: string;
-  name: string;
-  description: string;
-  admins: (string | mongoose.Types.ObjectId)[];
-  photo: string;
-  _id: string;
-  // balance: number;
-  // transactions: (string | mongoose.Types.ObjectId)[];
-}
-
 interface GroupInfo {
   name: string;
   description: string;
@@ -75,3 +65,17 @@ interface CLientTransaction {
   status: "successful" | "declined";
   _id: string | mongoose.Types.ObjectId | string;
 }
+
+type MessageBody = {
+  textContent: string;
+  sendDate: Date;
+  sender: string | undefined;
+  // imageContent: (Blob | Uint8Array | ArrayBuffer)[];
+  type: MessageClass["type"];
+  imageContent: (string | StaticImport)[];
+  replyTo: {
+    sender: string;
+    textContent?: string;
+    imageContent?: string[];
+  };
+};

@@ -1,5 +1,5 @@
-import { ListTile, SearchBar } from "@/components/shared";
-import { Button } from "@/components/mui";
+import { ListTile, SearchBar } from "@/app/components/client";
+import { Button } from "@/app/components/mui";
 import Image from "next/image";
 import nft from "@/assets/images/nft.jpg";
 

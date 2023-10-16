@@ -3,10 +3,10 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getGroupByID, getMessages } from "@/lib/db";
-import { Header } from "@/components/shared";
+import { Header } from "@/app/components/client";
 import GroupChat from "./GroupChat";
 import Image from "next/image";
-import { GroupOptions } from "../../../components";
+import { GroupNotFoundActions, GroupOptions } from "../../../components";
 import Link from "next/link";
 import { GROUPS } from "@/constants/routes";
 
@@ -21,7 +21,22 @@ export default async function Group({
   const userID = serverSession.user.id;
 
   const group = await getGroupByID({ groupID: params.groupID });
-  if (!group) return null;
+  if (!group)
+    return (
+      <div className="w-screen h-screen flex items-center justify-center">
+        <div className="space-y-4 h-fit text-center">
+          <p className="font-bold text-3xl text-primary">
+            {"Couldn't"} retrieve Group
+          </p>
+          <p>
+            The requested group may either have been deleted or you are not
+            authorized to access this group.
+          </p>
+          {/* TODO: check if this is needed */}
+          {/* <GroupNotFoundActions /> */}
+        </div>
+      </div>
+    );
 
   // TODO try fetching messages here instead of a useEffect in the messages component
   // _ _ _ _ did, did'nt work
@@ -33,7 +48,7 @@ export default async function Group({
         title={group.name}
         imgShown
         leading={[
-          <Link href={`${GROUPS}/info/${group.tag}`} key={Math.random()}>
+          <Link href={`${GROUPS}/${params.groupID}/info`} key={Math.random()}>
             <Image
               src={group.photo}
               width={150}
@@ -49,6 +64,7 @@ export default async function Group({
             userID={userID}
             groupID={params.groupID}
             groupName={group.name}
+            ownerID={group.owner}
           />,
         ]}
       />

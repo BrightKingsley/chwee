@@ -156,13 +156,20 @@ export const authOptions: NextAuthOptions = {
         if (!(userExists && user) && profile?.email && profile?.name) {
           const newUser = await createUser({
             email: profile.email.toString().trim(),
-            username: profile.name.toString().trim().split("").reverse().join(),
+            username: profile.name
+              .toString()
+              .trim()
+              .split("")
+              .reverse()
+              .join()
+              .trim(),
             photo: googleProfile.picture,
             tag: `@${profile.name
               .split(" ")[0]
               .split("")
               .reverse()
-              .join()}${generatePassword(6)}`,
+              .join()
+              .trim()}${generatePassword(6)}`,
           });
           if (!newUser) return false;
           user = newUser;

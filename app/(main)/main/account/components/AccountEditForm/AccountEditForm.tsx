@@ -2,7 +2,7 @@
 
 import { ModalContext, NotificationContext } from "@/context";
 import { Input } from "@material-tailwind/react";
-import { Card, IconButton, Spinner } from "@/components/mui";
+import { Card, IconButton, Spinner } from "@/app/components/mui";
 import { useSession } from "next-auth/react";
 import { useContext, useState } from "react";
 import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
@@ -11,8 +11,8 @@ import Tag from "@mui/icons-material/TagFaces";
 import Close from "@mui/icons-material/Close";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Image from "next/image";
-import { Overlay } from "@/components/shared";
-import { Button } from "@/components/mui";
+import { Overlay } from "@/app/components/client";
+import { Button } from "@/app/components/mui";
 import Link from "next/link";
 import { ACCOUNT, BASE_URL } from "@/constants/routes";
 import { useRouter } from "next/navigation";

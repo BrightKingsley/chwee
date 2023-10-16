@@ -11,7 +11,7 @@ import Link from "next/link";
 import { WALLET } from "@/constants/routes";
 import { log } from "console";
 import { ClientWallet } from "@/types/models";
-import { IconButton } from "@/components/mui";
+import { IconButton } from "@/app/components/mui";
 
 export default function WalletBalance({
   walletData,

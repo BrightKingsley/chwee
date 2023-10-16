@@ -21,9 +21,11 @@ export {
   exitGroup,
   deleteAllGroups,
   deleteGroup,
+  getGroupByTag,
   getGroupByID,
-  getGroupInfo,
   getGroups,
+  getMembers,
+  requestMembership,
 } from "./groups";
 
 export {

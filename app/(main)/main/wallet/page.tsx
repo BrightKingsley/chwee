@@ -1,5 +1,5 @@
 import nft from "@assets/images/nft.jpg";
-import { Header, ListTile } from "@/components/shared";
+import { Header, ListTile } from "@/app/components/client";
 import Link from "next/link";
 import { WALLET } from "@/constants/routes";
 import { PlusIcon, ArrowRightIcon } from "@heroicons/react/20/solid";

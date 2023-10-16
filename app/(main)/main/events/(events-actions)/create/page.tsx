@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { Header } from "@/components/shared";
-import { Button, IconButton, Switch } from "@/components/mui";
+import { Header } from "@/app/components/client";
+import { Button, IconButton, Switch } from "@/app/components/mui";
 import { BASE_URL } from "@/constants/routes";
 import { TextareaAutosize } from "@mui/material";
 import Image from "next/image";

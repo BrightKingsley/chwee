@@ -1,15 +1,15 @@
 "use client";
 
-import { Header } from "@/components/shared";
+import { Header } from "@/app/components/client";
 import { BASE_URL, WALLET } from "@/constants/routes";
 import { NotificationContext } from "@/context";
 import { useLongPress } from "@/hooks";
 import { BackspaceIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
-import { AnimateInOut } from "@/components/shared";
+import { AnimateInOut } from "@/app/components/client";
 import BackspaceOutlined from "@mui/icons-material/BackspaceOutlined";
-import { Button, Spinner, Input as MInput } from "@/components/mui";
+import { Button, Spinner, Input as MInput } from "@/app/components/mui";
 
 export default function AddMoney() {
   const { triggerNotification } = useContext(NotificationContext);

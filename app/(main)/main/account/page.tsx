@@ -1,20 +1,25 @@
-import { Header } from "@/components/shared";
-import { Button, ListItem, Card } from "@/components/mui";
-import Image from "next/image";
-import { Session, getServerSession } from "next-auth";
-import { UserIcon } from "@heroicons/react/20/solid";
+// components //
+import { Header } from "@/app/components/client";
+import { UserGroup, ConnectionCard } from "@/app/components/server";
+import { Button, ListItem, Card } from "@/app/components/mui";
 import { AccountEditForm, SignOutButton } from "./components";
-import { authOptions } from "../../../api/auth/[...nextauth]/route";
-import { CONNECT } from "@/constants/routes";
 import { EditAccountButton } from "./components/Buttons";
-import { getUserByID, getGroupInfo } from "@/lib/db";
+// nextJS
+import Image from "next/image";
 import Link from "next/link";
+// react
 import { use } from "react";
-import LockOutlined from "@mui/icons-material/LockOutlined";
+// auth
+import { Session, getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+// routes
+import { CONNECT } from "@/constants/routes";
+// functions
+import { getUserByID, getGroupByID } from "@/lib/db";
+// icons
+import { UserIcon } from "@heroicons/react/20/solid";
 import LockOpenOutlined from "@mui/icons-material/LockOpenOutlined";
-import { UserGroup, ConnectionCard } from "./components";
-
-const avatars = { groups: [1, 1, 1, 1, 1] };
+import LockOutlined from "@mui/icons-material/LockOutlined";
 
 export default async function Account({
   params,
@@ -23,22 +28,21 @@ export default async function Account({
   params: any;
   searchParams?: { [key: string]: string | string[] };
 }) {
+  // auth
   const data = await getServerSession(authOptions);
-
-  console.log("ACC_PARAMS: ", searchParams);
-
   const serverSession: Session | null = data;
   if (!serverSession || !serverSession.user || !serverSession.user.id)
-    return <h1>Loading...</h1>;
+    return null;
 
+  // get data
   const userFromSession = serverSession.user;
-
   const user = await getUserByID({ userID: userFromSession.id! });
-
-  console.log("ACCOUNT_USER", { user });
-
-  if (!user) return <h1>User Unavailable</h1>;
-
+  if (!user)
+    return (
+      <div className="w-screen h-screen flex items-center justify-center">
+        <h1>User Unavailable</h1>
+      </div>
+    );
   const userConnections = user.connections.slice(0, 5);
 
   return (
@@ -47,9 +51,7 @@ export default async function Account({
         <div className="shrink-0">
           <Header title="My Account" />
         </div>
-        {!serverSession || !userFromSession ? (
-          <h1>Loading...</h1>
-        ) : (
+        {
           <div className="flex-1 h-full px-2 py-4 space-y-6 overflow-y-auto shrink-0">
             <div className="space-y-4">
               <div className="relative mx-auto w-fit">
@@ -121,44 +123,8 @@ export default async function Account({
               show={searchParams && searchParams.edit === "true" ? true : false}
             />
           </div>
-        )}
+        }
       </div>
     </>
-  );
-}
-
-const getGroup = async (groupID: string) => {
-  return await getGroupInfo({ groupID });
-};
-
-function GroupAvatar({ groupID }: { groupID: string }) {
-  const group = use(getGroup(groupID));
-
-  if (!group) return null;
-
-  return (
-    <Link href={group.tag} className="rounded-md shrink-0 w-60">
-      <Card className="border-[1px]">
-        <ListItem className="flex items-center gap-2">
-          <div className="w-16 h-16 rounded-full overflow-clip">
-            <Image src={group.photo} alt={group.name} fill />
-          </div>
-          <div>
-            <p className="font-bold">{group.name}</p>
-            <small className="text-primary">{group.tag}</small>
-            <div className="flex items-center gap-1">
-              <small>{group.membersCount} members</small>
-              <small>
-                {group.hasPassword ? (
-                  <LockOutlined className="w-3 h-3 text-red-400 fill-red-400" />
-                ) : (
-                  <LockOpenOutlined className="w-3 h-3 text-green-400 fill-green-400" />
-                )}
-              </small>
-            </div>
-          </div>
-        </ListItem>
-      </Card>
-    </Link>
   );
 }

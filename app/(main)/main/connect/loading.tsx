@@ -1,5 +1,5 @@
-import { Header } from "@/components/shared";
-import { Spinner } from "@/components/mui";
+import { Header } from "@/app/components/client";
+import { Spinner } from "@/app/components/mui";
 
 export default function Loading() {
   return (

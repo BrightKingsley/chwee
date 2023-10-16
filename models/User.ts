@@ -57,12 +57,31 @@ class UserClass {
   })
   public connections: mongoose.Types.ObjectId[];
 
+  @prop({
+    required: true,
+    default: [],
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+  })
+  public connectRequests: mongoose.Types.ObjectId[];
+
+  @prop({
+    required: true,
+    default: [],
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+  })
+  public connectsRequested: mongoose.Types.ObjectId[];
+
   // @prop({ required: true, ref: () => UserClass })
   // // public connections: mongoose.Types.ObjectId[];
   // public connections: mongoose.Types.ObjectId[];
 
-  @prop({ required: true, ref: () => GroupClass })
+  @prop({ required: true, ref: () => GroupClass, default: [] })
   public groups: mongoose.Types.ObjectId[];
+
+  @prop({ required: true, ref: () => GroupClass, default: [] })
+  public groupsRequested: mongoose.Types.ObjectId[];
 
   @prop({ required: true, ref: () => ChatClass })
   public chats: mongoose.Types.ObjectId[];

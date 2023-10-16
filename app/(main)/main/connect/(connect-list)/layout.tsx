@@ -1,4 +1,4 @@
-import { Header, SearchBar, SubHeader } from "@/components/shared";
+import { Header, SearchBar, SubHeader } from "@/app/components/client";
 import { CONNECT } from "@/constants/routes";
 
 export default function ConnectionsLayout({

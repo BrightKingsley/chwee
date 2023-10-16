@@ -6,7 +6,7 @@ import {
   UserIcon,
 } from "@heroicons/react/20/solid";
 
-import { AnimateInOut, OptionsMenu } from "@/components/shared";
+import { AnimateInOut, OptionsMenu } from "@/app/components/client";
 import { Ref, memo, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -58,10 +58,26 @@ export default function Message({
     console.log("runnninnnnn");
   }, []);
 
-  const { textContent, imageContent, sender, username, photo, tag, replyTo } = {
+  // const { textContent, imageContent, sender, username, photo, tag, replyTo } = {
+  //   ...messageWithSenderData.senderInfo,
+  //   ...messageWithSenderData.message,
+  // };
+
+  const messageData = {
     ...messageWithSenderData.senderInfo,
     ...messageWithSenderData.message,
   };
+
+  const textContent = messageData.textContent;
+  const imageContent = messageData.imageContent;
+  const sender = messageData.sender;
+  const username = messageData.username;
+  const photo = messageData.photo;
+  const tag = messageData.tag;
+  const replyTo = messageData.replyTo;
+  const type = messageData.type;
+  const fund = messageData.funds;
+
   const { data } = useSession();
   const session: Session | null = data;
 
@@ -87,7 +103,11 @@ export default function Message({
 
   if (!session || !session.user || !session.user.id) return null;
 
-  return (
+  return type === "notification" ? (
+    <div className="mx-auto w-fit">
+      <p className="text-gray-800">{textContent}</p>
+    </div>
+  ) : (
     // @ts-ignore TODO
     <motion.div
       {...gestures}
@@ -134,7 +154,7 @@ export default function Message({
           ? "flex-row-reverse self-end rounded-l-xl"
           : "rounded-r-xl"
       } w-fit rounded-b-[0.2rem] ${
-        imageContent.length > 0 && !textContent && "!rounded-xl"
+        imageContent && imageContent.length > 0 && !textContent && "!rounded-xl"
       } `}
     >
       <AnimateInOut

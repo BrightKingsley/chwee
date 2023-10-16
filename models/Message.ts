@@ -41,13 +41,13 @@ class MessageClass {
   public sender: mongoose.Types.ObjectId | string;
 
   @prop({ default: [] })
-  public imageContent: string[];
+  public imageContent?: string[];
 
   @prop({ default: "" })
-  public textContent: string;
+  public textContent?: string;
 
   @prop({ default: null })
-  public funds: {
+  public funds?: {
     receiver: string;
     amount: number;
   };
@@ -59,10 +59,13 @@ class MessageClass {
     imageContent?: string[];
   };
 
+  @prop({ required: true, enum: ["fund", "notification", "conversation"] })
+  public type: "fund" | "notification" | "conversation";
+
   @prop({ required: true })
   public sendDate: Date;
 
-  id: string;
+  id?: string;
 
   _id?: mongoose.Types.ObjectId | string;
 }

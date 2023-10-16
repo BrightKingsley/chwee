@@ -50,7 +50,7 @@ export async function createUser({
       const newUserWallet = await createWallet({ ownerID: user._id });
 
       const group: any = addMemberToGroupByTag({
-        tag: "general chat",
+        tag: "general_chat",
         userID: user.id,
       });
 

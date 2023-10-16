@@ -5,9 +5,11 @@ import {
   createGroup,
   deleteGroup,
   addMemberToGroupByID,
+  requestMembership,
+  sendMessage,
 } from "@/lib/db";
 import { Group, GroupClass } from "@/models";
-import { stringToObjectId } from "@/lib/utils";
+import { generatePassword, stringToObjectId } from "@/lib/utils";
 import bcrypt from "bcrypt";
 import { group } from "console";
 import { getServerSession } from "next-auth";
@@ -39,7 +41,6 @@ export async function GET(
     // const {password} = await request.json()
     const group = await getGroupByID({
       groupID: groupID,
-      password: password ? password : undefined,
     });
 
     console.log("GROUP", group);
@@ -62,12 +63,9 @@ type PostProps = {
 type PatchProps = {
   name?: string;
   description?: string;
-  password?: string;
-  member?: {
-    id: string;
-    groupPass: string;
-  };
-  prop: "name" | "description" | "password" | "member";
+  password?: string | boolean;
+  photo: string;
+  tag: string;
 };
 
 export async function PUT(
@@ -77,18 +75,37 @@ export async function PUT(
   try {
     const serverSession = await getServerSession(authOptions);
 
-    const user = serverSession?.user;
+    const { userID } = await request.json();
 
-    if (!(user && user.id)) throw new Error("Unauthorized Access");
+    if (!(serverSession?.user && serverSession?.user.id))
+      throw new Error("Unauthorized Access");
 
-    const group = await addMemberToGroupByID({
-      groupID: groupID,
-      userID: user.id,
-    });
+    const sessionUserID = serverSession.user.id;
 
-    if (!group) throw new Error("Could'n add member to group");
+    const groupDoc = await Group.findById(stringToObjectId(groupID));
+    if (!groupDoc) throw new Error("Couldn't retrieve group document");
 
-    return NextResponse.json(group);
+    // if (sessionUserID !== groupDoc.owner.toString() && sessionUserID !== userID)
+    //   throw new Error("Unauthorized!");
+
+    if (
+      !(sessionUserID === groupDoc.owner.toString() || sessionUserID === userID)
+    )
+      throw new Error("Unauthorized!");
+
+    let result;
+    if (groupDoc.password.length < 1 || groupDoc.owner.toString() === userID) {
+      result = await addMemberToGroupByID({
+        groupID,
+        userID,
+      });
+    } else {
+      result = await requestMembership({ groupID, userID });
+    }
+
+    if (!result) throw new Error("Could'n add member to group");
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error({ error });
     return NextResponse.json(null);
@@ -101,127 +118,92 @@ export async function PATCH(
 ) {
   try {
     const body = await request.json();
-    const { name, description, password, prop, member }: PatchProps = body;
+    const { name, description, photo, tag, password }: PatchProps = body;
 
-    // headers is for test purposes with thunderclient. Will use sessions (getserverSession) or tokens (getToken)
-    const headersList = headers();
-    const userID = headersList.get("user_id");
-    console.log("OWNER_ID", userID);
+    const serverSession = await getServerSession(authOptions);
+    if (!serverSession || !serverSession.user || !serverSession.user.id)
+      throw new Error("Invalid User");
 
+    const userID = serverSession.user.id;
     const parsedGroupID = stringToObjectId(groupID);
-
-    if (!userID)
-      return NextResponse.json({
-        error: { message: "Unauthorized access (USERID)" },
-      });
 
     const parsedUserID = stringToObjectId(userID);
 
     const group = await Group.findById(parsedGroupID);
-    if (!group)
-      return NextResponse.json(
-        { error: { message: "Group document not found" } },
-        { status: 400 }
-      );
+    if (!group) throw new Error("Group document not found");
 
-    if (prop === "member" && member && member.id) {
-      const parsedMemberID = stringToObjectId(member.id);
+    if (userID !== group.owner.toString())
+      throw new Error("Unauthorized operation");
 
-      if (!group.password) {
-        group.members.push(parsedMemberID!);
-        group.save();
-        return NextResponse.json(group);
-      }
-
-      if (!password)
-        return NextResponse.json({
-          error: { message: "Unauthorized access (REQUIRES PASSWORD)" },
-        });
-
-      const passwordsMatch = await bcrypt.compare(password, group.password);
-
-      if (!passwordsMatch) {
-        return NextResponse.json({
-          error: { message: "Unauthorized access (WRONG PASSWORD)" },
-        });
-      }
-
-      group.members.push(parsedMemberID!);
-      group.save();
-
-      return NextResponse.json(group);
-    }
-
-    if (parsedUserID?.toString() !== group.owner.toString()) {
-      console.log("COMPARE OWNER", parsedUserID, group.owner);
-      return NextResponse.json({
-        error: {
-          message: "Unauthorized access (NOT OWNER)",
-          ids: {
-            sent: parsedUserID,
-            actual: group.owner,
-          },
+    if (name) {
+      group.name = name;
+      sendMessage({
+        chatID: group._id.toString(),
+        message: {
+          textContent: "An admin changed the group name",
+          sender: group.owner,
+          sendDate: new Date(),
+          type: "notification",
         },
       });
     }
 
-    if (prop === "description" && description) {
-      // const group = await Group.findByIdAndUpdate(
-      //   parsedGroupID,
-      //   {
-      //     $set: {
-      //       description: description,
-      //     },
-      //   },
-      //   { new: true }
-      // );
-      // if (!group)
-      //   return NextResponse.json({
-      //     error: { message: "Could not modify group description" },
-      //   });
-
+    if (description) {
       group.description = description;
-      group.save();
-
-      console.log("========REACHEDDDD=========");
-      return NextResponse.json(group);
+      await sendMessage({
+        chatID: group._id.toString(),
+        message: {
+          textContent: "An admin changed the group description",
+          sender: group.owner,
+          sendDate: new Date(),
+          type: "notification",
+        },
+      });
     }
-
-    if (prop === "name" && name) {
-      group.name = name;
-      group.save();
-      console.log("========REACHEDDDD=========");
-      return NextResponse.json(group);
+    if (photo) {
+      group.photo = photo;
+      await sendMessage({
+        chatID: group._id.toString(),
+        message: {
+          textContent: "An admin changed the group photo",
+          sender: group.owner,
+          sendDate: new Date(),
+          type: "notification",
+        },
+      });
     }
-
-    if (prop === "password" && password) {
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-      // const group = await Group.findByIdAndUpdate(
-      //   parsedGroupID,
-      //   {
-      //     $set: {
-      //       password: hashedPassword,
-      //     },
-      //   },
-      //   { new: true }
-      // );
-
-      // if (!group)
-      //   return NextResponse.json({
-      //     error: { message: "Could not modify group description" },
-      //   });
-
-      group.password = hashedPassword;
-      group.save();
-
-      console.log("========REACHEDDDD=========");
-      return NextResponse.json(group);
+    if (tag) {
+      group.tag = tag;
+      await sendMessage({
+        chatID: group._id.toString(),
+        message: {
+          textContent: "An admin changed the group tag",
+          sender: group.owner,
+          sendDate: new Date(),
+          type: "notification",
+        },
+      });
     }
-    throw new Error("invalid action");
+    if (
+      password === true ||
+      password === false ||
+      (password && password?.length > 0)
+    ) {
+      if (password === false) {
+        group.password = "";
+      } else if (password === true) {
+        const genPass = generatePassword(8);
+        const hashedPassword = await bcrypt.hash(genPass, saltRounds);
+        group.password = hashedPassword;
+      } else if (password && password.length > 0) {
+        group.password = password;
+      }
+    }
+    group.save();
+    return NextResponse.json(group);
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error });
+    console.error({ error });
+    return NextResponse.json(null);
   }
 }
 
@@ -230,28 +212,19 @@ export async function DELETE(
   { params: { groupID } }: PostProps
 ) {
   try {
-    const { name, id } = await request.json();
+    const serverSession = await getServerSession(authOptions);
+    if (!serverSession || !serverSession.user || !serverSession.user.id)
+      throw new Error("Invalid User");
 
-    console.log("NAME__ID", name, id);
-
+    const userID = serverSession.user.id;
     // if (!(name && id))
-    if (!id)
-      return NextResponse.json({
-        error: {
-          message: "Please Provide a Name and GroupgroupID",
-        },
-      });
 
-    const groupDeleted = await deleteGroup({ groupID: groupID });
-
-    console.log("GROUP", groupDeleted);
-
-    if (!groupDeleted) throw new Error("Couldn't Delete Group");
+    const groupDeleted = await deleteGroup({ groupID, ownerID: userID });
 
     return NextResponse.json({
-      message: "Deleted Successfully",
+      message: groupDeleted,
     });
   } catch (error) {
-    return NextResponse.json({ error: "server error" });
+    return NextResponse.json(null);
   }
 }

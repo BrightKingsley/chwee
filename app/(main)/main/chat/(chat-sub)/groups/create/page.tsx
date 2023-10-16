@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { BASE_URL, GROUPS } from "@/constants/routes";
 import { TextareaAutosize } from "@mui/material";
 import Image from "next/image";
-import { Button, IconButton, Switch } from "@/components/mui";
+import { Button, IconButton, Switch } from "@/app/components/mui";
 import { useUploadThing } from "@/lib/uploadThing";
 import Group from "@mui/icons-material/Group";
 import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";

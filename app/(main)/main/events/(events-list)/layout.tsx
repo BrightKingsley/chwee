@@ -1,5 +1,5 @@
-import { SubHeader, Header } from "@/components/shared";
-import { IconButton } from "@/components/mui";
+import { SubHeader, Header } from "@/app/components/client";
+import { IconButton } from "@/app/components/mui";
 import {
   DISCOVER_EVENTS,
   REGISTERED_EVENTS,
