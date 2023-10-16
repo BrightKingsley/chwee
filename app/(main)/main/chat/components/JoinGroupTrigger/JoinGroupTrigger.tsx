@@ -1,8 +1,9 @@
 "use client";
 
-import { Spinner } from "@/components/mui";
+import { Spinner } from "@/app/components/mui";
 import { BASE_URL, GROUPS } from "@/constants/routes";
 import { ModalContext, NotificationContext } from "@/context";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
@@ -10,9 +11,13 @@ import { useContext, useEffect, useState } from "react";
 export default function JoinGroupTrigger({
   groupID,
   groupName,
+  returnURL,
+  locked,
 }: {
   groupID: string;
   groupName: string;
+  returnURL: string;
+  locked: boolean;
 }) {
   const { triggerModal } = useContext(ModalContext);
   const { triggerNotification } = useContext(NotificationContext);
@@ -20,29 +25,41 @@ export default function JoinGroupTrigger({
 
   const { push } = useRouter();
 
+  const { data } = useSession();
+  const session = data;
+
   const joinGroup = async () => {
     setLoading(true);
     triggerNotification("Processing join request");
     const res = await fetch(`${BASE_URL}/api/groups/${groupID}`, {
       method: "PUT",
+      body: JSON.stringify({ userID: session?.user.id }),
     });
     const group = await res.json();
     console.log({ group });
     if (!group) {
       setLoading(false);
-      triggerNotification("You couldn't be added to this group");
-      return push(`${GROUPS}`);
+      triggerNotification(
+        locked ? "Join request failed" : "You couldn't be added to this group"
+      );
+      return push(returnURL);
     }
     setLoading(false);
-    push(`${GROUPS}`);
+    push(returnURL);
     return triggerNotification(
-      <Link href={`${GROUPS}/${groupID}`}>Joined Successfully</Link>
+      locked ? (
+        "Join request sent successfully"
+      ) : (
+        <Link href={`${GROUPS}/${groupID}`}>
+          Joined Successfully Click to enter chat
+        </Link>
+      )
     );
   };
 
   const cancelJoinGroup = () => {
     triggerModal({});
-    push(`${GROUPS}`);
+    push(returnURL);
   };
 
   useEffect(() => {

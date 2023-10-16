@@ -23,7 +23,7 @@ import {
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import { SendMessageType } from "./types";
-import { AnimateInOut, Close, UserListModal } from "@/components/shared";
+import { AnimateInOut, Close, UserListModal } from "@/app/components/client";
 import { ChatContext, NotificationContext } from "@/context";
 import { useParams } from "next/navigation";
 import { MessageClass } from "@/models/Message";
@@ -35,7 +35,8 @@ import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import { SendFunds, UploadImageData } from "..";
 import { IconButton, TextareaAutosize } from "@mui/material";
 import { useImageUpload } from "@/hooks";
-import { Spinner } from "@/components/mui";
+import { Spinner } from "@/app/components/mui";
+import { MessageBody } from "@/types/models";
 
 interface HTMLInputEvent extends Event {
   target: HTMLIFrameElement & EventTarget;
@@ -59,6 +60,7 @@ export default function SendMessage({
     textContent: "",
     imageContent: [],
     sendDate: new Date(),
+    type: "conversation",
     //TODO check this (!)
     sender: session?.user.id!,
     replyTo: replyMessage,
@@ -203,7 +205,7 @@ export default function SendMessage({
   }, []);
 
   useEffect(() => {
-    if (membersModal.value.length > 1) {
+    if (membersModal.value.length > 0) {
       setMembersModal((prev) => ({ ...prev, show: false }));
       setToggleTransferForm(true);
     }

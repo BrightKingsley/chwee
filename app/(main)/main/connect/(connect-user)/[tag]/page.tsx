@@ -1,21 +1,27 @@
-import { getUserByID, getUserByTag } from "@/lib/db";
+// comonents
+import { ListItem } from "@/app/components/mui";
+import { ConnectionCard, UserGroup } from "@/app/components/server";
+import { ConnectOptions } from "@/app/components/client";
+// next
 import Image from "next/image";
-import { Button, Card, ListItem } from "@/components/mui";
-import { ConnectOptions } from "@/components/shared";
-
-import Link from "next/link";
-import nft from "@/assets/images/nft.jpg";
-import { group } from "console";
-import { ConnectionCard, UserGroup } from "../../components";
+//functions
+import { getUserByTag } from "@/lib/db";
 
 export default async function UserInfo({
   params,
 }: {
   params: { tag: string };
 }) {
+  // get user data
   const user = await getUserByTag({ tag: params.tag });
 
-  if (!user) return <h1>USER UNAVAILABLE</h1>;
+  // validate user data
+  if (!user)
+    return (
+      <div className="w-screen h-screen flex items-center justify-center">
+        <h1>User Unavailable</h1>
+      </div>
+    );
   const userConnections = user.connections.slice(0, 5);
 
   return (

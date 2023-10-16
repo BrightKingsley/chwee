@@ -1,5 +1,5 @@
 "use client";
-import { IconButton } from "@/components/mui";
+import { IconButton } from "@/app/components/mui";
 import { ACCOUNT } from "@/constants/routes";
 import Link from "next/link";
 import Edit from "@mui/icons-material/Edit";

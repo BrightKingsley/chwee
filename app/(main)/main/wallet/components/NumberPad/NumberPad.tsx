@@ -1,7 +1,7 @@
-import { AnimateInOut } from "@/components/shared";
+import { AnimateInOut } from "@/app/components/client";
 import { useLongPress } from "@/hooks";
 import BackspaceOutlined from "@mui/icons-material/BackspaceOutlined";
-import { Button } from "@/components/mui";
+import { Button } from "@/app/components/mui";
 
 const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 export default function NumberPad({

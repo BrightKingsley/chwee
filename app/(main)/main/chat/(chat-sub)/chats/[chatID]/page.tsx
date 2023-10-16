@@ -1,4 +1,4 @@
-import { Header } from "@/components/shared";
+import { Header } from "@/app/components/client";
 import P2pChat from "./P2pChat";
 import { getChat, getMessages, getUserByID } from "@/lib/db";
 import { getServerSession } from "next-auth";

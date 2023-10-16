@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { Messages, SendMessage } from "../../../components";
-import { AnimateInOut } from "@/components/shared";
+import { AnimateInOut } from "@/app/components/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
-import { IconButton } from "@/components/mui";
+import { IconButton } from "@/app/components/mui";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 
 export default function P2pChat({ params }: { params: { chatID: string } }) {

@@ -3,7 +3,7 @@
 import { EventCardClass } from "@/models/EventCard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { Button } from "@/components/shared";
+import { Button } from "@/app/components/client";
 import { useRouter } from "next/navigation";
 import { EVENTS } from "@/constants/routes";
 

@@ -1,9 +1,9 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { ListTile, MessageButton } from "@/components/shared";
+import { ListTile, MessageButton } from "@/app/components/client";
 import { getChatsByMembersID, getUserByID } from "@/lib/db";
 import { UserIcon } from "@heroicons/react/20/solid";
 import { getServerSession } from "next-auth";
-import { ConnectButton } from "@/components/shared";
+import { ConnectButton } from "@/app/components/client";
 import Link from "next/link";
 import { CONNECT } from "@/constants/routes";
 import Image from "next/image";

@@ -1,7 +1,7 @@
 "use client";
 
-import { ListTile } from "@/components/shared";
-import { Button } from "@/components/mui";
+import { ListTile } from "@/app/components/client";
+import { Button } from "@/app/components/mui";
 import Image from "next/image";
 import nft from "@/assets/images/nft.jpg";
 import { EventCards } from "../../components";

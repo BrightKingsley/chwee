@@ -1,4 +1,4 @@
-import { Header, SubHeader } from "@/components/shared";
+import { Header, SubHeader } from "@/app/components/client";
 import { formatLink, replaceWith } from "@/lib/utils";
 import { AUTH, CHAT_NOTIFICATIONS, OTHER } from "@/constants/routes";
 

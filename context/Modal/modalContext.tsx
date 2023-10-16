@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useState } from "react";
-import { Modal } from "@/components/shared";
+import { Modal } from "@/app/components/client";
 
 const ModalContext = createContext<ModalContextType>({
   showModal: false,

@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, createContext, useEffect, useState } from "react";
-import { Notification } from "@/components/shared";
+import { Notification } from "@/app/components/client";
 
 const NotificationContext = createContext<NotificationContextType>({
   showNotification: false,

@@ -5,15 +5,36 @@ import { Chat } from "@/models/Chat";
 import { GroupClass } from "@/models/Group";
 import { Conversation, ConversationClass } from "@/models/Conversation";
 import { stringToObjectId } from "../utils";
+import { ClientUser } from "@/types/models";
+import { pusherServer } from "../config";
 
 export async function sendMessage({
   chatID,
   message,
+  senderInfo = {},
 }: {
   chatID: string;
   message: MessageClass;
+  senderInfo?: {
+    username?: string;
+    id?: string;
+    tag?: string;
+    photo?: string;
+  };
 }) {
   try {
+    if (process.env.NODE_ENV === "production") {
+      await pusherServer.trigger(chatID, "incoming-message", {
+        message,
+        senderInfo,
+      });
+    } else {
+      pusherServer.trigger(chatID, "incoming-message", {
+        message,
+        senderInfo,
+      });
+    }
+
     await connectDB();
 
     const parsedChatID = stringToObjectId(chatID);

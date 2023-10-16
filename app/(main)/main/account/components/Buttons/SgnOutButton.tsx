@@ -3,7 +3,7 @@
 import { ModalContext, NotificationContext } from "@/context";
 import { useContext, useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
-import { Button } from "@/components/mui";
+import { Button } from "@/app/components/mui";
 
 export default function SignOutButton() {
   const { triggerModal } = useContext(ModalContext);

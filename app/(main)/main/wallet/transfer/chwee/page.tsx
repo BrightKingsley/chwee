@@ -1,7 +1,12 @@
 "use client";
 
-import { AnimateInOut, Header, ListTile, Overlay } from "@/components/shared";
-import { Button, Spinner } from "@/components/mui";
+import {
+  AnimateInOut,
+  Header,
+  ListTile,
+  Overlay,
+} from "@/app/components/client";
+import { Button, Spinner } from "@/app/components/mui";
 import { BASE_URL } from "@/constants/routes";
 import { NotificationContext } from "@/context";
 import { ClientUser } from "@/types/models";
@@ -10,7 +15,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 // import { NumberPad, Input } from "../../components";
-import { Input as MInput } from "@/components/mui";
+import { Input as MInput } from "@/app/components/mui";
 
 import { useLongPress } from "@/hooks";
 import BackspaceOutlined from "@mui/icons-material/BackspaceOutlined";

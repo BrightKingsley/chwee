@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { AnimateInOut } from "@/components/shared";
+import { AnimateInOut } from "@/app/components/client";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
 import { CHATS, GROUPS, CHAT, CONNECT } from "@/constants/routes";
-import { Button, IconButton } from "@/components/mui";
+import { Button, IconButton } from "@/app/components/mui";
 
 export default function FloatingActionButton({
   pathname,

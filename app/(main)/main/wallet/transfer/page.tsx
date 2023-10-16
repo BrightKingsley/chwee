@@ -1,10 +1,10 @@
-import { Header } from "@/components/shared";
+import { Header } from "@/app/components/client";
 import { WALLET } from "@/constants/routes";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
-import { ListItem } from "@/components/mui";
+import { ListItem } from "@/app/components/mui";
 
 export default function Transfer() {
   return (

@@ -37,7 +37,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "service-worker.js"  ],
   "exclude": [
     "node_modules"
   ]

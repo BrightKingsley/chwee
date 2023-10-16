@@ -1,4 +1,4 @@
-import { Header } from "@/components/shared";
+import { Header } from "@/app/components/client";
 
 export default function Loading() {
   return (

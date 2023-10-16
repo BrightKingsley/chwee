@@ -1,10 +1,10 @@
 "use client";
 
-import { AnimateInOut, Close } from "@/components/shared";
+import { AnimateInOut, Close } from "@/app/components/client";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { TextareaAutosize } from "@mui/material";
-import { IconButton } from "@/components/mui";
+import { IconButton } from "@/app/components/mui";
 import { PaperAirplaneIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { useUploadThing } from "@/lib/uploadThing";
 import { UploadButton } from "@uploadthing/react";
@@ -12,6 +12,7 @@ import { OurFileRouter } from "@/app/api/uploadthing/core";
 import { useImageUpload } from "@/hooks";
 import { useState } from "react";
 import { UploadFileResponse } from "uploadthing/client";
+import { MessageBody } from "@/types/models";
 
 export default function UploadImageData({
   previewImages,

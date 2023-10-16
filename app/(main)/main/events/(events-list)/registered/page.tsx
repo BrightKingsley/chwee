@@ -1,8 +1,8 @@
-import { ListTile } from "@/components/shared";
-import { Button } from "@/components/mui";
+import { ListTile } from "@/app/components/client";
+import { Button } from "@/app/components/mui";
 import Image from "next/image";
 import nft from "@/assets/images/nft.jpg";
-import { Header } from "@/components/shared";
+import { Header } from "@/app/components/client";
 import { EventCards } from "../../components";
 
 const events = [1, 1, 1, 1, 1, 1];

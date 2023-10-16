@@ -1,4 +1,4 @@
-import { ListTile } from "@/components/shared";
+import { ListTile } from "@/app/components/client";
 import Image from "next/image";
 import nft from "@/assets/images/nft.jpg";
 

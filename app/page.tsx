@@ -1,4 +1,4 @@
-import { Button, IconButton } from "@/components/mui";
+import { Button, IconButton } from "@/app/components/mui";
 import MenuOutlined from "@mui/icons-material/MenuOutlined";
 import { DASHBOARD } from "@/constants/routes";
 import {

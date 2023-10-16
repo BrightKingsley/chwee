@@ -34,21 +34,30 @@ export async function POST(
   { params: { chatID } }: PostProps
 ) {
   try {
-    await connectDB();
-
     const {
       message,
       roomType,
     }: { message: MessageClass; roomType: "group" | "p2p" } =
       await request.json();
 
-    console.log("SENT_message", message);
+    if (
+      !(
+        message.type === "conversation" ||
+        message.type === "fund" ||
+        message.type === "notification"
+      )
+    )
+      throw new Error("Invalid Message Type");
 
     if (
       !message.sender ||
-      (!message.textContent && message.imageContent.length < 1)
+      (!message.textContent &&
+        (!message.imageContent ||
+          (message.imageContent && message.imageContent.length < 1)))
     )
-      return NextResponse.json({ error: { message: "invalid message data" } });
+      return NextResponse.json({
+        error: { message: "invalid message data" },
+      });
 
     const parsedChatID = stringToObjectId(chatID);
     const parsedSenderID = stringToObjectId(message.sender.toString());
@@ -62,20 +71,27 @@ export async function POST(
         error: { message: "no message content sent" },
       });
 
-    console.log("====REACHED-1=====");
-
     const senderDoc = await getUserByID({ userID: parsedSenderID });
 
     if (!senderDoc) throw new Error("Couldn't retrieve sender document");
 
+    if (message.funds) {
+      const {} = message;
+      message.type = "fund";
+      transferToChweeWallet({
+        amount: message.funds.amount,
+        receiverTag: message.funds.receiver,
+        senderID: message.sender.toString(),
+      });
+    }
+
     let group;
     let chat;
+    await connectDB();
     if (roomType === "group") {
       console.log("ROOM_TYPE", roomType);
       // Find the group by its ID
       group = await Group.findById(parsedChatID);
-
-      console.log("GROUP", group, parsedSenderID);
 
       // Check if the group exists and if the members Set includes the memberIdToCheck
       if (
@@ -88,17 +104,6 @@ export async function POST(
     }
     if (roomType === "p2p") {
       chat = await Chat.findById(parsedChatID);
-
-      console.log("====REACHED-3 P2P=====");
-
-      if (message.funds) {
-        const {} = message;
-        transferToChweeWallet({
-          amount: message.funds.amount,
-          receiverTag: message.funds.receiver,
-          senderID: message.sender.toString(),
-        });
-      }
 
       // Check if the chat exists and if the members Set includes the memberIdToCheck
       if (
@@ -117,20 +122,7 @@ export async function POST(
       photo: senderDoc.photo,
     };
 
-    console.log("<==========REACHED=========> 2");
-    if (process.env.NODE_ENV === "production") {
-      await pusherServer.trigger(chatID, "incoming-message", {
-        message,
-        senderInfo,
-      });
-    } else {
-      pusherServer.trigger(chatID, "incoming-message", {
-        message,
-        senderInfo,
-      });
-    }
-
-    await sendMessage({ chatID, message });
+    await sendMessage({ chatID, message, senderInfo });
 
     return NextResponse.json({ success: true }); // The ID exists in
   } catch (error) {

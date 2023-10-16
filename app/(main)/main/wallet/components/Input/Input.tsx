@@ -1,6 +1,6 @@
 "use client";
 
-import { Input as MInput } from "@/components/mui";
+import { Input as MInput } from "@/app/components/mui";
 
 export default function Input({
   className,
