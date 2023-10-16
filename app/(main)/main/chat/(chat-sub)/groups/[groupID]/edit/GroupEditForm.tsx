@@ -21,6 +21,7 @@ import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { useImageUpload } from "@/hooks";
 import { lettersAndNumbersOnly } from "@/lib/utils";
 import Warning from "@mui/icons-material/Warning";
+import AbcOutlined from "@mui/icons-material/AbcOutlined";
 
 type GroupCreate = {
   description: string;
@@ -173,10 +174,11 @@ export default function GroupEditForm({
               value={groupData.name}
               type="text"
               label="name"
+              icon={<AbcOutlined className="w-6 h-6" />}
               onChange={(e) => {
                 setGroupData((prev) => ({ ...prev, name: e.target.value }));
               }}
-              className="w-full p-1 text-gray-700 border-none rounded-md outline-none resize-none  bg-primary/10"
+              className=""
             />
           </div>
           <div>
@@ -185,13 +187,14 @@ export default function GroupEditForm({
               value={groupData.tag}
               label="tag"
               type="text"
+              icon={<p className="">@</p>}
               onChange={(e) => {
                 setGroupData((prev) => ({
                   ...prev,
                   tag: lettersAndNumbersOnly(e.target.value),
                 }));
               }}
-              className="w-full p-1 text-gray-700 border-none rounded-md outline-none resize-none  bg-primary/10"
+              className=""
             />
             <div></div>
           </div>
@@ -209,7 +212,7 @@ export default function GroupEditForm({
                   description: e.target.value,
                 }))
               }
-              className="w-full p-1 text-gray-700 border-none rounded-md outline-none resize-none  bg-primary/10"
+              className="w-full p-2 text-sm text-gray-700 border-none rounded-md resize-none bg-primary/10"
             />
           </div>
           <div className="flex items-center justify-between">
@@ -225,22 +228,23 @@ export default function GroupEditForm({
             />
           </div>
 
-          {groupData.password && (
+          {groupData.locked && (
             <Input
               value={groupData.password}
               disabled={!groupData.locked}
               type="text"
+              icon={<p className="">***</p>}
               placeholder="Input a new password..."
               onChange={(e) => {
                 setGroupData((prev) => ({ ...prev, password: e.target.value }));
               }}
-              className="w-full p-1 text-gray-700 border-none rounded-md outline-none resize-none  bg-primary/10"
+              className=""
             />
           )}
 
           {groupData.locked && (
-            <small className="flex gap-2 items-center">
-              <Warning className="text-brand-yellow text-xs w-3 h-3" /> Note: if
+            <small className="flex items-center gap-2">
+              <Warning className="w-3 h-3 text-xs text-brand-yellow" /> Note: if
               you set the locked switch to true, without providing a password,
               one will be automatically generated
             </small>
