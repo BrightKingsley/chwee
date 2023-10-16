@@ -23,14 +23,14 @@ export default async function Group({
   const group = await getGroupByID({ groupID: params.groupID });
   if (!group)
     return (
-      <div className="w-screen h-screen flex items-center justify-center">
-        <div className="space-y-4 h-fit text-center">
-          <p className="font-bold text-3xl text-primary">
+      <div className="flex items-center justify-center w-screen h-screen">
+        <div className="space-y-4 text-center h-fit px-4">
+          <p className="text-3xl font-bold text-primary">
             {"Couldn't"} retrieve Group
           </p>
           <p>
-            The requested group may either have been deleted or you are not
-            authorized to access this group.
+            The requested group may have either been deleted or you {"don't"}{" "}
+            have the authorizatiion to access this group.
           </p>
           {/* TODO: check if this is needed */}
           {/* <GroupNotFoundActions /> */}

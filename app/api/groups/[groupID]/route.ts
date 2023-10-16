@@ -9,7 +9,12 @@ import {
   sendMessage,
 } from "@/lib/db";
 import { Group, GroupClass } from "@/models";
-import { generatePassword, stringToObjectId } from "@/lib/utils";
+import {
+  formatTag,
+  generatePassword,
+  lettersAndNumbersOnly,
+  stringToObjectId,
+} from "@/lib/utils";
 import bcrypt from "bcrypt";
 import { group } from "console";
 import { getServerSession } from "next-auth";
@@ -140,7 +145,7 @@ export async function PATCH(
       sendMessage({
         chatID: group._id.toString(),
         message: {
-          textContent: "An admin changed the group name",
+          textContent: "An admin changed the group name to " + name,
           sender: group.owner,
           sendDate: new Date(),
           type: "notification",
@@ -173,11 +178,13 @@ export async function PATCH(
       });
     }
     if (tag) {
-      group.tag = tag;
+      group.tag = formatTag(lettersAndNumbersOnly(tag));
       await sendMessage({
         chatID: group._id.toString(),
         message: {
-          textContent: "An admin changed the group tag",
+          textContent: `An admin changed the group tag to ${formatTag(
+            lettersAndNumbersOnly(tag)
+          )}`,
           sender: group.owner,
           sendDate: new Date(),
           type: "notification",

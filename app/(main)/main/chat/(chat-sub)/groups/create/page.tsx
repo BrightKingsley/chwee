@@ -18,6 +18,7 @@ import Link from "next/link";
 import { ClientGroup } from "@/types/models";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { useImageUpload } from "@/hooks";
+import { lettersAndNumbersOnly } from "@/lib/utils";
 
 type GroupCreate = {
   description: string;
@@ -56,8 +57,11 @@ export default function CreateGroup() {
     }
   };
 
-  const handleCreate = async (e: React.SyntheticEvent) => {
+  const createGroup = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+
+    if (selectedImage.length < 1)
+      return triggerNotification("Please attach an image");
 
     console.log("SUBMIT REACHED");
     const uploadImage = await startUpload(selectedImage);
@@ -79,7 +83,7 @@ export default function CreateGroup() {
     console.log("createdGroup", { group });
 
     if (group)
-      triggerNotification(
+      return triggerNotification(
         <Link href={`${GROUPS}/${group._id}`}>
           Success. Click to go to group chat
         </Link>
@@ -90,7 +94,7 @@ export default function CreateGroup() {
   return (
     <div className="">
       <form
-        onSubmit={(e: React.SyntheticEvent) => handleCreate(e)}
+        onSubmit={(e: React.SyntheticEvent) => createGroup(e)}
         className="p-4 pt-20 mx-2 space-y-3 bg-white rounded-lg md:mx-14 md:shadow-lg md:border"
       >
         <div
@@ -117,7 +121,6 @@ export default function CreateGroup() {
                 <AddPhotoAlternateOutlined className="w-6 h-6 fill-primary" />
               </label>
               <input
-                required
                 // value={}
                 {...getInputProps()}
                 type="file"
@@ -160,7 +163,10 @@ export default function CreateGroup() {
             value={groupData.tag}
             type="text"
             onChange={(e) => {
-              setGroupData((prev) => ({ ...prev, tag: e.target.value }));
+              setGroupData((prev) => ({
+                ...prev,
+                tag: lettersAndNumbersOnly(e.target.value),
+              }));
             }}
             className="w-full p-1 text-gray-700 border-none rounded-md outline-none resize-none focus:outline-primary bg-primary/10"
           />

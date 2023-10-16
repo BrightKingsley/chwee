@@ -3,7 +3,11 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { User } from "@/models";
-import { stringToObjectId } from "@/lib/utils";
+import {
+  formatTag,
+  lettersAndNumbersOnly,
+  stringToObjectId,
+} from "@/lib/utils";
 
 type Props = {
   params: {
@@ -41,7 +45,7 @@ export async function PATCH(request: NextRequest, { params }: Props) {
     }
 
     if (tag) {
-      userDoc.tag = tag;
+      userDoc.tag = formatTag(lettersAndNumbersOnly(tag));
     }
 
     if (photo) {

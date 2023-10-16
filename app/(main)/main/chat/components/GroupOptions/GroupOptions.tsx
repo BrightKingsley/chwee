@@ -42,7 +42,8 @@ export default function GroupOptions({
         return triggerNotification("Something Went wrong");
       }
       setLoading(false);
-      return triggerNotification(data.message);
+      triggerNotification(data.message);
+      return push(GROUPS);
     } catch (error) {
       console.error({ error });
       setLoading(false);
@@ -63,7 +64,8 @@ export default function GroupOptions({
         return triggerNotification("Something Went wrong");
       }
       setLoading(false);
-      return triggerNotification(data.message);
+      triggerNotification(data.message);
+      return push(GROUPS);
     } catch (error) {
       console.error({ error });
       setLoading(false);

@@ -34,9 +34,9 @@ export default function GroupAvatar({ groupID }: { groupID: string }) {
               <small>{group.members.length} members</small>
               <small>
                 {group.hasPassword ? (
-                  <LockOutlined className="w-3 h-3 text-red-400 fill-red-400" />
+                  <LockOutlined className="w-3 h-3 text-xs text-red-400 fill-red-400" />
                 ) : (
-                  <LockOpenOutlined className="w-3 h-3 text-green-400 fill-green-400" />
+                  <LockOpenOutlined className="w-3 h-3 text-xs text-green-400 fill-green-400" />
                 )}
               </small>
             </div>

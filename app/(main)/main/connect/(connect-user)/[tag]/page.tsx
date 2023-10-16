@@ -13,12 +13,14 @@ export default async function UserInfo({
   params: { tag: string };
 }) {
   // get user data
-  const user = await getUserByTag({ tag: params.tag });
+  const decodedTag = decodeURIComponent(params.tag);
+
+  const user = await getUserByTag({ tag: decodedTag });
 
   // validate user data
   if (!user)
     return (
-      <div className="w-screen h-screen flex items-center justify-center">
+      <div className="flex items-center justify-center w-screen h-screen">
         <h1>User Unavailable</h1>
       </div>
     );

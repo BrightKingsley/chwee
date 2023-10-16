@@ -1,7 +1,12 @@
 // Import necessary modules and dependencies
 import { Group, User } from "@/models";
 import connectDB from "./connect-db";
-import { generatePassword, stringToObjectId } from "../utils";
+import {
+  formatTag,
+  generatePassword,
+  lettersAndNumbersOnly,
+  stringToObjectId,
+} from "../utils";
 import { GroupClass } from "@/models/Group";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
@@ -68,7 +73,7 @@ export async function createGroup({
       password: hashedPassword,
       members: [parsedOwnerID],
       photo,
-      tag,
+      tag: formatTag(lettersAndNumbersOnly(tag)),
     });
 
     if (!groupDoc) return null;

@@ -1,6 +1,12 @@
 import { Chat, Group, GroupClass, User, Wallet } from "@/models";
 import connectDB from "./connect-db";
-import { dbToClientUser, generatePassword, stringToObjectId } from "../utils";
+import {
+  dbToClientUser,
+  formatTag,
+  generatePassword,
+  lettersAndNumbersOnly,
+  stringToObjectId,
+} from "../utils";
 import { UserClass } from "@/models/User";
 import bcrypt from "bcrypt";
 import { addMemberToGroupByTag, createWallet } from ".";
@@ -43,7 +49,7 @@ export async function createUser({
         email,
         username,
         photo,
-        tag,
+        tag: formatTag(lettersAndNumbersOnly(tag)),
         password: hashedPassword,
       });
 
@@ -153,11 +159,12 @@ export async function getUserByTag({ tag }: { tag: string }) {
   try {
     await connectDB();
 
+    console.log("GET USER BY TAG", { tag });
+
     // let user: UserClass;
-    const decodedTag = decodeURIComponent(tag);
 
     const dbUser = await User.findOne({
-      tag: decodedTag,
+      tag,
     });
 
     if (!dbUser) return null;
