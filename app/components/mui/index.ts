@@ -7,6 +7,7 @@ import {
   ListItem,
   Spinner,
   Switch,
+  Textarea,
 } from "@material-tailwind/react";
 
-export { Button, Card, IconButton, Input, ListItem, Spinner, Switch };
+export { Button, Card, IconButton, Input, ListItem, Spinner, Switch, Textarea };

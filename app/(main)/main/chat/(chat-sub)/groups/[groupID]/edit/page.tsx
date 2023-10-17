@@ -14,9 +14,13 @@ export default async function CreateGroup({
     );
 
   return (
-    <>
-      <Header title={`Edit ${group.name}`} />
-      <GroupEditForm params={params} />
-    </>
+    <div className="flex flex-col">
+      <div className="shrink-0">
+        <Header title={`Edit ${group.name}`} />
+      </div>
+      <div className="flex-1 overflow-auto">
+        <GroupEditForm params={params} />
+      </div>
+    </div>
   );
 }

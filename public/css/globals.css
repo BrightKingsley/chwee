@@ -17,6 +17,13 @@
   src: url("../fonts/Druk/Druk-Wide/DrukWide-Bold-Trial.otf") format("opentype");
 }
 
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
 @keyframes marquee {
   0% {
     transform: translateZ(0);

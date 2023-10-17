@@ -7,7 +7,6 @@ import {
   type Ref,
 } from "@typegoose/typegoose";
 import mongoose from "mongoose";
-import { UserClass } from "./User";
 
 @post<MessageClass>("save", (doc) => {
   if (doc) {
@@ -34,9 +33,6 @@ import { UserClass } from "./User";
   },
 })
 class MessageClass {
-  // @prop({ required: true, ref: () => UserClass })
-  // public sender: mongoose.Types.ObjectId;
-
   @prop({ required: true })
   public sender: mongoose.Types.ObjectId | string;
 
@@ -47,9 +43,10 @@ class MessageClass {
   public textContent?: string;
 
   @prop({ default: null })
-  public funds?: {
-    receiver: string;
+  public transaction?: {
+    receiver: string | mongoose.Types.ObjectId;
     amount: number;
+    type: "send" | "request";
   };
 
   @prop({ required: true, default: {} })

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     }: {
       name: string;
       description: string;
-      password: string;
+      password: string | boolean;
       photo: string;
       tag: string;
     } = await request.json();
@@ -57,11 +57,9 @@ export async function POST(request: NextRequest) {
 
     console.log("CREATE_GROUP-data", name, description, password);
 
-    if (!(name && description))
+    if (!(name && description && tag && photo))
       return NextResponse.json({
-        error: {
-          message: "Please Provide a name and description for the group",
-        },
+        message: "Please Provide a group name, tag and description",
       });
 
     if (
@@ -78,7 +76,7 @@ export async function POST(request: NextRequest) {
       ownerID: user.id,
       name,
       description,
-      password: password ? true : false,
+      password,
       photo,
       tag,
     });

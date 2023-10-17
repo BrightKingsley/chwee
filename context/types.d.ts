@@ -38,8 +38,16 @@ type ChatContextProviderType = {
 };
 
 type ChatContextType = {
-  getChatId: () => Promise<string>;
-  getMessages: () => Promise<MessageModel[]>;
+  toggleTransactionForm: {
+    type: "request" | "send";
+    show: boolean;
+  };
+  setToggleTransactionForm: React.Dispatch<
+    React.SetStateAction<{
+      type: "request" | "send";
+      show: boolean;
+    }>
+  >;
 };
 
 // MODAL

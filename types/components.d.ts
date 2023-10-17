@@ -18,3 +18,11 @@ type HeaderType = {
   leading?: React.ReactNode[];
   trailing?: React.ReactNode[];
 };
+
+type GroupCreate = {
+  description: string;
+  name: string;
+  tag: string;
+  locked: boolean;
+  password: string;
+};

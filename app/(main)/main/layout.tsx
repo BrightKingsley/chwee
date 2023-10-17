@@ -7,6 +7,7 @@ import {
 } from "@/app/components/client";
 import {
   AuthContextProvider,
+  ChatContextProvider,
   ModalContextProvider,
   NotificationContextProvider,
   ScreenContext,
@@ -82,15 +83,17 @@ export default function RootLayout({
           <NotificationContextProvider>
             <ModalContextProvider>
               <ScreenContext>
-                <main className="md:flex h-screen w-screen">
-                  <Navbar />
-                  <div className="w-screen md:w-[calc(100vw-3.5rem)]">
-                    {children}
-                  </div>
-                  <div className="fixed bottom-0 left-0">
-                    <PortalElements />
-                  </div>
-                </main>
+                <ChatContextProvider>
+                  <main className="md:flex h-screen w-screen">
+                    <Navbar />
+                    <div className="w-screen md:w-[calc(100vw-3.5rem)]">
+                      {children}
+                    </div>
+                    <div className="fixed bottom-0 left-0">
+                      <PortalElements />
+                    </div>
+                  </main>
+                </ChatContextProvider>
               </ScreenContext>
             </ModalContextProvider>
           </NotificationContextProvider>

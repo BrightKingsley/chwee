@@ -1,18 +1,7 @@
-// @ts-nocheck
 "use client";
-import React, {
-  ChangeEvent,
-  ChangeEventHandler,
-  FormHTMLAttributes,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
-import AccountBalanceWalletOutlined from "@mui/icons-material/AccountBalanceWalletOutlined";
 import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
-import LocalAtmOutlinedIcon from "@mui/icons-material/LocalAtmOutlined";
 
 import {
   ChevronRightIcon,
@@ -20,27 +9,23 @@ import {
   XMarkIcon,
 } from "@heroicons/react/20/solid";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-
 import { SendMessageType } from "./types";
-import { AnimateInOut, Close, UserListModal } from "@/app/components/client";
+import { AnimateInOut, UserListModal } from "@/app/components/client";
 import { ChatContext, NotificationContext } from "@/context";
-import { useParams } from "next/navigation";
-import { MessageClass } from "@/models/Message";
 import { BASE_URL } from "@/constants/routes";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import Image from "next/image";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
-import { SendFunds, UploadImageData } from "..";
-import { IconButton, TextareaAutosize } from "@mui/material";
+import { TransactionForm, UploadImageData } from "..";
+import { TextareaAutosize } from "@mui/material";
 import { useImageUpload } from "@/hooks";
-import { Spinner } from "@/app/components/mui";
-import { MessageBody } from "@/types/models";
-
-interface HTMLInputEvent extends Event {
-  target: HTMLIFrameElement & EventTarget;
-}
+import { IconButton, Spinner } from "@/app/components/mui";
+import { ClientUser, MessageBody } from "@/types/models";
+import {
+  CoinsOutlined,
+  ExchangeDollarOutlined,
+  HandCoinOutlined,
+} from "@/app/components/Icons";
 
 export default function SendMessage({
   replyMessage,
@@ -78,12 +63,16 @@ export default function SendMessage({
     value: "",
   });
 
+  const { setToggleTransactionForm, toggleTransactionForm } =
+    useContext(ChatContext);
+
   const [showActionIcons, setShowActionIcons] = useState(true);
-  const [toggleTransferForm, setToggleTransferForm] = useState(false);
+  const [toggleFunds, setToggleFunds] = useState(false);
   const [previewImages, setPreviewImages] = useState<{
     images: (string | any)[];
     show: boolean;
   }>({ images: [], show: false });
+  // @ts-ignore TODO check Files Type
   const [selectedImages, setSelectedImages] = useState<Files[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -100,8 +89,16 @@ export default function SendMessage({
         ...prev,
         imageContent: imageContent as string[],
       }));
-
-      sendMessage(imageContent);
+      const messageToSend: MessageBody = {
+        ...message,
+        sendDate: new Date(),
+      };
+      sendMessage({
+        message: messageToSend,
+        chatID,
+        roomType,
+        images: imageContent,
+      });
     },
   });
 
@@ -115,22 +112,55 @@ export default function SendMessage({
       ...prev,
       textContent: "",
       imageContent: [],
-      replyTo: {},
-      sendDate: null,
+      replyTo: undefined,
+      sendDate: new Date(),
     }));
     setReplyMessage({ sender: "", imageContent: [], textContent: "" });
     setPreviewImages({ images: [], show: false });
     setSelectedImages([]);
+    setMembersModal((prev) => ({ ...prev, value: "" }));
   };
 
-  const sendMessage = async (
-    images?: MessageBody["imageContent"] = message.imageContent
-  ) => {
-    let messageData = { ...message };
-    if (images.length > 0) {
-      messageData.sender = message.sender;
-      messageData.imageContent = images;
+  const handleSend = async (e: SubmitEvent) => {
+    try {
+      e.preventDefault();
+
+      console.log("MSG_RES_TO_BE_SENT: ", message);
+
+      if (
+        !message.textContent &&
+        message.imageContent.length < 1 &&
+        !(message.transaction && message.transaction.amount)
+      )
+        return triggerNotification("Invalid message data");
+
+      if (selectedImages.length > 0) return startUpload(selectedImages);
+      const messageToSend: MessageBody = {
+        ...message,
+        sendDate: new Date(),
+      };
+      setLoading(true);
+      const res = await sendMessage({
+        message: messageToSend,
+        chatID,
+        roomType,
+      });
+      setLoading(false);
+      resetInput();
+      if (message.type === "fund") {
+        // if (res.message !== "success") {
+        return triggerNotification(res.message);
+        // }
+      }
+    } catch (error) {
+      console.error({ error });
+      setLoading(false);
+      resetInput();
     }
+  };
+
+  /*
+  const handleTransaction = async (e) => {
     try {
       setLoading(true);
       console.log("SENDING_MESSAGE ==>", { messageData, message });
@@ -146,24 +176,10 @@ export default function SendMessage({
       resetInput();
     } catch (error) {
       console.error({ error });
-      setLoading(false);
+      return triggerNotification("Couldn't make transaction. Please retry");
     }
   };
-
-  const handleSend = async (e: SubmitEvent) => {
-    e.preventDefault();
-
-    console.log("MSG_RES_TO_BE_SENT: ", message);
-
-    if (!message.textContent && message.imageContent < 1)
-      return triggerNotification("Invalid message data");
-
-    if (selectedImages.length > 0) return startUpload(selectedImages);
-
-    const res = await sendMessage();
-
-    resetInput();
-  };
+  */
 
   const getMembers = async () => {
     try {
@@ -172,8 +188,12 @@ export default function SendMessage({
       const data = await res.json();
       console.log({ data });
       const members = data as ClientUser[] | null;
-      if (!members) return;
-      setMembersModal((prev) => ({
+      if (!members)
+        return setMembersModal((prev) => ({
+          ...prev,
+          loading: false,
+        }));
+      return setMembersModal((prev) => ({
         ...prev,
         loading: false,
         members,
@@ -207,7 +227,15 @@ export default function SendMessage({
   useEffect(() => {
     if (membersModal.value.length > 0) {
       setMembersModal((prev) => ({ ...prev, show: false }));
-      setToggleTransferForm(true);
+      setMessage((prev) => ({
+        ...prev,
+        transaction: {
+          ...prev.transaction,
+          receiver: membersModal.value,
+          type: "send",
+        },
+      }));
+      setToggleTransactionForm({ show: true, type: "send" });
     }
   }, [membersModal.value]);
 
@@ -250,10 +278,9 @@ export default function SendMessage({
             sendMessage={sendMessage}
           />
         )}
-        <SendFunds
-          setToggleTransferForm={setToggleTransferForm}
-          toggleTransferForm={toggleTransferForm}
-        />
+
+        <TransactionForm setMessage={setMessage} />
+
         <form
           // TODO COMEBACK ADD_TYPES
           //@ts-ignore
@@ -286,7 +313,7 @@ export default function SendMessage({
                         textContent: "",
                       })
                     }
-                    className="w-5 h-5 !p-0 bg-white rounded-full"
+                    className="w-5 h-5 !p-0 bg-white text-gray-700 !shadow-none rounded-full"
                   >
                     <XMarkIcon className="w-5 h-5" />
                   </IconButton>
@@ -317,10 +344,6 @@ export default function SendMessage({
                   {replyMessage.imageContent &&
                     replyMessage.imageContent?.length > 0 && (
                       <>
-                        {/* <small className="flex items-center gap-1">
-                        <PhotoIcon className="w-4 h-4 fill-gray-500" />
-                        Photo
-                      </small> */}
                         <div className="ml-auto rounded-md w-14 h-14 overflow-clip bg-primary">
                           <Image
                             src={replyMessage.imageContent[0]}
@@ -340,26 +363,71 @@ export default function SendMessage({
               animate={{ width: "auto", scale: 1 }}
               out={{ width: 0, scale: 0 }}
               transition={{ type: "keyframes" }}
-              className="flex items-center self-end -space-x-2"
+              className="flex shrink-0 items-center self-end relative -space-x-2"
             >
-              <IconButton
-                {...getRootProps()}
-                title="send funds"
-                aria-label="send funds"
-                onClick={() => {
-                  if (roomType === "p2p")
-                    return setToggleTransferForm((prev) => !prev);
-                  getMembers();
+              <AnimateInOut
+                show={toggleFunds}
+                init={{ opacity: 0, top: 0, left: 0, scale: 0 }}
+                animate={{
+                  opacity: 1,
+                  top: "calc(calc(100% + 1.5rem) * -1)",
+                  left: "0.5rem",
+                  scale: 1,
                 }}
-                className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
+                out={{ opacity: 0, top: 0, left: 0, scale: 0 }}
+                className="!absolute bg-body p-1 flex gap-3 rounded-md items-center"
               >
-                <LocalAtmOutlinedIcon className="w-6 h-6 fill-primary" />
+                <IconButton
+                  title="request for funds"
+                  aria-label="request for funds"
+                  onClick={() => {
+                    return setToggleTransactionForm((prev) => ({
+                      ...prev,
+                      show: true,
+                      type: "request",
+                    }));
+                  }}
+                  className="flex items-center justify-center text-3xl fill-primary rounded-full text-primary"
+                >
+                  <HandCoinOutlined className="w-6 h-6 fill-primary" />
+                </IconButton>
+
+                <IconButton
+                  title="send funds"
+                  aria-label="send funds"
+                  onClick={() => {
+                    if (roomType === "p2p")
+                      return setToggleTransactionForm((prev) => ({
+                        ...prev,
+                        show: true,
+                        type: "send",
+                      }));
+                    getMembers();
+                  }}
+                  className="flex items-center justify-center text-3xl fill-primary text-primary rounded-full"
+                >
+                  <CoinsOutlined className="w-6 h-6 fill-primary" />
+                </IconButton>
+              </AnimateInOut>
+              <IconButton
+                title="transaction"
+                aria-label="transaction"
+                onClick={() => {
+                  setToggleFunds((prev) => !prev);
+                }}
+                className="flex items-center justify-center rounded-full text-3xl fill-primary"
+              >
+                <ExchangeDollarOutlined className="w-6 h-6 fill-primary" />
               </IconButton>
 
-              <IconButton title="attach image">
+              <IconButton
+                {...getRootProps()}
+                title="attach image"
+                className="rounded-full"
+              >
                 <label
                   htmlFor="image"
-                  className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
+                  className="flex rounded-full items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
                 >
                   <AddPhotoAlternateOutlined className="w-6 h-6 fill-primary" />
                 </label>
@@ -391,7 +459,7 @@ export default function SendMessage({
             {!showActionIcons && (
               <IconButton
                 onClick={() => setShowActionIcons(true)}
-                className="self-end "
+                className="self-end rounded-full"
               >
                 <ChevronRightIcon className="w-6 h-6 fill-primary text-primary" />
               </IconButton>
@@ -399,8 +467,10 @@ export default function SendMessage({
 
             {/* MESSAGE INPUT */}
             <TextareaAutosize
+              // @ts-ignore
               ref={inputRef}
               title="enter text"
+              placeholder="Send a message..."
               aria-label="enter message text"
               value={message.textContent}
               onFocus={() => {
@@ -424,7 +494,7 @@ export default function SendMessage({
             type="submit"
             title="send message"
             aria-label="send message"
-            className="flex items-center justify-center bg-body stroke-primary"
+            className="flex items-center justify-center bg-body stroke-primary rounded-full p-1"
           >
             {/* <Send className="w-8 h-8 " /> */}
             <svg
@@ -453,4 +523,36 @@ export default function SendMessage({
       />
     </>
   );
+}
+export async function sendMessage({
+  message,
+  images = [],
+  chatID,
+  roomType,
+}: {
+  message: MessageBody;
+  chatID: string;
+  roomType: string;
+  images?: MessageBody["imageContent"];
+}) {
+  let messageData = { ...message };
+  if (images.length > 0) {
+    messageData.sender = message.sender;
+    messageData.imageContent = images;
+  }
+  try {
+    console.log("SENDING_MESSAGE ==>", { messageData, message });
+    const res = await fetch(`${BASE_URL}/api/messaging/${chatID}`, {
+      method: "POST",
+      body: JSON.stringify({ message: messageData, roomType }),
+    });
+
+    const result = await res.json();
+
+    console.log("MSG_RESULT", result);
+    return result;
+  } catch (error) {
+    console.error({ error });
+    return "an unexpected error occured";
+  }
 }

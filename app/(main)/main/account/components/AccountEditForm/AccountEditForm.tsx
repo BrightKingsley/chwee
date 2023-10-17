@@ -17,6 +17,7 @@ import Link from "next/link";
 import { ACCOUNT, BASE_URL } from "@/constants/routes";
 import { useRouter } from "next/navigation";
 import { useImageUpload } from "@/hooks";
+import { lettersAndNumbersOnly } from "@/lib/utils";
 
 export default function AccountEditForm({ show }: { show: boolean }) {
   const { data } = useSession();
@@ -192,7 +193,7 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                   onChange={(e) => {
                     setUpdateUser((prev) => ({
                       ...prev,
-                      tag: e.target.value,
+                      tag: lettersAndNumbersOnly(e.target.value),
                     }));
                   }}
                   value={updateUser.tag}

@@ -37,7 +37,7 @@ const FeatureCard = ({
       className={`relative sm:w-52 sm:h-52 rounded-3xl sm:rounded-[3rem] overflow-clip p-8 ${background}`}
     >
       <div className="absolute top-0 left-0 w-full h-full">
-        <img src="/images/pattern.svg" alt="" />
+        <Image width={100} height={100} src="/images/pattern.svg" alt="" />
       </div>
       <img src={img} alt="" className="object-cover w-full h-full" />
     </div>

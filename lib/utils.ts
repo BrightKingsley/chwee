@@ -26,6 +26,12 @@ export function lettersAndNumbersOnly(inputString: string) {
   return formattedString;
 }
 
+export function formatToNumberWithDecimal(inputString: string) {
+  // Use a regular expression to remove non-alphanumeric characters
+  const formattedString = inputString.replace(/[^\d.]/g, "");
+  return formattedString;
+}
+
 export function formatTag(tag: string): string {
   // Add the "@" symbol in front of the tag
   const userTag = `@${tag}`;

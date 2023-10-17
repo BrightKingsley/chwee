@@ -58,7 +58,7 @@ export default function SearchBar({
         // onChange={(e) => {}}
         onFocus={onFocus}
         onBlur={onBlur}
-        className={`relative w-full p-2 bg-white/60 text-gray-700 border-none rounded-xl outline-none focus:bg-white outline-primary ${
+        className={`relative w-full p-1 bg-white/60 text-gray-700 border-none rounded-xl outline-none focus:bg-white outline-primary ${
           disabled &&
           "cursor-not-allowed bg-gray-200 outline-red-400 outline-dashed"
         }`}
@@ -66,9 +66,11 @@ export default function SearchBar({
       />
       <IconButton
         variant="filled"
+        title="search"
+        aria-label="search"
         type="submit"
         disabled={disabled}
-        className="p-2 rounded-xl bg-primary"
+        className="p-2 rounded-xl shrink-0"
       >
         <Search className="w-8 h-8 text-white" />
       </IconButton>

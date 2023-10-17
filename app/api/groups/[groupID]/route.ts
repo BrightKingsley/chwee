@@ -2,21 +2,13 @@ import { NextResponse, NextRequest } from "next/server";
 import { headers } from "next/headers";
 import {
   getGroupByID,
-  createGroup,
   deleteGroup,
   addMemberToGroupByID,
   requestMembership,
-  sendMessage,
+  updateGroup,
 } from "@/lib/db";
-import { Group, GroupClass } from "@/models";
-import {
-  formatTag,
-  generatePassword,
-  lettersAndNumbersOnly,
-  stringToObjectId,
-} from "@/lib/utils";
-import bcrypt from "bcrypt";
-import { group } from "console";
+import { Group } from "@/models";
+import { stringToObjectId } from "@/lib/utils";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 
@@ -130,84 +122,17 @@ export async function PATCH(
       throw new Error("Invalid User");
 
     const userID = serverSession.user.id;
-    const parsedGroupID = stringToObjectId(groupID);
-
-    const parsedUserID = stringToObjectId(userID);
-
-    const group = await Group.findById(parsedGroupID);
-    if (!group) throw new Error("Group document not found");
-
-    if (userID !== group.owner.toString())
-      throw new Error("Unauthorized operation");
-
-    if (name) {
-      group.name = name;
-      sendMessage({
-        chatID: group._id.toString(),
-        message: {
-          textContent: "An admin changed the group name to " + name,
-          sender: group.owner,
-          sendDate: new Date(),
-          type: "notification",
-        },
-      });
-    }
-
-    if (description) {
-      group.description = description;
-      await sendMessage({
-        chatID: group._id.toString(),
-        message: {
-          textContent: "An admin changed the group description",
-          sender: group.owner,
-          sendDate: new Date(),
-          type: "notification",
-        },
-      });
-    }
-    if (photo) {
-      group.photo = photo;
-      await sendMessage({
-        chatID: group._id.toString(),
-        message: {
-          textContent: "An admin changed the group photo",
-          sender: group.owner,
-          sendDate: new Date(),
-          type: "notification",
-        },
-      });
-    }
-    if (tag) {
-      group.tag = formatTag(lettersAndNumbersOnly(tag));
-      await sendMessage({
-        chatID: group._id.toString(),
-        message: {
-          textContent: `An admin changed the group tag to ${formatTag(
-            lettersAndNumbersOnly(tag)
-          )}`,
-          sender: group.owner,
-          sendDate: new Date(),
-          type: "notification",
-        },
-      });
-    }
-    if (
-      password === true ||
-      password === false ||
-      (password && password?.length > 0)
-    ) {
-      if (password === false) {
-        group.password = "";
-      } else if (password === true) {
-        const genPass = generatePassword(8);
-        const hashedPassword = await bcrypt.hash(genPass, saltRounds);
-        group.password = hashedPassword;
-      } else if (password && password.length > 0) {
-        group.password = password;
-      }
-    }
-    group.save();
-    return NextResponse.json(group);
+    const updateGroupResult = await updateGroup({
+      groupID,
+      userID,
+      name,
+      description,
+      photo,
+      tag,
+      password,
+    });
+    if (!updateGroup) throw new Error("Couldn't update group");
+    return NextResponse.json({ message: updateGroupResult });
   } catch (error) {
     console.error({ error });
     return NextResponse.json(null);

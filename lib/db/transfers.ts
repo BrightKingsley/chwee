@@ -1,40 +1,60 @@
 import { Transaction, User, Wallet } from "@/models";
 import { stringToObjectId } from "../utils";
+import mongoose from "mongoose";
 
 export async function transferToChweeWallet({
   amount,
   senderID,
   receiverTag,
+  receiverID: rID,
+  findBy,
 }: {
   amount: number;
   senderID: string;
-  receiverTag: string;
+  receiverTag?: string;
+  receiverID?: string | mongoose.Types.ObjectId;
+  findBy?: "tag" | "ID";
 }) {
   try {
     const parsedSenderID = stringToObjectId(senderID);
+    const parsedReceiverID =
+      typeof rID === "string" ? stringToObjectId(rID) : rID;
 
     const senderWallet = await Wallet.findOne({
       owner: parsedSenderID,
     });
+
+    if (!senderWallet) throw new Error("Couldnt find wallet document");
+
     console.log({ amount, receiverTag });
 
-    const receiverDoc: any = await User.findOne({ tag: receiverTag.trim() });
+    // This tries to use receiverID passed as arguments into the function and if theres no receiver ID passed, it should find by receiverTag. If neither is provided, an error i thrown. This is done in order to avoid unnecessary Database queries
+    let receiverID;
+    if (parsedReceiverID) {
+      if (!parsedReceiverID) throw new Error("Invalid ID");
+      receiverID = parsedReceiverID;
+    } else {
+      if (!receiverTag) throw new Error("No User Tag passed");
+      const receiverDoc = await User.findOne({ tag: receiverTag.trim() });
+      if (!receiverDoc) throw new Error("Couldn't get Receiver document");
+      receiverID = receiverDoc._id;
+    }
 
-    if (!receiverDoc) return "Invalid User Tag";
-
-    console.log("RECEIVER_DOC: ", receiverDoc);
+    if (!receiverID) throw new Error("Invalid Receiver ID");
 
     const receiverWallet = await Wallet.findOne({
-      owner: receiverDoc._id,
+      owner: receiverID,
     });
 
     if (!(receiverWallet && senderWallet))
       return "Invalid Sender or Recipient Data";
 
+    // TODO: use mongoose tranactions to handle these
+    let transaction;
     if (senderWallet.balance < amount) {
-      const transaction = await Transaction.create({
+      transaction = await Transaction.create({
         sender: parsedSenderID,
-        receiver: receiverDoc._id,
+        receiver: receiverID,
         amount,
         date: new Date(),
         type: "transfer",
@@ -45,9 +65,9 @@ export async function transferToChweeWallet({
       return "Insufficient Balance";
     }
 
-    const transaction = await Transaction.create({
+    transaction = await Transaction.create({
       sender: parsedSenderID,
-      receiver: receiverDoc._id,
+      receiver: receiverID,
       amount,
       date: new Date(),
       type: "transfer",
@@ -73,6 +93,6 @@ export async function transferToChweeWallet({
     return "success";
   } catch (error) {
     console.error({ error });
-    return "An error Occured";
+    return null;
   }
 }

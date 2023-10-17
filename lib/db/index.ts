@@ -26,6 +26,7 @@ export {
   getGroups,
   getMembers,
   requestMembership,
+  updateGroup,
 } from "./groups";
 
 export {

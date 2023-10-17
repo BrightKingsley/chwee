@@ -55,11 +55,10 @@ export async function sendMessage({
 
     if (!updatedConversation) return null;
 
-    return updatedConversation;
-  } catch (err) {
-    console.error(err);
-    const error = err as Error;
-    return { error };
+    return "success";
+  } catch (error) {
+    console.error({ error });
+    return null;
   }
 }
 

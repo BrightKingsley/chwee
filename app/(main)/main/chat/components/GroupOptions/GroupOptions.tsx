@@ -81,6 +81,7 @@ export default function GroupOptions({
       <div className="absolute right-0 -bottom-24">
         <OptionsMenu
           show={showOptions}
+          setShow={setShowOptions}
           options={[
             {
               label: "leave group",

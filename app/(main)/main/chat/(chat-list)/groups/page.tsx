@@ -8,11 +8,7 @@ import { Suspense } from "react";
 import { BASE_URL } from "@/constants/routes";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import {
-  InformationCircleIcon,
-  UserIcon,
-  XMarkIcon,
-} from "@heroicons/react/20/solid";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 import { getGroups } from "@/lib/db";
 import { ClientGroup } from "@/types/models";
 import { stringToObjectId } from "@/lib/utils";
@@ -44,20 +40,9 @@ export default async function Groups({
     <>
       {groups?.length > 0 ? (
         groups.map((group, i) => {
-          console.log({
-            // __CONTAINS_: group.members
-            //   .map((member) => member.toString())
-            //   .includes(serverSession.user.id!),
-            __CONTAINS_: userDoc.groups
-              .map((groupID) => groupID.toString())
-              .includes(group._id.toString()),
-            userID: serverSession.user.id!,
-
-            group,
-          });
           return (
             <ListTile key={group._id.toString()} index={i}>
-              <div className="flex items-center w-full gap-2 p-2 rounded-md bg-primary/10_">
+              <div className="flex items-center w-full gap-2 p-2 rounded-md">
                 {searchParams &&
                   searchParams.join === "true" &&
                   searchParams.groupTag === group.tag && (
@@ -70,7 +55,7 @@ export default async function Groups({
                   )}
                 <Link
                   href={`${GROUPS}/info/${group.tag}`}
-                  className="w-12 h-12 rounded-full overflow-clip shrink-0"
+                  className="w-12 h-12 rounded-full overflow-clip shrink-0 bg-primary"
                 >
                   <Image src={group.photo} alt="" fill sizes="" priority />
                 </Link>
@@ -82,14 +67,16 @@ export default async function Groups({
                       ? `${GROUPS}/${group._id}`
                       : `${GROUPS}?join=true&groupTag=${group.tag}`
                   }
-                  className="flex-1 text-left w-full_ "
+                  className="flex-1 text-left overflow-hidden w-full"
                 >
-                  <p className="font-semibold">{group.name}</p>
-                  <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[14rem] m-0 p-0">
+                  <p className="font-semibold whitespace-nowrap text-ellipsis overflow-hidden w-full">
+                    {group.name}
+                  </p>
+                  <p className="whitespace-nowrap  overflow-hidden text-ellipsis  w-[14rem] m-0 p-0">
                     {group.description}
                   </p>
                 </Link>
-                <IconButton className="rounded-full !p-4">
+                <IconButton className="rounded-full shrink-0 !p-4">
                   <Link href={`${GROUPS}/info/${group.tag}`}>
                     {<InfoOutlined className="w-6 h-6" />}
                   </Link>

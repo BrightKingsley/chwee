@@ -7,19 +7,21 @@ import {
 } from "@heroicons/react/20/solid";
 
 import { AnimateInOut, OptionsMenu } from "@/app/components/client";
-import { Ref, memo, useEffect, useRef, useState } from "react";
+import { IconButton, Button } from "@/app/components/mui";
+import { Ref, memo, useContext, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { CONNECT, MEMBER_INFO, USER_PROFILE } from "@/constants/routes";
+import { ACCOUNT, CONNECT } from "@/constants/routes";
 import { MessageClass } from "@/models/Message";
 import { useLongPress } from "@/hooks";
 import { UserClass } from "@/models";
 import { SendMessageType } from "../SendMessage/types";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
-import nft from "@/assets/images/nft.jpg";
-import { IconButton } from "@mui/material";
+import { sendMessage } from "../SendMessage/SendMessage";
+import { usePathname } from "next/navigation";
+import { ChatContext } from "@/context";
 
 interface ClientMessage {
   setReplyMessage: SendMessageType["setReplyMessage"];
@@ -52,7 +54,11 @@ export default function Message({
   inputRef,
   getViewImages,
 }: MessageProps) {
-  const [showMore, setShowMore] = useState({ options: false, emojis: false });
+  const [showMore, setShowMore] = useState(false);
+  const { setToggleTransactionForm, toggleTransactionForm } =
+    useContext(ChatContext);
+
+  const pathname = usePathname();
 
   useEffect(() => {
     console.log("runnninnnnn");
@@ -76,7 +82,16 @@ export default function Message({
   const tag = messageData.tag;
   const replyTo = messageData.replyTo;
   const type = messageData.type;
-  const fund = messageData.funds;
+  const transaction = messageData.transaction;
+  const sendDate = messageData.sendDate;
+
+  const msgSendDate = new Date(sendDate);
+  const hours = msgSendDate.getHours();
+  const minutes = msgSendDate.getMinutes();
+  const ampm = hours >= 12 ? "pm" : "am";
+  const formattedTime = `${hours % 12 || 12}:${minutes
+    .toString()
+    .padStart(2, "0")}${ampm}`;
 
   const { data } = useSession();
   const session: Session | null = data;
@@ -84,18 +99,18 @@ export default function Message({
   const messageRef = useRef<HTMLDivElement>();
 
   const gestures = useLongPress({
-    callback: () => setShowMore((prev) => ({ ...prev, emojis: true })),
+    callback: () => setShowMore(true),
     duration: 800,
   });
 
-  useEffect(() => {
-    if (!showMore) return;
-    const timeout = setTimeout(() => {
-      setShowMore((prev) => ({ ...prev, emojis: false }));
-    }, 3000);
+  // useEffect(() => {
+  //   if (!showMore) return;
+  //   const timeout = setTimeout(() => {
+  //     setShowMore((prev) => ({ ...prev, emojis: false }));
+  //   }, 3000);
 
-    return () => clearTimeout(timeout);
-  }, [showMore]);
+  //   return () => clearTimeout(timeout);
+  // }, [showMore]);
 
   useEffect(() => {
     messageRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -104,7 +119,7 @@ export default function Message({
   if (!session || !session.user || !session.user.id) return null;
 
   return type === "notification" ? (
-    <div className="mx-auto w-fit">
+    <div className="mx-auto text-center w-full px-4">
       <p className="text-gray-600 text-xs">{textContent}</p>
     </div>
   ) : (
@@ -158,7 +173,7 @@ export default function Message({
       } `}
     >
       <AnimateInOut
-        show={showMore.emojis}
+        show={showMore}
         animate={{ scale: 1, opacity: 1 }}
         init={{ scale: 0.5, opacity: 0 }}
         out={{ scale: 0.5, opacity: 0 }}
@@ -172,7 +187,7 @@ export default function Message({
             initial={{ scale: 0, translateY: 5 }}
             animate={{ scale: 1, translateY: 0 }}
             transition={{ delay: i / 10 }}
-            onClick={() => setShowMore((prev) => ({ ...prev, emojis: false }))}
+            onClick={() => setShowMore(false)}
             className="cursor-pointer"
           >
             <div className="p-1 transition-all duration-200 rounded-full active:scale-[10] active:rotate-12 hover:scale-150 active:z-20 text-2xl">
@@ -237,20 +252,20 @@ export default function Message({
         >
           {
             <IconButton
-              onClick={() =>
-                setShowMore((prev) => ({ ...prev, options: !prev.options }))
-              }
+              onClick={() => setShowMore((prev) => !prev)}
+              className="rounded-full"
             >
-              {showMore.options ? (
+              {showMore ? (
                 <XMarkIcon className="w-6 h-6 text-gray-600" />
               ) : (
                 <EllipsisVerticalIcon className="w-6 h-6 text-gray-600" />
               )}
             </IconButton>
           }
-          <div className="fixed z-20 -translate-x-1/2 -translate-y-1/2 text- left-1/2 top-1/2">
+          <div className="fixed z-20  -translate-x-1/2 -translate-y-1/2 !text-sm left-1/2 top-1/2">
             <OptionsMenu
-              show={showMore.options}
+              setShow={setShowMore}
+              show={showMore}
               options={[
                 {
                   label: "reply",
@@ -279,7 +294,7 @@ export default function Message({
           {roomType === "group" && sender != userID && (
             <Link
               href={`${CONNECT}/${tag}`}
-              className="flex items-center justify-center mb-1 rounded-full w-7 h-7 translate-y-2_ shrink-0 bg-primary overflow-clip "
+              className="flex items-center justify-center mb-1 rounded-full w-7 h-7 translate-y-2_ shrink-0 bg-brand-darkblue overflow-clip "
             >
               {photo ? (
                 <Image src={photo} alt={username} fill draggable={false} />
@@ -289,37 +304,147 @@ export default function Message({
             </Link>
           )}
           <div className="flex flex-col w-full items-end_ justify-between_ gap-4_">
-            {imageContent && imageContent.length > 0 && (
-              <div className="grid rounded-md bg-brand-yellow/70 grid-cols-2 w-52 h-52 gap-[2px]">
-                {imageContent.slice(0, 4).map((image, i) => (
-                  // <></>
-                  <div
-                    onClick={() =>
-                      getViewImages((prev) => ({
-                        ...prev,
-                        clickedImage: i,
-                        images: imageContent,
-                      }))
-                    }
-                    key={i}
-                    className={`rounded-md relative flex items-center justify-center overflow-clip cursor-pointer ${
-                      imageContent.length > 1 ? "col-auto" : "col-span-full"
-                    }`}
-                  >
-                    {imageContent.length > 4 && i === 3 && (
-                      <div className="absolute z-10 flex items-center justify-center w-full h-full text-2xl text-white bg-black/40">
-                        +{imageContent.slice(3, -1).length}
+            {type === "conversation" ? (
+              <>
+                {imageContent && imageContent.length > 0 && (
+                  <div className="grid rounded-md bg-brand-yellow/70 grid-cols-2 w-52 h-52 gap-[2px]">
+                    {imageContent.slice(0, 4).map((image, i) => (
+                      // <></>
+                      <div
+                        onClick={() =>
+                          getViewImages((prev) => ({
+                            ...prev,
+                            clickedImage: i,
+                            images: imageContent,
+                          }))
+                        }
+                        key={i}
+                        className={`rounded-md relative flex items-center justify-center overflow-clip cursor-pointer ${
+                          imageContent.length > 1 ? "col-auto" : "col-span-full"
+                        }`}
+                      >
+                        {imageContent.length > 4 && i === 3 && (
+                          <div className="absolute z-10 flex items-center justify-center w-full h-full text-2xl text-white bg-black/40">
+                            +{imageContent.slice(3, -1).length}
+                          </div>
+                        )}
+                        <Image src={image} alt="message img" fill />
                       </div>
-                    )}
-                    <Image src={image} alt="message img" fill />
+                    ))}
                   </div>
-                ))}
+                )}
+
+                {textContent && (
+                  <p className={`p-1 flex-1 pr-10`}>{textContent}</p>
+                )}
+              </>
+            ) : transaction?.type === "request" ? (
+              <div className="space-y-2 p-1 flex-1 pr-10">
+                <div className="">
+                  <p>
+                    <Link
+                      href={
+                        textContent?.split(":")[1] === session.user.name
+                          ? ACCOUNT
+                          : `${CONNECT}/${textContent?.split(":")[1]}`
+                      }
+                      className="font-bold underline underline-offset-2"
+                    >
+                      {textContent?.split(":")[0] === session.user.name
+                        ? "You"
+                        : textContent?.split(":")[1]}
+                    </Link>{" "}
+                    requested for{" "}
+                    <span className="font-bold font-druk-wide-bold text-sm">
+                      ₦{transaction.amount}
+                    </span>{" "}
+                    {/* to{" "}
+                    <Link
+                      href={`${CONNECT}/${textContent}`}
+                      className="text-primary"
+                    >
+                      {textContent?.split(":")[1] === session.user.name
+                        ? "You"
+                        : textContent?.split(":")[1]}
+                    </Link> */}
+                  </p>
+                </div>
+                {textContent?.split(":")[0] !== session.user.name && (
+                  <div className="px-3">
+                    <Button
+                      onClick={() => {
+                        setToggleTransactionForm({ show: true, type: "send" });
+                      }}
+                      color="white"
+                      fullWidth
+                      className="text-primary font-bold"
+                    >
+                      Send
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-2 p-1 flex-1 pr-10">
+                <div className="">
+                  <p>
+                    <Link
+                      href={`${CONNECT}/${tag}`}
+                      className="font-bold underline underline-offset-2"
+                    >
+                      {username === session.user.name ? "You" : tag}
+                    </Link>{" "}
+                    sent{" "}
+                    <span className="font-bold font-druk-wide-bold text-sm">
+                      ₦{transaction?.amount}
+                    </span>{" "}
+                    to{" "}
+                    <Link
+                      href={`${CONNECT}/${textContent?.split(":")[1]}`}
+                      className="text-white font-bold"
+                    >
+                      {textContent?.split(":")[1] === session.user.name
+                        ? "You"
+                        : textContent?.split(":")[1]}
+                    </Link>
+                  </p>
+                </div>
+                {textContent?.split(":")[0] === session.user.name && (
+                  <div className="px-3">
+                    <Button
+                      onClick={() => {
+                        sendMessage({
+                          message: {
+                            type: "conversation",
+                            sendDate: new Date(),
+                            textContent: "Thank You!😭",
+                            imageContent: [],
+                            sender: session.user.name as string,
+                            replyTo: {
+                              sender: textContent?.split(":")[0] || "",
+                              textContent: `${tag} sent ${
+                                textContent?.split(":")[1]
+                              } ${transaction?.amount}`,
+                            },
+                          },
+                          chatID: pathname
+                            ? pathname.split("s/")[1].split("/")[0]
+                            : "",
+                          roomType,
+                        });
+                      }}
+                      color="white"
+                      fullWidth
+                      className="text-primary font-bold"
+                    >
+                      Say Thanks
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
-
-            {textContent && <p className={`p-1 flex-1 pr-10`}>{textContent}</p>}
-            <small className="absolute bottom-0 text-xs font-semibold text-gray-400 right-1">
-              02:30
+            <small className="absolute bottom-0 text-xs font-semibold text-gray-300 right-0">
+              {formattedTime}
             </small>
           </div>
         </div>

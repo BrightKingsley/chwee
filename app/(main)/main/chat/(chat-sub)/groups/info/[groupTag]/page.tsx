@@ -52,9 +52,11 @@ export default async function GroupInfo({
               )}
             </div>
             <div className="mx-auto text-center w-fit">
-              <p className="text-3xl font-druk-wide-bold">{group.name}</p>
-              <p className="tetx-2xl">{group.tag}</p>
-              <p className="tetx-xl mt-6">{group.description}</p>
+              <p className="text-3xl font-druk-wide-bold break-all">
+                {group.name}
+              </p>
+              <p className="tetx-2xl break-all">{group.tag}</p>
+              <p className="tetx-xl mt-6 break-all">{group.description}</p>
             </div>
           </div>
           <div className="flex w-full_ gap-4 items-center w-fit mx-auto">

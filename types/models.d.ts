@@ -73,9 +73,14 @@ type MessageBody = {
   // imageContent: (Blob | Uint8Array | ArrayBuffer)[];
   type: MessageClass["type"];
   imageContent: (string | StaticImport)[];
-  replyTo: {
-    sender: string;
+  replyTo?: {
+    sender?: string;
     textContent?: string;
     imageContent?: string[];
+  };
+  transaction?: {
+    type: "send" | "request";
+    amount?: number;
+    receiver?: string;
   };
 };

@@ -35,7 +35,7 @@ export default function UploadImageData({
     files: File[],
     input?: undefined
   ) => Promise<UploadFileResponse[] | undefined>;
-}): React.ReactNode {
+}) {
   const handleUploadImage = async (e: React.SyntheticEvent) => {
     try {
       e.preventDefault();
@@ -136,31 +136,6 @@ export default function UploadImageData({
               />
             </svg>{" "}
           </IconButton>
-          {/* <UploadButton<OurFileRouter>
-            endpoint="chatImageUploader"
-            onUploadBegin={(req) => {
-              console.log("BEGIN_REQ: ", req);
-            }}
-            onUploadError={(req) => {
-              console.log("ERROR", req);
-            }}
-            onUploadProgress={(req) => {
-              console.log("PROGRESS", req);
-            }}
-            onClientUploadComplete={(files) => {
-              console.log("FILES: ", files);
-
-              const imageContent = files?.map((file) => file.url);
-
-              console.log("IMAGE_CONTENT", imageContent);
-              setMessage((prev) => ({
-                ...prev,
-                imageContent: imageContent as string[],
-              }));
-
-              sendMessage(imageContent);
-            }}
-          /> */}
         </form>
       </div>
     </AnimateInOut>
