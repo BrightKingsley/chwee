@@ -1,9 +1,21 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import AnimateInOut from "../AnimateInOut";
 import { OptionsMenuType } from "./types";
 import { Button, ListItem } from "@/app/components/mui";
 
-export default function OptionsMenu({ show, options }: OptionsMenuType) {
+export default function OptionsMenu({
+  show,
+  setShow,
+  options,
+}: OptionsMenuType) {
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShow(false);
+    }, 3000);
+    () => clearTimeout(timeout);
+  }, [show, setShow]);
+
   return (
     <AnimateInOut
       init={{ opacity: 0, y: "-30%", scale: 0.8 }}

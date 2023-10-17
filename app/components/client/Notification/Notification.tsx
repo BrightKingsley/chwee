@@ -60,7 +60,9 @@ export default function Notification() {
                       <BellAlertIcon className="w-6 h-6 animate-ping" />
                       <BellIcon className="absolute w-6 h-6" />
                     </span>
-                    <div className="text-gray-700">{notificationMessage}</div>
+                    <div className="text-gray-700 text-ellipsis w-full overflow-hidden">
+                      {notificationMessage}
+                    </div>
                   </motion.div>
                 </ClientOnlyPortal>
               )}

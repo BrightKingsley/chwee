@@ -63,7 +63,7 @@ export default function Modal() {
                           <CloseOutlinedIcon />
                         </IconButton>
                       </div>
-                      <div className={""}>{modalMessage}</div>
+                      <div className={"break-all"}>{modalMessage}</div>
                       <div
                         className={"flex gap-8 mx-auto w-full justify-around"}
                       >

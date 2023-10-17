@@ -50,13 +50,11 @@ export default function Messages({
         }
       );
 
-      if (!response.ok) {
-        setLoading(false);
-        return;
-      }
+      if (!response.ok) return setLoading(false);
 
       const data = await response.json();
-      if (!data) return;
+      console.log({ data });
+      if (!data) return setLoading(false);
 
       const { messages: msgs } = data;
       console.log("CLIENT MSGS", msgs);

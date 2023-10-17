@@ -34,11 +34,26 @@ export async function POST(
   { params: { chatID } }: PostProps
 ) {
   try {
+    const serverSession = await getServerSession(authOptions);
+    if (!serverSession || !serverSession.user || !serverSession.user.id)
+      throw new Error("Unauthenticated User!");
+    const senderID = serverSession.user.id;
+
     const {
-      message,
+      message: msg,
       roomType,
     }: { message: MessageClass; roomType: "group" | "p2p" } =
       await request.json();
+
+    const message: MessageClass = {
+      ...msg,
+      sender: senderID,
+    };
+
+    console.log("SENT_MESSAGE", { message, roomType });
+
+    if (roomType !== "group" && roomType !== "p2p")
+      throw new Error("Invalid Room Type");
 
     if (
       !(
@@ -49,71 +64,29 @@ export async function POST(
     )
       throw new Error("Invalid Message Type");
 
-    if (
-      !message.sender ||
-      (!message.textContent &&
-        (!message.imageContent ||
-          (message.imageContent && message.imageContent.length < 1)))
-    )
-      return NextResponse.json({
-        error: { message: "invalid message data" },
-      });
+    if (message.type === "conversation") {
+      if (
+        !senderID ||
+        (!message.textContent &&
+          (!message.imageContent ||
+            (message.imageContent && message.imageContent.length < 1)))
+      )
+        return NextResponse.json({
+          error: { message: "invalid message data" },
+        });
+    }
 
     const parsedChatID = stringToObjectId(chatID);
-    const parsedSenderID = stringToObjectId(message.sender.toString());
+    const parsedSenderID = stringToObjectId(senderID);
 
-    if (
-      !message ||
-      !(message.imageContent || message.textContent) ||
-      !parsedSenderID
-    )
+    if (!parsedSenderID)
       return NextResponse.json({
-        error: { message: "no message content sent" },
+        error: { message: "Invalid sender" },
       });
 
     const senderDoc = await getUserByID({ userID: parsedSenderID });
 
     if (!senderDoc) throw new Error("Couldn't retrieve sender document");
-
-    if (message.funds) {
-      const {} = message;
-      message.type = "fund";
-      transferToChweeWallet({
-        amount: message.funds.amount,
-        receiverTag: message.funds.receiver,
-        senderID: message.sender.toString(),
-      });
-    }
-
-    let group;
-    let chat;
-    await connectDB();
-    if (roomType === "group") {
-      console.log("ROOM_TYPE", roomType);
-      // Find the group by its ID
-      group = await Group.findById(parsedChatID);
-
-      // Check if the group exists and if the members Set includes the memberIdToCheck
-      if (
-        !group ||
-        !senderDoc.groups
-          .map((groupID) => groupID.toString())
-          .includes(group._id.toString())
-      )
-        throw new Error("Group not found or User Unauthorized");
-    }
-    if (roomType === "p2p") {
-      chat = await Chat.findById(parsedChatID);
-
-      // Check if the chat exists and if the members Set includes the memberIdToCheck
-      if (
-        !chat ||
-        !chat.members
-          .map((memberID) => memberID.toString())
-          .includes(message.sender.toString())
-      )
-        throw new Error("Group not found or User Unauthorized");
-    }
 
     const senderInfo = {
       username: senderDoc.username,
@@ -122,9 +95,123 @@ export async function POST(
       photo: senderDoc.photo,
     };
 
-    await sendMessage({ chatID, message, senderInfo });
+    if (message.type === "fund") {
+      const transaction = message.transaction;
+      if (!transaction) {
+        throw new Error("Invalid tranaction data");
+      }
 
-    return NextResponse.json({ success: true }); // The ID exists in
+      if (transaction.type === "send") {
+        if (roomType === "p2p") {
+          const chatDoc = await Chat.findById(parsedChatID);
+          if (!chatDoc) throw new Error("Couldn't retrieve chat document");
+          const receiverID = chatDoc.members.filter(
+            (member) => member.toString() !== senderID
+          )[0];
+          if (!receiverID) throw new Error("Receiver does'nt exist");
+
+          const receiverDoc = await User.findById(receiverID);
+          if (!receiverDoc) throw new Error("Couldn't get reciver doc exist");
+
+          const transferResult = await transferToChweeWallet({
+            amount: transaction.amount,
+            // receiverTag: transaction.receiver,
+            receiverID,
+            senderID,
+          });
+          if (transferResult !== "success")
+            return NextResponse.json({ message: transferResult });
+          const transactionMessage: MessageClass = {
+            ...message,
+            textContent: `${receiverDoc.username}:${receiverDoc.tag}`,
+          };
+          const messageResult = await sendMessage({
+            chatID,
+            message: transactionMessage,
+            senderInfo,
+          });
+          return NextResponse.json({ message: messageResult });
+        } else if (roomType === "group") {
+          const receiverDoc = await User.findById(transaction.receiver);
+          if (!receiverDoc) throw new Error("Invalid receiver");
+          if (
+            !receiverDoc.groups
+              .map((group) => group.toString())
+              .includes(chatID)
+          )
+            throw new Error("Receiver is not a member of this Group");
+          const transferResult = await transferToChweeWallet({
+            amount: transaction.amount,
+            // receiverTag: transaction.receiver,
+            receiverID: transaction.receiver,
+            senderID,
+          });
+          if (transferResult !== "success")
+            return NextResponse.json({ message: transferResult });
+          const transactionMessage: MessageClass = {
+            ...message,
+            textContent: `${receiverDoc.username}:${receiverDoc.tag}`,
+          };
+          const messageResult = await sendMessage({
+            chatID,
+            message: transactionMessage,
+            senderInfo,
+          });
+          return NextResponse.json({ message: messageResult });
+        } else {
+          throw new Error("Invalid Room Type");
+        }
+      } else if (transaction.type === "request") {
+        const transactionMessage: MessageClass = {
+          ...message,
+          textContent: `${senderInfo.username}:${senderInfo.tag}`,
+        };
+        const messageResult = await sendMessage({
+          chatID,
+          message: transactionMessage,
+          senderInfo,
+        });
+        return NextResponse.json({ message: messageResult });
+      } else {
+        throw new Error("Invalid Transaction Type");
+      }
+    } else if (message.type === "conversation") {
+      let group;
+      let chat;
+      await connectDB();
+      if (roomType === "group") {
+        console.log("ROOM_TYPE", roomType);
+        // Find the group by its ID
+        group = await Group.findById(parsedChatID);
+
+        // Check if the group exists and if the members Set includes the memberIdToCheck
+        if (
+          !group ||
+          !senderDoc.groups
+            .map((groupID) => groupID.toString())
+            .includes(group._id.toString())
+        )
+          throw new Error("Group not found or User Unauthorized");
+      }
+      if (roomType === "p2p") {
+        chat = await Chat.findById(parsedChatID);
+
+        // Check if the chat exists and if the members Set includes the memberIdToCheck
+        if (
+          !chat ||
+          !chat.members
+            .map((memberID) => memberID.toString())
+            .includes(senderID.toString())
+        )
+          throw new Error("Group not found or User Unauthorized");
+      }
+
+      const result = await sendMessage({ chatID, message, senderInfo });
+
+      return NextResponse.json({ message: result }); // The ID exists in
+    } else {
+      throw new Error("Invalid Message Type");
+    }
   } catch (error) {
     console.error({ error });
     return NextResponse.json(null);
@@ -207,11 +294,13 @@ export async function GET(
 
     if (!messages) throw new Error("Could not get messages for this chat");
 
+    console.log("SERVER_MSGS", { messages });
+
     console.log("API_messageS", messageResult, messages);
 
     return NextResponse.json({ messages });
   } catch (error) {
-    console.error(error);
+    console.error({ error });
     return NextResponse.json({
       error: { message: "An internal error occured" },
     });

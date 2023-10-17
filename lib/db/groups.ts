@@ -10,7 +10,7 @@ import {
 import { GroupClass } from "@/models/Group";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import { createConversation } from ".";
+import { createConversation, sendMessage } from ".";
 import { Conversation, ConversationClass } from "@/models/Conversation";
 import { ClientGroup } from "@/types/models";
 
@@ -38,7 +38,7 @@ export async function createGroup({
   ownerID: string;
   name: string;
   description: string;
-  password?: boolean;
+  password: string | boolean;
   photo: string;
   tag: string;
 }) {
@@ -52,17 +52,26 @@ export async function createGroup({
 
     let genPass = "";
     let hashedPassword = "";
-    if (password) {
-      // Generate a random password
+    // if (password) {
+    //   // Generate a random password
+    //   genPass = generatePassword(8);
+
+    //   // Generate a salt for password hashing
+    //   const salt = await bcrypt.genSalt(saltRounds);
+
+    //   // Hash the generated password
+    //   hashedPassword = await bcrypt.hash(genPass, salt);
+
+    //   console.log("HASHED_PASS", hashedPassword);
+    // }
+
+    if (password === false) {
+      hashedPassword = "";
+    } else if (password === true) {
       genPass = generatePassword(8);
-
-      // Generate a salt for password hashing
-      const salt = await bcrypt.genSalt(saltRounds);
-
-      // Hash the generated password
-      hashedPassword = await bcrypt.hash(genPass, salt);
-
-      console.log("HASHED_PASS", hashedPassword);
+      hashedPassword = await bcrypt.hash(genPass, saltRounds);
+    } else if (password && password.length > 0) {
+      hashedPassword = await bcrypt.hash(password, saltRounds);
     }
 
     // Create the group with a hashed password
@@ -106,6 +115,106 @@ export async function createGroup({
     console.log("CREATED_CONVO", conversation);
 
     return group;
+  } catch (error) {
+    console.error({ error });
+    return null;
+  }
+}
+
+export async function updateGroup({
+  groupID,
+  userID,
+  name,
+  description,
+  photo,
+  tag,
+  password,
+}: {
+  groupID: string;
+  userID: string;
+  name: string | undefined;
+  description: string | undefined;
+  photo: string;
+  tag: string;
+  password: string | boolean | undefined;
+}) {
+  try {
+    const parsedGroupID = stringToObjectId(groupID);
+
+    const parsedUserID = stringToObjectId(userID);
+
+    const group = await Group.findById(parsedGroupID);
+    if (!group) throw new Error("Group document not found");
+
+    if (userID !== group.owner.toString()) return "Unauthorized operation";
+
+    if (name) {
+      group.name = name;
+      sendMessage({
+        chatID: group._id.toString(),
+        message: {
+          textContent: "An admin changed the group name to " + name,
+          sender: group.owner,
+          sendDate: new Date(),
+          type: "notification",
+        },
+      });
+    }
+
+    if (description) {
+      group.description = description;
+      await sendMessage({
+        chatID: group._id.toString(),
+        message: {
+          textContent: "An admin changed the group description",
+          sender: group.owner,
+          sendDate: new Date(),
+          type: "notification",
+        },
+      });
+    }
+    if (photo) {
+      group.photo = photo;
+      await sendMessage({
+        chatID: group._id.toString(),
+        message: {
+          textContent: "An admin changed the group photo",
+          sender: group.owner,
+          sendDate: new Date(),
+          type: "notification",
+        },
+      });
+    }
+    if (tag) {
+      const groupTag = formatTag(lettersAndNumbersOnly(tag));
+      group.tag = groupTag;
+      await sendMessage({
+        chatID: group._id.toString(),
+        message: {
+          textContent: `An admin changed the group tag to ${groupTag}`,
+          sender: group.owner,
+          sendDate: new Date(),
+          type: "notification",
+        },
+      });
+    }
+    if (
+      password === true ||
+      password === false ||
+      (password && password?.length > 0)
+    ) {
+      if (password === false) {
+        group.password = "";
+      } else if (password === true) {
+        const genPass = generatePassword(8);
+        const hashedPassword = await bcrypt.hash(genPass, saltRounds);
+        group.password = hashedPassword;
+      } else if (password && password.length > 0) {
+        group.password = password;
+      }
+    }
+    group.save();
+    return "group updated successfully";
   } catch (error) {
     console.error({ error });
     return null;

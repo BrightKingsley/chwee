@@ -65,7 +65,7 @@ export default function UsersModal({
             onFocus={() => SetFullHeight(true)}
             onBlur={() => SetFullHeight(false)}
             collection="members"
-            disabled={loading}
+            disabled={loading || userList.length < 1}
             placeholder="Search for Member"
           />
         </div>
@@ -73,7 +73,7 @@ export default function UsersModal({
           <div className="pt-20 mx-auto w-fit">
             <Spinner className="" />
           </div>
-        ) : (
+        ) : userList.length > 0 ? (
           userList.map(({ tag, photo, username }, i) => (
             <MyListTile
               key={tag}
@@ -99,6 +99,10 @@ export default function UsersModal({
               </div>
             </MyListTile>
           ))
+        ) : (
+          <div className="pt-20 w-fit mx-auto">
+            <p className="text-gray-700">No users available</p>
+          </div>
         )}
       </AnimateInOut>
     </>

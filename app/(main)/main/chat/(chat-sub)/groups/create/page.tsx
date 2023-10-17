@@ -4,9 +4,14 @@ import { useCallback, useContext, useEffect, useState } from "react";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { BASE_URL, GROUPS } from "@/constants/routes";
-import { TextareaAutosize } from "@mui/material";
 import Image from "next/image";
-import { Button, IconButton, Switch } from "@/app/components/mui";
+import {
+  Button,
+  IconButton,
+  Input,
+  Switch,
+  Textarea,
+} from "@/app/components/mui";
 import { useUploadThing } from "@/lib/uploadThing";
 import Group from "@mui/icons-material/Group";
 import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
@@ -19,13 +24,7 @@ import { ClientGroup } from "@/types/models";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { useImageUpload } from "@/hooks";
 import { lettersAndNumbersOnly } from "@/lib/utils";
-
-type GroupCreate = {
-  description: string;
-  name: string;
-  tag: string;
-  password: boolean;
-};
+import Warning from "@mui/icons-material/Warning";
 
 export default function CreateGroup() {
   const { data } = useSession();
@@ -37,7 +36,8 @@ export default function CreateGroup() {
     description: "",
     name: "",
     tag: "",
-    password: false,
+    locked: false,
+    password: "",
   });
   const [previewImage, setPreviewImage] = useState<any>("");
   const [selectedImage, setSelectedImage] = useState<File[]>([]);
@@ -65,15 +65,31 @@ export default function CreateGroup() {
 
     console.log("SUBMIT REACHED");
     const uploadImage = await startUpload(selectedImage);
-
     console.log({ uploadImage });
 
     if (!uploadImage || uploadImage.length < 1)
       return triggerNotification("Couldn't create group, please retry");
 
+    let groupPassword: string | boolean;
+
+    if (groupData.password.length > 0) {
+      groupPassword = groupData.password;
+    } else if (!groupData.locked) {
+      groupPassword = false;
+    } else {
+      groupPassword = true;
+    }
+
+    const submitData = {
+      password: groupPassword,
+      description: groupData.description,
+      name: groupData.name,
+      tag: groupData.tag,
+    };
+
     const response = await fetch(`${BASE_URL}/api/groups`, {
       method: "POST",
-      body: JSON.stringify({ ...groupData, photo: uploadImage[0].url }),
+      body: JSON.stringify({ ...submitData, photo: uploadImage[0].url }),
     });
 
     const data = await response.json();
@@ -145,21 +161,23 @@ export default function CreateGroup() {
         </div>
 
         <div>
-          <small>name</small>
-          <input
+          {/* <small>name</small> */}
+          <Input
             required
+            label="group name"
             value={groupData.name}
             type="text"
             onChange={(e) => {
               setGroupData((prev) => ({ ...prev, name: e.target.value }));
             }}
-            className="w-full p-1 text-gray-700 border-none rounded-md outline-none resize-none focus:outline-primary bg-primary/10"
+            className="w-full p-1 text-gray-700 rounded-md resize-none bg-primary/10"
           />
         </div>
         <div>
-          <small>tag</small>
-          <input
+          {/* <small>tag</small> */}
+          <Input
             required
+            label="group tag"
             value={groupData.tag}
             type="text"
             onChange={(e) => {
@@ -168,37 +186,57 @@ export default function CreateGroup() {
                 tag: lettersAndNumbersOnly(e.target.value),
               }));
             }}
-            className="w-full p-1 text-gray-700 border-none rounded-md outline-none resize-none focus:outline-primary bg-primary/10"
+            className="w-full p-1 text-gray-700 rounded-md bg-primary/10"
           />
         </div>
         <div>
-          <small>description</small>
-          <TextareaAutosize
+          {/* <small>description</small> */}
+          <Textarea
             value={groupData.description}
-            // cols={5}
-            maxRows={6}
-            minRows={5}
+            rows={5}
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
               setGroupData((prev) => ({
                 ...prev,
                 description: e.target.value,
               }))
             }
-            className="w-full p-1 text-gray-700 border-none rounded-md outline-none resize-none focus:outline-primary bg-primary/10"
+            className="w-full p-1 text-gray-700 resize-none bg-primary/10"
           />
         </div>
         <div className="flex items-center justify-between">
           <p>Locked</p>
           <Switch
-            checked={groupData.password}
+            checked={groupData.locked}
             onChange={(e) => {
               setGroupData((prev) => ({
                 ...prev,
-                password: e.target.checked,
+                locked: e.target.checked,
               }));
             }}
           />
         </div>
+
+        {groupData.locked && (
+          <Input
+            value={groupData.password}
+            disabled={!groupData.locked}
+            type="text"
+            icon={<p className="">***</p>}
+            placeholder="Input a new password..."
+            onChange={(e) => {
+              setGroupData((prev) => ({ ...prev, password: e.target.value }));
+            }}
+            className=""
+          />
+        )}
+
+        {groupData.locked && (
+          <small className="flex items-center gap-2">
+            <Warning className="w-3 h-3 text-xs text-brand-yellow" /> Note: if
+            you set the locked switch to true, without providing a password, one
+            will be automatically generated
+          </small>
+        )}
 
         <div className="rounded-md overflow-clip">
           <Button type="submit" fullWidth>

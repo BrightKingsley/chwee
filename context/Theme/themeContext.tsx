@@ -1,5 +1,9 @@
 "use client";
-import { SpinnerStyleTypes, ThemeProvider } from "@material-tailwind/react";
+import {
+  SpinnerStyleTypes,
+  TextareaStylesType,
+  ThemeProvider,
+} from "@material-tailwind/react";
 import type {
   ButtonStyleTypes,
   IconButtonStyleTypes,
@@ -18,6 +22,7 @@ export function ThemeContextProvider({
     input: InputStylesType;
     switch: SwitchButtonStylesType;
     spinner: SpinnerStyleTypes;
+    textarea: TextareaStylesType;
   } = {
     button: {
       defaultProps: {
@@ -67,6 +72,9 @@ export function ThemeContextProvider({
       defaultProps: {
         color: "deep-orange",
       },
+    },
+    textarea: {
+      defaultProps: { variant: "outlined", color: "deep-orange" },
     },
   };
 

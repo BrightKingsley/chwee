@@ -22,27 +22,6 @@ export default function NotificationsLayout({
   return (
     <div className="flex flex-col h-screen bg-primary/10">
       <Header title={`Notifications`} />
-      <SubHeader
-        sublinks={[
-          {
-            label: replaceWith({
-              character: "-",
-              replacement: " ",
-              string: chatLinkFormatted,
-            }),
-            link: CHAT_NOTIFICATIONS,
-          },
-          {
-            label: replaceWith({
-              character: "-",
-              replacement: " ",
-              string: otherLinkFormatted,
-            }),
-            link: OTHER,
-          },
-        ]}
-      />
-
       <div className="h-full mx-2 space-y-2 overflow-y-auto">{children}</div>
     </div>
   );

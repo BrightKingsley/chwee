@@ -36,7 +36,9 @@ export default function Header({
 
   return (
     <header className="relative pl-14 md:pl-0 z-10 flex items-center w-full px-3 py-1 bg-white border-b h-14">
-      {leading && <div className="mr-2">{leading.map((item) => item)}</div>}
+      {leading && (
+        <div className="mr-2 shrink-0">{leading.map((item) => item)}</div>
+      )}
       <h1 className="flex-1 font-bold capitalize font-druk-wide-bold overflow-hidden text-ellipsis whitespace-nowrap">
         {title}
       </h1>

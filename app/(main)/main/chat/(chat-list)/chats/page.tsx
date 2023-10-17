@@ -37,7 +37,7 @@ export default async function Chats() {
                 <div className="flex items-center w-full gap-2 p-2 rounded-md bg-primary/10_">
                   <Link
                     href={`${CONNECT}/${chat.memberUserData.tag}`}
-                    className="flex items-center justify-center w-12 h-12 text-gray-200 rounded-full overflow-clip shrink-0 bg-deep-orange-400"
+                    className="flex items-center justify-center w-12 h-12 text-gray-200 rounded-full overflow-clip shrink-0 bg-primary"
                   >
                     {chat.memberUserData.photo !== undefined &&
                     chat.memberUserData.photo ? (
@@ -54,16 +54,16 @@ export default async function Chats() {
                   </Link>
                   <Link
                     href={`${CHATS}/${chat.chatData._id}`}
-                    className="flex-1 text-left w-full_ "
+                    className="flex-1 text-left w-full overflow-hidden"
                   >
-                    <p className="font-semibold">
+                    <p className="font-semibold whitespace-nowrap text-ellipsis overflow-hidden w-full">
                       {chat.memberUserData.username}
                     </p>
-                    <p className="whitespace-nowrap text-ellipsis overflow-hidden w-[14rem] m-0 p-0">
+                    <p className="whitespace-nowrap text-ellipsis overflow-hidden w-full m-0 p-0">
                       last message, will do this soon
                     </p>
                   </Link>
-                  <div className="flex-col items-center pr-3">
+                  <div className="flex-col shrink-0 items-center pr-3">
                     <small className="mx-auto text-gray-700">17:00</small>
                     <div className="flex items-center justify-center w-5 h-5 p-1 mx-auto text-xs font-bold text-white rounded-full shadow-md bg-primary shadow-primary/20">
                       <small>1</small>

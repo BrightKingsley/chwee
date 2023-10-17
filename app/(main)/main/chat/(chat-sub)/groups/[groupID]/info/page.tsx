@@ -65,9 +65,11 @@ export default async function GroupInfo({
               )}
             </div>
             <div className="mx-auto text-center w-fit">
-              <p className="text-3xl font-druk-wide-bold">{group.name}</p>
-              <p className="tetx-2xl">{group.tag}</p>
-              <p className="tetx-xl mt-6">{group.description}</p>
+              <p className="text-3xl font-druk-wide-bold break-all">
+                {group.name}
+              </p>
+              <p className="text-2xl break-all">{group.tag}</p>
+              <p className="text-xl mt-6 break-all">{group.description}</p>
             </div>
           </div>
           <div className="">
@@ -99,7 +101,7 @@ function MemberTile({ memberID }: { memberID: mongoose.Types.ObjectId }) {
         href={`${CONNECT}/${member.tag}`}
         className="flex items-center w-full gap-2 p-2 py-1 rounded-md bg-primary/10_"
       >
-        <div className="flex items-center justify-center w-10 h-10 text-gray-200 rounded-full overflow-clip shrink-0 bg-deep-orange-40">
+        <div className="flex items-center justify-center w-10 h-10 text-gray-200 rounded-full overflow-clip shrink-0 bg-primary">
           {member.photo !== undefined && member.photo ? (
             <Image
               src={member.photo}
