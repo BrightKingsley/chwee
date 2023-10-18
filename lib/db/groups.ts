@@ -214,7 +214,7 @@ export async function updateGroup({
       }
     }
     group.save();
-    return "group updated successfully";
+    return group;
   } catch (error) {
     console.error({ error });
     return null;

@@ -131,8 +131,8 @@ export async function PATCH(
       tag,
       password,
     });
-    if (!updateGroup) throw new Error("Couldn't update group");
-    return NextResponse.json({ message: updateGroupResult });
+    if (!updateGroupResult) throw new Error("Couldn't update group");
+    return NextResponse.json(updateGroupResult);
   } catch (error) {
     console.error({ error });
     return NextResponse.json(null);
