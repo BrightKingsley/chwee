@@ -48,7 +48,7 @@ export default function Modal() {
                   {showModal && (
                     <motion.div
                       className={
-                        "bg-body relative rounded-xl p-2 pb-4 text-center space-y-8 w-11/12 sm:w-96 z-50"
+                        "bg-body relative rounded-xl p-2 pb-4 text-center space-y-8 w-11/12 sm:w-96 z-50 border"
                       }
                       initial={{ y: 50, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
