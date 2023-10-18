@@ -9,7 +9,7 @@ import {
 import { AnimateInOut, OptionsMenu } from "@/app/components/client";
 import { IconButton, Button } from "@/app/components/mui";
 import { Ref, memo, useContext, useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { MotionContext, motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ACCOUNT, CONNECT } from "@/constants/routes";
@@ -21,7 +21,9 @@ import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { sendMessage } from "../SendMessage/SendMessage";
 import { usePathname } from "next/navigation";
-import { ChatContext } from "@/context";
+import { ChatContext, ModalContext } from "@/context";
+import { textCode } from "@/constants/codes";
+import { decodeTextContent } from "@/lib/utils";
 
 interface ClientMessage {
   setReplyMessage: SendMessageType["setReplyMessage"];
@@ -57,8 +59,10 @@ export default function Message({
   const [showMore, setShowMore] = useState(false);
   const { setToggleTransactionForm, toggleTransactionForm } =
     useContext(ChatContext);
+  const { triggerModal } = useContext(ModalContext);
 
   const pathname = usePathname();
+  const chatID = pathname ? pathname.split("s/")[1].split("/")[0] : "";
 
   useEffect(() => {
     console.log("runnninnnnn");
@@ -143,7 +147,9 @@ export default function Message({
           if (offset > 100) {
             setReplyMessage({
               sender: sender === userID ? session.user.name! : username,
-              textContent,
+              textContent: textContent
+                ? decodeTextContent(textContent)
+                : undefined,
               imageContent,
             });
             inputRef.current.focus();
@@ -153,7 +159,9 @@ export default function Message({
           if (offset < -100) {
             setReplyMessage({
               sender: sender === userID ? session.user.name! : username,
-              textContent,
+              textContent: textContent
+                ? decodeTextContent(textContent)
+                : undefined,
               imageContent,
             });
             inputRef.current.focus();
@@ -344,15 +352,19 @@ export default function Message({
                   <p>
                     <Link
                       href={
-                        textContent?.split(":")[1] === session.user.name
+                        textContent?.split(textCode)[1].split(":")[1] ===
+                        session.user.name
                           ? ACCOUNT
-                          : `${CONNECT}/${textContent?.split(":")[1]}`
+                          : `${CONNECT}/${
+                              textContent?.split(textCode)[1].split(":")[1]
+                            }`
                       }
                       className="font-bold underline underline-offset-2"
                     >
-                      {textContent?.split(":")[0] === session.user.name
+                      {textContent?.split(textCode)[1].split(":")[0] ===
+                      session.user.name
                         ? "You"
-                        : textContent?.split(":")[1]}
+                        : textContent?.split(textCode)[1].split(":")[1]}
                     </Link>{" "}
                     requested for{" "}
                     <span className="font-bold font-druk-wide-bold text-sm">
@@ -363,17 +375,49 @@ export default function Message({
                       href={`${CONNECT}/${textContent}`}
                       className="text-primary"
                     >
-                      {textContent?.split(":")[1] === session.user.name
+                      {textContent?.split(textCode)[1].split(":")[1] === session.user.name
                         ? "You"
-                        : textContent?.split(":")[1]}
+                        : textContent?.split(textCode)[1].split(":")[1]}
                     </Link> */}
                   </p>
                 </div>
-                {textContent?.split(":")[0] !== session.user.name && (
+                {textContent?.split(textCode)[1].split(":")[0] !==
+                  session.user.name && (
                   <div className="px-3">
                     <Button
                       onClick={() => {
-                        setToggleTransactionForm({ show: true, type: "send" });
+                        // setToggleTransactionForm({ show: true, type: "send" });
+                        triggerModal({
+                          cancel: triggerModal,
+                          confirm: () => {
+                            sendMessage({
+                              message: {
+                                type: "fund",
+                                sendDate: new Date(),
+                                textContent: "Here you go...",
+                                imageContent: [],
+                                transaction: {
+                                  type: "send",
+                                  amount: transaction.amount,
+                                  receiver: textContent
+                                    ?.split(textCode)[1]
+                                    .split(":")[1],
+                                },
+                                sender: session.user.name as string,
+                                replyTo: {
+                                  sender:
+                                    textContent
+                                      ?.split(textCode)[1]
+                                      .split(":")[0] || "",
+                                  textContent: `${tag} requested for ₦${transaction?.amount}`,
+                                },
+                              },
+                              chatID,
+                              roomType,
+                            });
+                          },
+                          message: `Send ₦${transaction.amount} to ${tag}`,
+                        });
                       }}
                       color="white"
                       fullWidth
@@ -400,16 +444,20 @@ export default function Message({
                     </span>{" "}
                     to{" "}
                     <Link
-                      href={`${CONNECT}/${textContent?.split(":")[1]}`}
+                      href={`${CONNECT}/${
+                        textContent?.split(textCode)[1].split(":")[1]
+                      }`}
                       className="text-white font-bold"
                     >
-                      {textContent?.split(":")[1] === session.user.name
+                      {textContent?.split(textCode)[1].split(":")[1] ===
+                      session.user.name
                         ? "You"
-                        : textContent?.split(":")[1]}
+                        : textContent?.split(textCode)[1].split(":")[1]}
                     </Link>
                   </p>
                 </div>
-                {textContent?.split(":")[0] === session.user.name && (
+                {textContent?.split(textCode)[1].split(":")[0] ===
+                  session.user.name && (
                   <div className="px-3">
                     <Button
                       onClick={() => {
@@ -421,15 +469,15 @@ export default function Message({
                             imageContent: [],
                             sender: session.user.name as string,
                             replyTo: {
-                              sender: textContent?.split(":")[0] || "",
+                              sender:
+                                textContent?.split(textCode)[1].split(":")[0] ||
+                                "",
                               textContent: `${tag} sent ${
-                                textContent?.split(":")[1]
-                              } ${transaction?.amount}`,
+                                textContent?.split(textCode)[1].split(":")[1]
+                              } ₦${transaction?.amount}`,
                             },
                           },
-                          chatID: pathname
-                            ? pathname.split("s/")[1].split("/")[0]
-                            : "",
+                          chatID,
                           roomType,
                         });
                       }}
@@ -443,7 +491,7 @@ export default function Message({
                 )}
               </div>
             )}
-            <small className="absolute bottom-0 text-xs font-semibold text-gray-300 right-0">
+            <small className="absolute -bottom-[2px] text-xs font-semibold text-gray-300 -right-[2px]">
               {formattedTime}
             </small>
           </div>

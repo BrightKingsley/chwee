@@ -5,22 +5,29 @@ import MyListTile from "../ListTile/ListTile";
 import Image from "next/image";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import SearchBar from "../SearchBar/SearchBar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Overlay from "../Overlay/Overlay";
 
 export default function UsersModal({
   userList,
   show = false,
   loading,
-  setModal,
+  handleShowModal,
   overlay = false,
+  handleItemClicked,
 }: {
   userList: { tag: string; photo: string; username: string }[];
   show: boolean;
   loading: boolean;
-  setModal: Function;
+  handleShowModal: Function;
   overlay?: boolean;
+  handleItemClicked: Function;
 }) {
   const [fullHeight, SetFullHeight] = useState(false);
+
+  useEffect(() => {
+    console.log({ userList });
+  }, [userList]);
 
   return (
     <>
@@ -29,9 +36,9 @@ export default function UsersModal({
         init={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         out={{ opacity: 0 }}
-        onClick={() => setModal((prev: any) => ({ ...prev, show: false }))}
+        onClick={() => handleShowModal()}
         title={"click to close modal"}
-        className="fixed left-0 z-10 w-full h-full mx-auto space-y-2 cursor-pointer backdrop-blur-sm rounded-t-3xl"
+        className="fixed left-0 z-10 w-full h-full mx-auto cursor-pointer backdrop-blur-sm"
       />
       <AnimateInOut
         init={{ translateY: "100%" }}
@@ -51,7 +58,7 @@ export default function UsersModal({
 
           if (offset > 100) {
             SetFullHeight(false);
-            setModal((prev: any) => ({ ...prev, show: false }));
+            handleShowModal();
           }
           if (offset < -100) {
             SetFullHeight(true);
@@ -77,7 +84,8 @@ export default function UsersModal({
           userList.map(({ tag, photo, username }, i) => (
             <MyListTile
               key={tag}
-              onClick={() => setModal((prev: any) => ({ ...prev, value: tag }))}
+              // onClick={() => handleShowModal()}
+              onClick={() => handleItemClicked(tag)}
             >
               <div className="flex items-center p-2">
                 <div className="w-10 h-10 rounded-full overflow-clip">

@@ -6,7 +6,7 @@ export async function transferToChweeWallet({
   amount,
   senderID,
   receiverTag,
-  receiverID: rID,
+  receiverID: rID = "",
   findBy,
 }: {
   amount: number;
@@ -17,8 +17,6 @@ export async function transferToChweeWallet({
 }) {
   try {
     const parsedSenderID = stringToObjectId(senderID);
-    const parsedReceiverID =
-      typeof rID === "string" ? stringToObjectId(rID) : rID;
 
     const senderWallet = await Wallet.findOne({
       owner: parsedSenderID,
@@ -30,7 +28,9 @@ export async function transferToChweeWallet({
 
     // This tries to use receiverID passed as arguments into the function and if theres no receiver ID passed, it should find by receiverTag. If neither is provided, an error i thrown. This is done in order to avoid unnecessary Database queries
     let receiverID;
-    if (parsedReceiverID) {
+    if (rID) {
+      const parsedReceiverID =
+        typeof rID === "string" ? stringToObjectId(rID) : rID;
       if (!parsedReceiverID) throw new Error("Invalid ID");
       receiverID = parsedReceiverID;
     } else {

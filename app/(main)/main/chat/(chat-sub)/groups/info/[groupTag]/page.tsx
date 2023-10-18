@@ -37,6 +37,7 @@ export default async function GroupInfo({
   // get data
   const userFromSession = serverSession.user;
   const group = await getGroupByTag({ tag: decodedTag });
+  console.log({ group, decodedTag });
   if (!group) return <h1>User Unavailable</h1>;
 
   return (

@@ -12,10 +12,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { MessageClass } from "@/models/Message";
 import { Chat, Group, User, UserClass } from "@/models";
 import mongoose from "mongoose";
-import { stringToObjectId } from "@/lib/utils";
+import { decodeTextContent, stringToObjectId } from "@/lib/utils";
 import { Conversation } from "@/models/Conversation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
+import { textCode } from "@/constants/codes";
 
 type PostProps = {
   params: {
@@ -47,6 +48,14 @@ export async function POST(
 
     const message: MessageClass = {
       ...msg,
+      replyTo: msg.replyTo
+        ? {
+            ...msg.replyTo,
+            textContent: msg.replyTo.textContent
+              ? decodeTextContent(msg.replyTo.textContent)
+              : undefined,
+          }
+        : undefined,
       sender: senderID,
     };
 
@@ -123,7 +132,7 @@ export async function POST(
             return NextResponse.json({ message: transferResult });
           const transactionMessage: MessageClass = {
             ...message,
-            textContent: `${receiverDoc.username}:${receiverDoc.tag}`,
+            textContent: `${senderInfo.tag} sent ₦${transaction.amount} to ${receiverDoc.tag}${textCode}${receiverDoc.username}:${receiverDoc.tag}`,
           };
           const messageResult = await sendMessage({
             chatID,
@@ -132,7 +141,7 @@ export async function POST(
           });
           return NextResponse.json({ message: messageResult });
         } else if (roomType === "group") {
-          const receiverDoc = await User.findById(transaction.receiver);
+          const receiverDoc = await User.findOne({ tag: transaction.receiver });
           if (!receiverDoc) throw new Error("Invalid receiver");
           if (
             !receiverDoc.groups
@@ -143,14 +152,14 @@ export async function POST(
           const transferResult = await transferToChweeWallet({
             amount: transaction.amount,
             // receiverTag: transaction.receiver,
-            receiverID: transaction.receiver,
+            receiverID: receiverDoc._id,
             senderID,
           });
           if (transferResult !== "success")
             return NextResponse.json({ message: transferResult });
           const transactionMessage: MessageClass = {
             ...message,
-            textContent: `${receiverDoc.username}:${receiverDoc.tag}`,
+            textContent: `${senderInfo.tag} sent ₦${transaction.amount} to ${receiverDoc.tag}${textCode}${receiverDoc.username}:${receiverDoc.tag}`,
           };
           const messageResult = await sendMessage({
             chatID,
@@ -164,7 +173,7 @@ export async function POST(
       } else if (transaction.type === "request") {
         const transactionMessage: MessageClass = {
           ...message,
-          textContent: `${senderInfo.username}:${senderInfo.tag}`,
+          textContent: `${senderInfo.tag} requested for ₦${transaction.amount}${textCode}${senderInfo.username}:${senderInfo.tag}`,
         };
         const messageResult = await sendMessage({
           chatID,

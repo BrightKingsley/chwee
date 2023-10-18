@@ -21,6 +21,7 @@ export default async function Group({
   const userID = serverSession.user.id;
 
   const group = await getGroupByID({ groupID: params.groupID });
+  console.log("FROM GROUPCHAT PAGE", { group, groupID: params.groupID });
   if (!group)
     return (
       <div className="flex items-center justify-center w-screen h-screen">
