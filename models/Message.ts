@@ -44,7 +44,7 @@ class MessageClass {
 
   @prop({ default: null })
   public transaction?: {
-    receiver: string | mongoose.Types.ObjectId;
+    receiver: string;
     amount: number;
     type: "send" | "request";
   };

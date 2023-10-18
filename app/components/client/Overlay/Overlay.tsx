@@ -2,17 +2,17 @@
 
 import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Overlay } from "./types";
+import { OverlayProps } from "./types";
 
 export default function Overlay({
   children,
   disableOnClick,
   handleShowOverlay,
   show,
-}: Overlay) {
-  const overlayStyles = `fixed h-screen w-screen bg-primary/40 ${
+}: OverlayProps) {
+  const overlayStyles = `fixed h-screen w-screen bg-primary/40_ z-10 ${
     disableOnClick && "cursor-pointer"
-  } top-0 left-0 flex items-center justify-center backdrop-blur-sm`;
+  } top-0 left-0 flex items-center justify-center backdrop-blur-sm` as React.HTMLAttributes<HTMLDivElement>["className"];
 
   useEffect(() => {
     show &&

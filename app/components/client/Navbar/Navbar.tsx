@@ -43,7 +43,7 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
 import NavLink from "../NavLink";
-import { AnimateInOut } from "..";
+import { AnimateInOut, Overlay } from "..";
 import { usePathname } from "next/navigation";
 import Media from "react-media";
 import { Button, IconButton } from "@material-tailwind/react";
@@ -93,6 +93,10 @@ export default function Navbar() {
   const [showMenu, setShowMenu] = useState(true);
   const pathname = usePathname();
 
+  const handleShowOverlay = () => {
+    setShowMenu(false);
+  };
+
   useEffect(() => {
     if (!screen) return;
     setShowMenu(false);
@@ -111,6 +115,18 @@ export default function Navbar() {
           </IconButton>
         </div>
       )}
+      {/* <Overlay
+        disableOnClick
+        show={showMenu}
+        handleShowOverlay={handleShowOverlay}
+      /> */}
+      {showMenu && (
+        <div
+          onClick={handleShowOverlay}
+          className="fixed h-screen w-screen bg-primary/40_ z-10 cursor-pointer top-0 left-0 flex items-center justify-center backdrop-blur-sm_"
+        />
+      )}
+
       <Media queries={{ small: { maxWidth: 640 } }}>
         {(matches) => {
           screen = matches.small && true;

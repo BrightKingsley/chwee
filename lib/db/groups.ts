@@ -679,32 +679,45 @@ export async function getMembers({
   userID: string;
   groupID: string;
 }) {
-  const parsedUserID = stringToObjectId(userID);
-  const parsedGroupID = stringToObjectId(groupID);
+  try {
+    const parsedUserID = stringToObjectId(userID);
+    const parsedGroupID = stringToObjectId(groupID);
 
-  const user = await User.findById(parsedUserID);
-  if (!user?.groups.map((group) => group.toString()).includes(groupID))
-    throw new Error("User not a member of this Group");
+    const user = await User.findById(parsedUserID);
+    if (!user?.groups.map((group) => group.toString()).includes(groupID))
+      throw new Error("User not a member of this Group");
 
-  const groupMembersDocument = await Group.findById(parsedGroupID).select(
-    "members"
-  );
+    const groupMembersDocument = await Group.findById(parsedGroupID).select(
+      "members"
+    );
 
-  if (!groupMembersDocument) throw new Error("Couldn't find group document");
+    if (!groupMembersDocument) throw new Error("Couldn't find group document");
 
-  const groupMembers = await Promise.all(
-    groupMembersDocument.members.map(async (memberID) => {
-      const userDoc = await User.findById(memberID);
-      if (!userDoc) throw new Error("Couldn't retrieve group document");
-      const userInfo = {
-        username: userDoc.username,
-        tag: userDoc.tag,
-        photo: userDoc.photo,
-      };
+    const groupMembers = await Promise.all(
+      groupMembersDocument.members
+        .filter((member) => member.toString() !== userID)
+        .map(async (memberID) => {
+          const userDoc = await User.findById(memberID);
+          if (!userDoc) throw new Error("Couldn't retrieve group document");
+          const userInfo = {
+            username: userDoc.username,
+            tag: userDoc.tag,
+            photo: userDoc.photo,
+          };
 
-      return userInfo;
-    })
-  );
+          return userInfo;
+        })
+    );
 
-  if (!groupMembers) throw new Error("Could not get group members");
+    console.log("MEMEMEMEMEMEMMEMEBBBBBEEEERRRRRRRSSSSSS", {
+      user,
+      groupMembers,
+    });
+    if (!groupMembers) throw new Error("Could not get group members");
+
+    return groupMembers;
+  } catch (error) {
+    console.error({ error });
+    return null;
+  }
 }

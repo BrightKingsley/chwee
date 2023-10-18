@@ -1,3 +1,4 @@
+import { textCode } from "@/constants/codes";
 import { UserClass } from "@/models";
 import { ClientUser } from "@/types/models";
 import mongoose from "mongoose";
@@ -30,6 +31,11 @@ export function formatToNumberWithDecimal(inputString: string) {
   // Use a regular expression to remove non-alphanumeric characters
   const formattedString = inputString.replace(/[^\d.]/g, "");
   return formattedString;
+}
+
+export function decodeTextContent(textContent: string) {
+  const decodedText = textContent.split(textCode)[0];
+  return decodedText;
 }
 
 export function formatTag(tag: string): string {

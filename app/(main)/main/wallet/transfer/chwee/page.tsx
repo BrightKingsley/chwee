@@ -5,8 +5,9 @@ import {
   Header,
   ListTile,
   Overlay,
+  UserListModal,
 } from "@/app/components/client";
-import { Button, Spinner } from "@/app/components/mui";
+import { Button, IconButton, Spinner } from "@/app/components/mui";
 import { BASE_URL } from "@/constants/routes";
 import { NotificationContext } from "@/context";
 import { ClientUser } from "@/types/models";
@@ -19,6 +20,8 @@ import { Input as MInput } from "@/app/components/mui";
 
 import { useLongPress } from "@/hooks";
 import BackspaceOutlined from "@mui/icons-material/BackspaceOutlined";
+import { ChevronUpIcon } from "@heroicons/react/20/solid";
+import { formatTag, lettersAndNumbersOnly } from "@/lib/utils";
 
 export default function TranferToChwee() {
   const { triggerNotification } = useContext(NotificationContext);
@@ -240,6 +243,13 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
     connections: [],
   });
 
+  const handleShowModal = () => {
+    setConnectionsModal((prev) => ({ ...prev, show: false }));
+  };
+  const handleItemClicked = (tag: string) => {
+    setTagInput(tag);
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -264,7 +274,7 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
   return (
     <div className="relative w-full h-full">
       <form
-        onSubmit={(e) => handleSubmit(e, receiverTagInput)}
+        onSubmit={(e) => handleSubmit(e, formatTag(receiverTagInput))}
         className="px-4 space-y-3 "
       >
         {/* <label htmlFor="receiverTag">input {"recipient's"} Tag</label> */}
@@ -273,12 +283,11 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
           icon={<p className="font-bold">@</p>}
           value={receiverTagInput}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setTagInput(e.target.value)
+            setTagInput(lettersAndNumbersOnly(e.target.value))
           }
           type="text"
-          maxLength={4}
           name="receiverTag"
-          placeholder="@johnDoe"
+          // placeholder="@johnDoe"
         />
         {/* <div className="ml-auto w-fit"> */}
         <Button fullWidth type="submit" className="">
@@ -286,7 +295,7 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
         </Button>
         {/* </div> */}
       </form>
-      <AnimateInOut
+      {/* <AnimateInOut
         init={{ translateY: "100%" }}
         out={{ translateY: "100%" }}
         show={connectionsModal.show}
@@ -323,6 +332,32 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
             </ListTile>
           ))
         )}
+      </AnimateInOut> */}
+
+      <UserListModal
+        loading={connectionsModal.loading}
+        show={connectionsModal.show}
+        userList={connectionsModal.connections}
+        handleShowModal={handleShowModal}
+        handleItemClicked={handleItemClicked}
+      />
+      <AnimateInOut
+        show={!connectionsModal.show}
+        init={{ scale: 0, translateY: 100 }}
+        out={{ scale: 0, translateY: 100 }}
+        animate={{ scale: 1, translateY: 0 }}
+        className="absolute bottom-5 w-full flex justify-center"
+      >
+        <IconButton
+          variant="filled"
+          onClick={() =>
+            setConnectionsModal((prev) => ({ ...prev, show: true }))
+          }
+          color="white"
+          className="rounded-full mx-auto text-primary !p-4 w-24 h-24"
+        >
+          <ChevronUpIcon className="w-16 h-16 p-3" />
+        </IconButton>
       </AnimateInOut>
     </div>
   );

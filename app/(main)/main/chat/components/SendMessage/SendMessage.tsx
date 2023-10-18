@@ -114,6 +114,8 @@ export default function SendMessage({
       imageContent: [],
       replyTo: undefined,
       sendDate: new Date(),
+      transaction: undefined,
+      type: "conversation",
     }));
     setReplyMessage({ sender: "", imageContent: [], textContent: "" });
     setPreviewImages({ images: [], show: false });
@@ -126,7 +128,8 @@ export default function SendMessage({
       e.preventDefault();
 
       console.log("MSG_RES_TO_BE_SENT: ", message);
-
+      setSelectedImages([]);
+      setMembersModal((prev) => ({ ...prev, value: "" }));
       if (
         !message.textContent &&
         message.imageContent.length < 1 &&
@@ -159,31 +162,10 @@ export default function SendMessage({
     }
   };
 
-  /*
-  const handleTransaction = async (e) => {
-    try {
-      setLoading(true);
-      console.log("SENDING_MESSAGE ==>", { messageData, message });
-      const res = await fetch(`${BASE_URL}/api/messaging/${chatID}`, {
-        method: "POST",
-        body: JSON.stringify({ message: messageData, roomType }),
-      });
-
-      const result = await res.json();
-
-      console.log("MSG_RESULT", result);
-      setLoading(false);
-      resetInput();
-    } catch (error) {
-      console.error({ error });
-      return triggerNotification("Couldn't make transaction. Please retry");
-    }
-  };
-  */
-
   const getMembers = async () => {
     try {
       setMembersModal((prev) => ({ ...prev, loading: true, show: true }));
+      console.log({ chatID });
       const res = await fetch(`${BASE_URL}/api/groups/${chatID}/members`);
       const data = await res.json();
       console.log({ data });
@@ -202,6 +184,13 @@ export default function SendMessage({
       console.error({ error });
       setMembersModal((prev) => ({ ...prev, loading: false }));
     }
+  };
+
+  const handleShowMembers = () => {
+    setMembersModal((prev) => ({ ...prev, show: false }));
+  };
+  const handleMemberClicked = (tag: string) => {
+    setMembersModal((prev) => ({ ...prev, value: tag }));
   };
 
   const readURI = (imgs: any[]) => {
@@ -420,11 +409,7 @@ export default function SendMessage({
                 <ExchangeDollarOutlined className="w-6 h-6 fill-primary" />
               </IconButton>
 
-              <IconButton
-                {...getRootProps()}
-                title="attach image"
-                className="rounded-full"
-              >
+              <IconButton title="attach image" className="rounded-full">
                 <label
                   htmlFor="image"
                   className="flex rounded-full items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
@@ -459,7 +444,7 @@ export default function SendMessage({
             {!showActionIcons && (
               <IconButton
                 onClick={() => setShowActionIcons(true)}
-                className="self-end rounded-full"
+                className="self-end rounded-full shrink-0"
               >
                 <ChevronRightIcon className="w-6 h-6 fill-primary text-primary" />
               </IconButton>
@@ -475,6 +460,7 @@ export default function SendMessage({
               value={message.textContent}
               onFocus={() => {
                 setShowActionIcons(false);
+                setToggleFunds(false);
               }}
               onBlur={() => {
                 setShowActionIcons(true);
@@ -518,7 +504,8 @@ export default function SendMessage({
         loading={membersModal.loading}
         show={membersModal.show}
         userList={membersModal.members}
-        setModal={setMembersModal}
+        handleItemClicked={handleMemberClicked}
+        handleShowModal={handleShowMembers}
         overlay
       />
     </>

@@ -112,7 +112,7 @@ export default async function Account({
                     <UserGroup key={i} groupID={group.toString()} />
                   ))
                 ) : (
-                  <p>This userFromSession {"doesn't"} belong to any groups</p>
+                  <p>This user {"doesn't"} belong to any groups</p>
                 )}
               </div>
             </div>
