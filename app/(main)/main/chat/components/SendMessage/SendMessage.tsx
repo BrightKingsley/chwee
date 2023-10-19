@@ -1,7 +1,8 @@
 "use client";
 import React, { useContext, useEffect, useRef, useState } from "react";
 
-import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
+import ImageLineIcon from "remixicon-react/ImageLineIcon";
+import SendPlane2LineIcon from "remixicon-react/SendPlane2LineIcon";
 
 import {
   ChevronRightIcon,
@@ -17,9 +18,9 @@ import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import Image from "next/image";
 import { TransactionForm, UploadImageData } from "..";
-import { TextareaAutosize } from "@mui/material";
+import TextareaAutosize from "react-textarea-autosize";
 import { useImageUpload } from "@/hooks";
-import { IconButton, Spinner } from "@/app/components/mui";
+import { Button, Card, IconButton, Spinner } from "@/app/components/mui";
 import { ClientUser, MessageBody } from "@/types/models";
 import {
   CoinsOutlined,
@@ -27,54 +28,34 @@ import {
   HandCoinOutlined,
 } from "@/app/components/Icons";
 
-export default function SendMessage({
-  replyMessage,
-  getInputRef,
-  setReplyMessage,
-  chatID,
-  roomType,
-}: SendMessageType) {
+export default function SendMessage({ chatID, roomType }: SendMessageType) {
   const { data } = useSession();
   const session: Session | null = data;
 
   const { triggerNotification } = useContext(NotificationContext);
+  const {
+    setToggleTransactionForm,
+    replyMessage,
+    setReplyMessage,
+    sendMessage,
+    resetInput,
+    loading,
+    message,
+    setLoading,
+    setMessage,
+    membersModal,
+    setMembersModal,
+    selectedImages,
+    setSelectedImages,
+    readURI,
+    previewImages,
+    setInputRef,
+  } = useContext(ChatContext);
 
   const inputRef = useRef();
 
-  const [message, setMessage] = useState<MessageBody>({
-    textContent: "",
-    imageContent: [],
-    sendDate: new Date(),
-    type: "conversation",
-    //TODO check this (!)
-    sender: session?.user.id!,
-    replyTo: replyMessage,
-  });
-
-  const [membersModal, setMembersModal] = useState<{
-    loading: boolean;
-    show: boolean;
-    members: ClientUser[];
-    value: string;
-  }>({
-    loading: false,
-    show: false,
-    members: [],
-    value: "",
-  });
-
-  const { setToggleTransactionForm, toggleTransactionForm } =
-    useContext(ChatContext);
-
   const [showActionIcons, setShowActionIcons] = useState(true);
   const [toggleFunds, setToggleFunds] = useState(false);
-  const [previewImages, setPreviewImages] = useState<{
-    images: (string | any)[];
-    show: boolean;
-  }>({ images: [], show: false });
-  // @ts-ignore TODO check Files Type
-  const [selectedImages, setSelectedImages] = useState<Files[]>([]);
-  const [loading, setLoading] = useState(false);
 
   const { getInputProps, getRootProps, startUpload } = useImageUpload({
     endpoint: "chatImageUploader",
@@ -106,30 +87,10 @@ export default function SendMessage({
     setMembersModal((prev) => ({ ...prev, value: "" }));
   };
 
-  const resetInput = () => {
-    console.log("resetting!");
-    setMessage((prev) => ({
-      ...prev,
-      textContent: "",
-      imageContent: [],
-      replyTo: undefined,
-      sendDate: new Date(),
-      transaction: undefined,
-      type: "conversation",
-    }));
-    setReplyMessage({ sender: "", imageContent: [], textContent: "" });
-    setPreviewImages({ images: [], show: false });
-    setSelectedImages([]);
-    setMembersModal((prev) => ({ ...prev, value: "" }));
-  };
-
   const handleSend = async (e: SubmitEvent) => {
     try {
       e.preventDefault();
 
-      console.log("MSG_RES_TO_BE_SENT: ", message);
-      setSelectedImages([]);
-      setMembersModal((prev) => ({ ...prev, value: "" }));
       if (
         !message.textContent &&
         message.imageContent.length < 1 &&
@@ -142,19 +103,12 @@ export default function SendMessage({
         ...message,
         sendDate: new Date(),
       };
-      setLoading(true);
-      const res = await sendMessage({
+
+      await sendMessage({
         message: messageToSend,
         chatID,
         roomType,
       });
-      setLoading(false);
-      resetInput();
-      if (message.type === "fund") {
-        // if (res.message !== "success") {
-        return triggerNotification(res.message);
-        // }
-      }
     } catch (error) {
       console.error({ error });
       setLoading(false);
@@ -193,24 +147,8 @@ export default function SendMessage({
     setMembersModal((prev) => ({ ...prev, value: tag }));
   };
 
-  const readURI = (imgs: any[]) => {
-    console.log("READ_REACHED", previewImages);
-    imgs.forEach((img) => {
-      if (img) {
-        let reader = new FileReader();
-        reader.onload = function (ev: ProgressEvent<FileReader>) {
-          setPreviewImages((prev) => ({
-            show: true,
-            images: [...prev.images, ev.target?.result],
-          }));
-        };
-        return reader.readAsDataURL(img);
-      }
-    });
-  };
-
   useEffect(() => {
-    getInputRef(inputRef);
+    setInputRef(inputRef);
   }, []);
 
   useEffect(() => {
@@ -257,18 +195,10 @@ export default function SendMessage({
 
         {previewImages.images.length > 0 && previewImages.show && (
           // NOTE Upload Image Data component
-          <UploadImageData
-            startUpload={startUpload}
-            selectedImages={selectedImages}
-            message={message}
-            previewImages={previewImages}
-            setMessage={setMessage}
-            setPreviewImages={setPreviewImages}
-            sendMessage={sendMessage}
-          />
+          <UploadImageData startUpload={startUpload} />
         )}
 
-        <TransactionForm setMessage={setMessage} />
+        <TransactionForm />
 
         <form
           // TODO COMEBACK ADD_TYPES
@@ -352,52 +282,8 @@ export default function SendMessage({
               animate={{ width: "auto", scale: 1 }}
               out={{ width: 0, scale: 0 }}
               transition={{ type: "keyframes" }}
-              className="flex shrink-0 items-center self-end relative -space-x-2"
+              className="flex shrink-0 items-center self-end relative_ -space-x-2"
             >
-              <AnimateInOut
-                show={toggleFunds}
-                init={{ opacity: 0, top: 0, left: 0, scale: 0 }}
-                animate={{
-                  opacity: 1,
-                  top: "calc(calc(100% + 1.5rem) * -1)",
-                  left: "0.5rem",
-                  scale: 1,
-                }}
-                out={{ opacity: 0, top: 0, left: 0, scale: 0 }}
-                className="!absolute bg-body p-1 flex gap-3 rounded-md items-center"
-              >
-                <IconButton
-                  title="request for funds"
-                  aria-label="request for funds"
-                  onClick={() => {
-                    return setToggleTransactionForm((prev) => ({
-                      ...prev,
-                      show: true,
-                      type: "request",
-                    }));
-                  }}
-                  className="flex items-center justify-center text-3xl fill-primary rounded-full text-primary"
-                >
-                  <HandCoinOutlined className="w-6 h-6 fill-primary" />
-                </IconButton>
-
-                <IconButton
-                  title="send funds"
-                  aria-label="send funds"
-                  onClick={() => {
-                    if (roomType === "p2p")
-                      return setToggleTransactionForm((prev) => ({
-                        ...prev,
-                        show: true,
-                        type: "send",
-                      }));
-                    getMembers();
-                  }}
-                  className="flex items-center justify-center text-3xl fill-primary text-primary rounded-full"
-                >
-                  <CoinsOutlined className="w-6 h-6 fill-primary" />
-                </IconButton>
-              </AnimateInOut>
               <IconButton
                 title="transaction"
                 aria-label="transaction"
@@ -414,7 +300,7 @@ export default function SendMessage({
                   htmlFor="image"
                   className="flex rounded-full items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
                 >
-                  <AddPhotoAlternateOutlined className="w-6 h-6 fill-primary" />
+                  <ImageLineIcon className="w-6 h-6 fill-primary" />
                 </label>
                 <input
                   // value={""}
@@ -434,11 +320,73 @@ export default function SendMessage({
 
                     console.log("IMGS", imgs, { files: target.files });
                     readURI(imgs);
-
-                    // return setSelectedImage(img);
                   }}
                 />
               </IconButton>
+            </AnimateInOut>
+
+            <AnimateInOut
+              show={toggleFunds}
+              init={{ opacity: 0, scale: 0, translateY: 80 }}
+              animate={{
+                opacity: 1,
+                // bottom: "calc(calc(100% + 1.5rem) * -1)",
+                // left: "0.5rem",
+                translateY: 0,
+                scale: 1,
+              }}
+              out={{ opacity: 0, scale: 0, translateY: 80 }}
+              className="absolute mx-auto bottom-16 left-0 p-2 flex justify-evenly gap-3 rounded-md items-center w-full h-fit"
+            >
+              <Card
+                title="request for funds"
+                aria-label="request for funds"
+                className="shadow-primary/20  flex-1 w-full active:scale-95 transition-all !p-0 duration-150"
+              >
+                <Button
+                  onClick={() => {
+                    return setToggleTransactionForm((prev) => ({
+                      ...prev,
+                      show: true,
+                      type: "request",
+                    }));
+                  }}
+                  variant="filled"
+                  color="white"
+                  className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
+                >
+                  <HandCoinOutlined className="w-16 h-16 fill-primary" />
+                  <small className="!text-gray-700">request for funds</small>
+                </Button>
+              </Card>
+              <Card
+                title="send funds"
+                aria-label="send funds"
+                className="shadow-primary/20 relative  flex-1 w-full active:scale-95 transition-all !p-0 duration-150"
+              >
+                <Button
+                  onClick={() => {
+                    if (roomType === "p2p")
+                      return setToggleTransactionForm((prev) => ({
+                        ...prev,
+                        show: true,
+                        type: "send",
+                      }));
+                    getMembers();
+                  }}
+                  variant="filled"
+                  color="white"
+                  className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
+                >
+                  <CoinsOutlined className="w-16 h-16 fill-primary" />
+                  <small className="!text-gray-700">send funds</small>
+                </Button>
+                <div className="absolute -right-6 w-fit h-fit -top-6 rounded-full">
+                  <IconButton variant="filled" color="white">
+                    <XMarkIcon className="w-8 h-8 fill-gray-700 text-gray-700" />
+                  </IconButton>
+                </div>
+              </Card>
             </AnimateInOut>
 
             {!showActionIcons && (
@@ -477,13 +425,14 @@ export default function SendMessage({
             {/* </div> */}
           </div>
           <IconButton
+            variant="filled"
             type="submit"
             title="send message"
             aria-label="send message"
-            className="flex items-center justify-center bg-body stroke-primary rounded-full p-1"
+            className="flex shrink-0 items-center justify-center bg-body fill-primary text-primary rounded-full p-2"
           >
             {/* <Send className="w-8 h-8 " /> */}
-            <svg
+            {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -496,7 +445,8 @@ export default function SendMessage({
                 strokeLinejoin="round"
                 d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
               />
-            </svg>
+            </svg> */}
+            <SendPlane2LineIcon className="w-8 h-8" />
           </IconButton>
         </form>
       </div>
@@ -510,36 +460,4 @@ export default function SendMessage({
       />
     </>
   );
-}
-export async function sendMessage({
-  message,
-  images = [],
-  chatID,
-  roomType,
-}: {
-  message: MessageBody;
-  chatID: string;
-  roomType: string;
-  images?: MessageBody["imageContent"];
-}) {
-  let messageData = { ...message };
-  if (images.length > 0) {
-    messageData.sender = message.sender;
-    messageData.imageContent = images;
-  }
-  try {
-    console.log("SENDING_MESSAGE ==>", { messageData, message });
-    const res = await fetch(`${BASE_URL}/api/messaging/${chatID}`, {
-      method: "POST",
-      body: JSON.stringify({ message: messageData, roomType }),
-    });
-
-    const result = await res.json();
-
-    console.log("MSG_RESULT", result);
-    return result;
-  } catch (error) {
-    console.error({ error });
-    return "an unexpected error occured";
-  }
 }

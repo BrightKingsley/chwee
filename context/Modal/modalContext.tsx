@@ -2,6 +2,7 @@
 
 import React, { createContext, useState } from "react";
 import { Modal } from "@/app/components/client";
+import { ModalContextType, triggerModalType } from "../types";
 
 const ModalContext = createContext<ModalContextType>({
   showModal: false,

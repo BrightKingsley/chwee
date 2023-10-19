@@ -3,8 +3,8 @@
 import { IconButton } from "@/app/components/mui";
 import { useState } from "react";
 
-import MoreVertOutlinedIcon from "@mui/icons-material/MoreVertOutlined";
-import Close from "@mui/icons-material/Close";
+import More2LineIcon from "remixicon-react/More2LineIcon";
+import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import ConnectButton from "../ConnectButton";
 import { motion } from "framer-motion";
 import DisconnectButton from "../DisconnectButton";
@@ -49,7 +49,7 @@ export default function ConnectOptions({ userID }: { userID: string }) {
           onClick={() => setOpen((prev) => !prev)}
           className="z-20 text-white bg-gray-600 rounded-full"
         >
-          {open ? <Close /> : <MoreVertOutlinedIcon />}
+          {open ? <CloseLineIcon /> : <More2LineIcon />}
         </IconButton>
       </motion.div>
       {actions.map(({ component }, i) => (

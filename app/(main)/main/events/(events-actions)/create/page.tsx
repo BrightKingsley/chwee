@@ -6,10 +6,10 @@ import { useSession } from "next-auth/react";
 import { Header } from "@/app/components/client";
 import { Button, IconButton, Switch } from "@/app/components/mui";
 import { BASE_URL } from "@/constants/routes";
-import { TextareaAutosize } from "@mui/material";
+import TextareaAutosize from "react-textarea-autosize";
 import Image from "next/image";
-import AirplaneTicketOutlined from "@mui/icons-material/AirplaneTicketOutlined";
-import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
+import CalendarEventLineIcon from "remixicon-react/CalendarEventLineIcon";
+import ImageAddLineIcon from "remixicon-react/ImageAddLineIcon";
 
 type EventCreate = {
   description: string;
@@ -81,7 +81,7 @@ export default function CreateEvent() {
               {previewImage ? (
                 <Image src={previewImage} alt="new" fill />
               ) : (
-                <AirplaneTicketOutlined className="w-20 h-20 text-gray-200" />
+                <CalendarEventLineIcon className="w-20 h-20 text-gray-200" />
               )}
             </div>
             <div className="absolute bottom-0 -right-4">
@@ -94,7 +94,7 @@ export default function CreateEvent() {
                   htmlFor="image"
                   className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
                 >
-                  <AddPhotoAlternateOutlined className="w-6 h-6 fill-primary" />
+                  <ImageAddLineIcon className="w-6 h-6 fill-primary" />
                 </label>
                 <input
                   // value={""}

@@ -31,16 +31,14 @@ import {
 } from "@heroicons/react/20/solid";
 
 // Material Icons
-import AccountBalanceWalletOutlined from "@mui/icons-material/AccountBalanceWalletOutlined";
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import DateRangeOutlinedIcon from "@mui/icons-material/DateRangeOutlined";
-import HubOutlinedIcon from "@mui/icons-material/HubOutlined";
-import Diversity3OutlinedIcon from "@mui/icons-material/Diversity3Outlined";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import WalletLineIcon from "remixicon-react/WalletLineIcon";
+import Message3LineIcon from "remixicon-react/Message3LineIcon";
+import NotificationLineIcon from "remixicon-react/NotificationLineIcon";
+// import HubLineIconIcon from "remixicon-react/HubLineIcon";
+import LinksLineIcon from "remixicon-react/LinksLineIcon";
+import UserLineIcon from "remixicon-react/UserLineIcon";
+import CloseLineIconIcon from "remixicon-react/CloseLineIcon";
+import MenuLineIconIcon from "remixicon-react/MenuLineIcon";
 
 import NavLink from "../NavLink";
 import { AnimateInOut, Overlay } from "..";
@@ -53,37 +51,37 @@ const iconClassNames = "w-6 h-6";
 const navLinks = [
   // {
   //   link: DASHBOARD,
-  //   icon: <DashboardOutlinedIcon className={iconClassNames} />,
+  //   icon: <DashboardLineIconIcon className={iconClassNames} />,
   //   name: "dashboard",
   // },
   {
     link: `${CHAT}/chats`,
-    icon: <SmsOutlinedIcon className={iconClassNames} />,
+    icon: <Message3LineIcon className={iconClassNames} />,
     name: "chat",
   },
   {
     link: WALLET,
-    icon: <AccountBalanceWalletOutlined className={iconClassNames} />,
+    icon: <WalletLineIcon className={iconClassNames} />,
     name: "wallet",
   },
   {
     link: NOTIFICATIONS,
-    icon: <NotificationsOutlinedIcon className={iconClassNames} />,
+    icon: <NotificationLineIcon className={iconClassNames} />,
     name: "notifications",
   },
   // {
   //   link: `${EVENTS}/my-events`,
-  //   icon: <DateRangeOutlinedIcon className={iconClassNames} />,
+  //   icon: <DateRangeLineIconIcon className={iconClassNames} />,
   //   name: "events",
   // },
   {
     link: `${CONNECT}/my-connections`,
-    icon: <HubOutlinedIcon className={iconClassNames} />,
+    icon: <LinksLineIcon className={iconClassNames} />,
     name: "connect",
   },
   {
     link: ACCOUNT,
-    icon: <AccountCircleOutlinedIcon className={iconClassNames} />,
+    icon: <UserLineIcon className={iconClassNames} />,
     name: "account",
   },
 ];
@@ -111,7 +109,7 @@ export default function Navbar() {
             aria-label="open nav"
             onClick={() => setShowMenu((prev) => !prev)}
           >
-            <MenuOutlinedIcon className="w-8 h-8 fill-gray-600 text-gray-600" />
+            <MenuLineIconIcon className="w-8 h-8 fill-gray-600 text-gray-600" />
           </IconButton>
         </div>
       )}
@@ -145,7 +143,7 @@ export default function Navbar() {
                   onClick={() => setShowMenu((prev) => !prev)}
                   className="flex items-center justify-center mx-auto mt-3 md:hidden"
                 >
-                  <CloseOutlinedIcon className="w-8 h-8 fill-gray-600 text-gray-600" />
+                  <CloseLineIconIcon className="w-8 h-8 fill-gray-600 text-gray-600" />
                 </IconButton>
                 {navLinks.map(({ icon, link, name }) => (
                   <div key={Math.random()}>

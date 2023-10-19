@@ -1,6 +1,6 @@
 "use client";
 import { IconButton } from "@/app/components/mui";
-import ChatBubbleOutline from "@mui/icons-material/ChatBubbleOutline";
+import Message3LineIcon from "remixicon-react/Message3LineIcon";
 import { BASE_URL, CHAT, CHATS } from "@/constants/routes";
 import { ModalContext, NotificationContext } from "@/context";
 import { Session } from "inspector";
@@ -58,8 +58,7 @@ export default function MessageButton({
       return triggerModal({
         message: (
           <p>
-            Send{" "}
-            <span className="font-bold text-green-400">connect request</span> to
+            <span className="font-bold text-green-400">Create Chat</span> with
             this user?
           </p>
         ),
@@ -75,7 +74,7 @@ export default function MessageButton({
       aria-label="message user"
       onClick={handleClick}
     >
-      <ChatBubbleOutline className="w-8 h-8" />
+      <Message3LineIcon className="w-8 h-8" />
     </IconButton>
   );
 }

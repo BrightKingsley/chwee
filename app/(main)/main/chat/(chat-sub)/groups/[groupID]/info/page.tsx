@@ -16,9 +16,9 @@ import { CONNECT } from "@/constants/routes";
 import { getGroupByID, getUserByID } from "@/lib/db";
 // icons
 import { UserIcon } from "@heroicons/react/20/solid";
-import LockOpenOutlined from "@mui/icons-material/LockOpenOutlined";
-import LockOutlined from "@mui/icons-material/LockOutlined";
-import GroupOutlined from "@mui/icons-material/GroupOutlined";
+import LockUnlockLineIcon from "remixicon-react/LockUnlockLineIcon";
+import LockLineIcon from "remixicon-react/LockLineIcon";
+import GroupLineIcon from "remixicon-react/GroupLineIcon";
 import mongoose from "mongoose";
 import { GroupOptions } from "../../../../components";
 
@@ -61,7 +61,7 @@ export default async function GroupInfo({
               {group.photo ? (
                 <Image src={group.photo} alt="" fill />
               ) : (
-                <GroupOutlined className="text-2xl" />
+                <GroupLineIcon className="text-2xl" />
               )}
             </div>
             <div className="mx-auto text-center w-fit">

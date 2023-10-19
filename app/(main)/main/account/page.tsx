@@ -18,8 +18,6 @@ import { CONNECT } from "@/constants/routes";
 import { getUserByID, getGroupByID } from "@/lib/db";
 // icons
 import { UserIcon } from "@heroicons/react/20/solid";
-import LockOpenOutlined from "@mui/icons-material/LockOpenOutlined";
-import LockOutlined from "@mui/icons-material/LockOutlined";
 
 export default async function Account({
   params,

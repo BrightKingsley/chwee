@@ -14,7 +14,7 @@ import { ClientGroup } from "@/types/models";
 import { stringToObjectId } from "@/lib/utils";
 import { JoinGroupTrigger } from "../../components";
 import { User } from "@/models";
-import InfoOutlined from "@mui/icons-material/InfoOutlined";
+import InformationLineIcon from "remixicon-react/InformationLineIcon";
 
 export default async function Groups({
   params,
@@ -78,7 +78,7 @@ export default async function Groups({
                 </Link>
                 <IconButton className="rounded-full shrink-0 !p-4">
                   <Link href={`${GROUPS}/info/${group.tag}`}>
-                    {<InfoOutlined className="w-6 h-6" />}
+                    {<InformationLineIcon className="w-6 h-6" />}
                   </Link>
                 </IconButton>
               </div>

@@ -8,7 +8,7 @@ import Overlay from "../Overlay";
 import { Button, IconButton } from "@/app/components/mui";
 import { ModalContext } from "@/context";
 import Close from "../Close";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import { AnimatePresence, motion } from "framer-motion";
 import ClientOnlyPortal from "../ClientOnlyPortal";
 
@@ -60,7 +60,7 @@ export default function Modal() {
                             actionCancel()();
                           }}
                         >
-                          <CloseOutlinedIcon />
+                          <CloseLineIcon />
                         </IconButton>
                       </div>
                       <div className={"break-all"}>{modalMessage}</div>

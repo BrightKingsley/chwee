@@ -16,7 +16,7 @@ import { CONNECT, GROUPS } from "@/constants/routes";
 import { getGroupByTag } from "@/lib/db";
 // icons
 import { UserIcon } from "@heroicons/react/20/solid";
-import GroupOutlined from "@mui/icons-material/GroupOutlined";
+import GroupLineIcon from "remixicon-react/GroupLineIcon";
 import { JoinGroupTrigger } from "../../../../components";
 
 export default async function GroupInfo({
@@ -49,7 +49,7 @@ export default async function GroupInfo({
               {group.photo ? (
                 <Image src={group.photo} alt="" fill />
               ) : (
-                <GroupOutlined className="text-2xl" />
+                <GroupLineIcon className="text-2xl" />
               )}
             </div>
             <div className="mx-auto text-center w-fit">
