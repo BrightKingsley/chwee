@@ -8,7 +8,7 @@ import { BackspaceIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { AnimateInOut } from "@/app/components/client";
-import BackspaceOutlined from "@mui/icons-material/BackspaceOutlined";
+import DeleteBackLineIcon from "remixicon-react/DeleteBackLineIcon";
 import { Button, Spinner, Input as MInput } from "@/app/components/mui";
 
 export default function AddMoney() {
@@ -214,7 +214,7 @@ function NumberPad({
           }}
           className="p-2 aspect-video_ aspect-[4/2]_ row-span-1 text-3xl rounded-2xl border flex items-center justify-center"
         >
-          <BackspaceOutlined className="w-8 h-8" />
+          <DeleteBackLineIcon className="w-8 h-8" />
         </Button>
       </div>
     </AnimateInOut>

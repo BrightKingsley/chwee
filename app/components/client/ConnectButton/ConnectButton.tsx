@@ -2,7 +2,7 @@
 
 import { BASE_URL } from "@/constants/routes";
 import { ModalContext, NotificationContext } from "@/context";
-import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
+import UserAddLineIcon from "remixicon-react/UserAddLineIcon";
 import { IconButton } from "@/app/components/mui";
 import { Session } from "inspector";
 import { useSession } from "next-auth/react";
@@ -60,7 +60,7 @@ export default function ConnectButton({
         variant === "circle" ? "rounded-full" : "rounded-md"
       }  p-2 font-druk-wide-bold text-white !bg-gray-600 hover:border`}
     >
-      <PersonAddOutlinedIcon className="w-8 h-8" />
+      <UserAddLineIcon className="w-8 h-8" />
     </IconButton>
   );
 }

@@ -1,9 +1,9 @@
 import { WALLET } from "@/constants/routes";
 import { getTransactionByID } from "@/lib/db";
 import Link from "next/link";
-import ArrowUpwardOutlined from "@mui/icons-material/ArrowUpwardOutlined";
-import ArrowRightOutlined from "@mui/icons-material/ArrowRightOutlined";
-import ArrowDownwardOutlined from "@mui/icons-material/ArrowDownwardOutlined";
+import ArrowUpLineIcon from "remixicon-react/ArrowUpLineIcon";
+import ArrowRightLineIcon from "remixicon-react/ArrowRightLineIcon";
+import ArrowDownLineIcon from "remixicon-react/ArrowDownLineIcon";
 import { use } from "react";
 
 const getTransaction = async (transactionID: string) => {
@@ -36,11 +36,11 @@ export default function TransactionTile({
         } rounded-full p-2`}
       >
         {transaction.type === "deposit" ? (
-          <ArrowDownwardOutlined className="w-6 h-6" />
+          <ArrowDownLineIcon className="w-6 h-6" />
         ) : transaction.type === "withdrawal" ? (
-          <ArrowUpwardOutlined className="w-6 h-6" />
+          <ArrowUpLineIcon className="w-6 h-6" />
         ) : (
-          <ArrowRightOutlined className="w-6 h-6" />
+          <ArrowRightLineIcon className="w-6 h-6" />
         )}
       </div>
       <div className="ml-3">

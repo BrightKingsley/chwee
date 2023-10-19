@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Card, ListItem } from "@/app/components/mui";
 import { LockClosedIcon } from "@heroicons/react/20/solid";
-import LockOutlined from "@mui/icons-material/LockOutlined";
-import LockOpenOutlined from "@mui/icons-material/LockOpenOutlined";
+import LockLineIcon from "remixicon-react/LockLineIcon";
+import LockUnlockLineIcon from "remixicon-react/LockUnlockLineIcon";
 import { GroupInfo } from "@/types/models";
 import { use } from "react";
 import { GROUPS } from "@/constants/routes";
@@ -39,9 +39,9 @@ export default function UserGroup({ groupID }: { groupID: string }) {
               <small>{group.members.length} members</small>
               <small>
                 {group.hasPassword ? (
-                  <LockOutlined className="w-3 h-3 text-xs text-red-400 fill-red-400" />
+                  <LockLineIcon className="w-3 h-3 text-xs text-red-400 fill-red-400" />
                 ) : (
-                  <LockOpenOutlined className="w-3 h-3 text-xs text-green-400 fill-green-400" />
+                  <LockUnlockLineIcon className="w-3 h-3 text-xs text-green-400 fill-green-400" />
                 )}
               </small>
             </div>

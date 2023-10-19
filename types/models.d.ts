@@ -29,7 +29,6 @@ interface ClientChat {
 }
 
 interface ClientMessage {
-  setReplyMessage: SendMessageType["setReplyMessage"];
   userID: string;
   message: {
     message: MessageClass;

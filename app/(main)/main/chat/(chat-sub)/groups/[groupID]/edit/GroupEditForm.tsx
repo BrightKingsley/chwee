@@ -13,15 +13,14 @@ import {
   Switch,
   Textarea,
 } from "@/app/components/mui";
-import Group from "@mui/icons-material/Group";
-import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
+import GroupLineIcon from "remixicon-react/GroupLineIcon";
+import ImageLineIcon from "remixicon-react/ImageLineIcon";
 import { NotificationContext } from "@/context";
 import Link from "next/link";
 import { ClientGroup } from "@/types/models";
 import { useImageUpload } from "@/hooks";
 import { lettersAndNumbersOnly } from "@/lib/utils";
-import Warning from "@mui/icons-material/Warning";
-import AbcOutlined from "@mui/icons-material/AbcOutlined";
+import ErrorWarningLineIcon from "remixicon-react/ErrorWarningLineIcon";
 
 export default function GroupEditForm({
   params,
@@ -120,7 +119,7 @@ export default function GroupEditForm({
           {previewImage ? (
             <Image src={previewImage} alt="new" fill />
           ) : (
-            <Group className="w-20 h-20 text-gray-200" />
+            <GroupLineIcon size={20} className="w-20 h-20 text-gray-200" />
           )}
         </div>
         <div className="absolute bottom-0 -right-4">
@@ -133,7 +132,7 @@ export default function GroupEditForm({
               htmlFor="image"
               className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
             >
-              <AddPhotoAlternateOutlined className="w-6 h-6 fill-primary" />
+              <ImageLineIcon className="w-6 h-6 fill-primary" />
             </label>
             <input
               // value={}
@@ -164,7 +163,7 @@ export default function GroupEditForm({
           value={groupData.name}
           type="text"
           label="name"
-          icon={<AbcOutlined className="w-6 h-6" />}
+          icon={<p>ABC</p>}
           onChange={(e) => {
             setGroupData((prev) => ({ ...prev, name: e.target.value }));
           }}
@@ -233,9 +232,9 @@ export default function GroupEditForm({
 
       {groupData.locked && (
         <small className="flex items-center gap-2">
-          <Warning className="w-3 h-3 text-xs text-brand-yellow" /> Note: if you
-          set the locked switch to true, without providing a password, one will
-          be automatically generated
+          <ErrorWarningLineIcon className="w-3 h-3 text-xs text-brand-yellow" />{" "}
+          Note: if you set the locked switch to true, without providing a
+          password, one will be automatically generated
         </small>
       )}
 
@@ -247,3 +246,5 @@ export default function GroupEditForm({
     </form>
   );
 }
+
+// remixicon-react @mui/material @emotion/styled @emotion/react

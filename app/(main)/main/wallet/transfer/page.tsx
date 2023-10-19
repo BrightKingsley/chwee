@@ -2,8 +2,8 @@ import { Header } from "@/app/components/client";
 import { WALLET } from "@/constants/routes";
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
-import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
+import BankLineIcon from "remixicon-react/BankLineIcon";
+import WalletLineIcon from "remixicon-react/WalletLineIcon";
 import { ListItem } from "@/app/components/mui";
 
 export default function Transfer() {
@@ -17,7 +17,7 @@ export default function Transfer() {
               href={`${WALLET}/transfer/chwee`}
               className="w-full h-full px-2 py-4 transition-all duration-100 rounded-md bg-primary/10 active:scale-90 active:shadow-none hover:shadow-md hover:shadow-primary/20 text-start flex items-center gap-3 text-gray-600 "
             >
-              <AccountBalanceWalletOutlinedIcon className="w-6 h-6 text-primary" />
+              <WalletLineIcon className="w-6 h-6 text-primary" />
               <p>To Chwee Wallet</p>
               <ChevronRightIcon className="w-6 h-6 ml-auto" />
             </Link>
@@ -29,7 +29,7 @@ export default function Transfer() {
               href={`${WALLET}/transfer/bank`}
               className="w-full h-full px-2 py-4 transition-all duration-100 rounded-md bg-primary/10 active:scale-90 active:shadow-none hover:shadow-md hover:shadow-primary/20 text-start flex items-center gap-3 text-gray-600"
             >
-              <AccountBalanceOutlinedIcon className="w-6 h-6 text-primary" />
+              <BankLineIcon className="w-6 h-6 text-primary" />
               <p>To Bank Account</p>
               <ChevronRightIcon className="w-6 h-6 ml-auto" />
             </Link>

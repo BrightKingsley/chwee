@@ -19,59 +19,35 @@ import { UserClass } from "@/models";
 import { SendMessageType } from "../SendMessage/types";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
-import { sendMessage } from "../SendMessage/SendMessage";
 import { usePathname } from "next/navigation";
 import { ChatContext, ModalContext } from "@/context";
 import { textCode } from "@/constants/codes";
 import { decodeTextContent } from "@/lib/utils";
-
-interface ClientMessage {
-  setReplyMessage: SendMessageType["setReplyMessage"];
-  userID: string;
-  message: {
-    message: MessageClass;
-    senderInfo: UserClass;
-  };
-  // message: MessageClass & UserClass;
-  roomType: "group" | "p2p";
-}
-
-interface MessageProps extends ClientMessage {
-  inputRef: any;
-  getViewImages: React.Dispatch<
-    React.SetStateAction<{
-      images: string[];
-      clickedImage: number;
-    }>
-  >;
-}
+import { useParams } from "next/navigation";
+import { MessageProps } from "../types";
+import { classNames } from "uploadthing/client";
 
 const emotes = ["😂", "💩", "😢", "😭", "💔"];
 
 export default function Message({
-  setReplyMessage,
+  chatID,
   userID, //TODO typecheck
   message: messageWithSenderData,
   roomType,
-  inputRef,
-  getViewImages,
 }: MessageProps) {
-  const [showMore, setShowMore] = useState(false);
-  const { setToggleTransactionForm, toggleTransactionForm } =
-    useContext(ChatContext);
   const { triggerModal } = useContext(ModalContext);
+  const {
+    setToggleTransactionForm,
+    toggleTransactionForm,
+    sendMessage,
+    setReplyMessage,
+    resetInput,
+    setViewImages,
+    inputRef,
+  } = useContext(ChatContext);
 
-  const pathname = usePathname();
-  const chatID = pathname ? pathname.split("s/")[1].split("/")[0] : "";
-
-  useEffect(() => {
-    console.log("runnninnnnn");
-  }, []);
-
-  // const { textContent, imageContent, sender, username, photo, tag, replyTo } = {
-  //   ...messageWithSenderData.senderInfo,
-  //   ...messageWithSenderData.message,
-  // };
+  const [showMore, setShowMore] = useState(false);
+  const params = useParams();
 
   const messageData = {
     ...messageWithSenderData.senderInfo,
@@ -79,7 +55,7 @@ export default function Message({
   };
 
   const textContent = messageData.textContent;
-  const imageContent = messageData.imageContent;
+  const imageContent: string[] | undefined = messageData.imageContent;
   const sender = messageData.sender;
   const username = messageData.username;
   const photo = messageData.photo;
@@ -106,15 +82,6 @@ export default function Message({
     callback: () => setShowMore(true),
     duration: 800,
   });
-
-  // useEffect(() => {
-  //   if (!showMore) return;
-  //   const timeout = setTimeout(() => {
-  //     setShowMore((prev) => ({ ...prev, emojis: false }));
-  //   }, 3000);
-
-  //   return () => clearTimeout(timeout);
-  // }, [showMore]);
 
   useEffect(() => {
     messageRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -229,7 +196,7 @@ export default function Message({
             replyTo.imageContent.length > 0 && (
               <div
                 onClick={() =>
-                  getViewImages((prev) => ({
+                  setViewImages((prev) => ({
                     ...prev,
                     images: replyTo.imageContent!,
                   }))
@@ -320,7 +287,7 @@ export default function Message({
                       // <></>
                       <div
                         onClick={() =>
-                          getViewImages((prev) => ({
+                          setViewImages((prev) => ({
                             ...prev,
                             clickedImage: i,
                             images: imageContent,
@@ -388,7 +355,10 @@ export default function Message({
                       onClick={() => {
                         // setToggleTransactionForm({ show: true, type: "send" });
                         triggerModal({
-                          cancel: triggerModal,
+                          cancel: () => {
+                            resetInput();
+                            triggerModal({});
+                          },
                           confirm: () => {
                             sendMessage({
                               message: {
@@ -416,7 +386,21 @@ export default function Message({
                               roomType,
                             });
                           },
-                          message: `Send ₦${transaction.amount} to ${tag}`,
+                          message: (
+                            <p>
+                              Send{" "}
+                              <span className="text-primary">
+                                ₦{transaction.amount}
+                              </span>{" "}
+                              to{" "}
+                              <Link
+                                href={`${CONNECT}/${tag}`}
+                                className="underline underline-offset-2"
+                              >
+                                {tag}
+                              </Link>
+                            </p>
+                          ),
                         });
                       }}
                       color="white"
@@ -491,7 +475,7 @@ export default function Message({
                 )}
               </div>
             )}
-            <small className="absolute -bottom-[2px] text-xs font-semibold text-gray-300 -right-[2px]">
+            <small className="absolute -bottom-[6px] text-xs font-semibold text-gray-300 -right-[2px]">
               {formattedTime}
             </small>
           </div>

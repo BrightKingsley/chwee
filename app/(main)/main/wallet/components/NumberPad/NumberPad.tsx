@@ -1,6 +1,7 @@
 import { AnimateInOut } from "@/app/components/client";
 import { useLongPress } from "@/hooks";
-import BackspaceOutlined from "@mui/icons-material/BackspaceOutlined";
+import DeleteBackLineIcon from "remixicon-react/DeleteBackLineIcon";
+
 import { Button } from "@/app/components/mui";
 
 const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
@@ -69,7 +70,7 @@ export default function NumberPad({
           }}
           className="p-2 aspect-video_ aspect-[4/2]_ row-span-1 text-3xl rounded-2xl border flex items-center justify-center"
         >
-          <BackspaceOutlined className="w-8 h-8" />
+          <DeleteBackLineIcon className="w-8 h-8" />
         </Button>
       </div>
     </AnimateInOut>

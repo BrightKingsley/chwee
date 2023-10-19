@@ -1,5 +1,5 @@
 import { Button, IconButton } from "@/app/components/mui";
-import MenuOutlined from "@mui/icons-material/MenuOutlined";
+import MenuLineIcon from "remixicon-react/MenuLineIcon";
 import { DASHBOARD } from "@/constants/routes";
 import {
   Bars3Icon,
@@ -102,7 +102,7 @@ export default function Landing() {
             className="md:hidden text-primary flex items-center justify-center rounded-full"
           >
             {/* <Bars3Icon className="w-8 h-8 fill-primary" /> */}
-            <MenuOutlined />
+            <MenuLineIcon />
           </IconButton>
           <ul className="items-center hidden gap-3 sm:flex">
             <li>Home</li>

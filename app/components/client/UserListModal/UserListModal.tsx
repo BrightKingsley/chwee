@@ -3,7 +3,7 @@ import AnimateInOut from "../AnimateInOut/AnimateInOut";
 import { Spinner } from "@/app/components/mui";
 import MyListTile from "../ListTile/ListTile";
 import Image from "next/image";
-import AccountCircle from "@mui/icons-material/AccountCircle";
+import UserLineIcon from "remixicon-react/UserLineIcon";
 import SearchBar from "../SearchBar/SearchBar";
 import { useEffect, useState } from "react";
 import Overlay from "../Overlay/Overlay";
@@ -97,7 +97,7 @@ export default function UsersModal({
                       className="object-cover w-full h-full"
                     />
                   ) : (
-                    <AccountCircle className="w-20 h-20 text-gray-200" />
+                    <UserLineIcon className="w-20 h-20 text-gray-200" />
                   )}
                 </div>
                 <div className="ml-3">

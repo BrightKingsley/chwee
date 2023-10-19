@@ -9,15 +9,12 @@ import { MessageBody } from "@/types/models";
 import { Input } from "@material-tailwind/react";
 import { useContext, useState } from "react";
 
-export default function TransactionForm({
-  setMessage,
-}: {
-  setMessage: React.Dispatch<React.SetStateAction<MessageBody>>;
-}) {
-  const { setToggleTransactionForm, toggleTransactionForm } =
+export default function TransactionForm() {
+  const { setToggleTransactionForm, toggleTransactionForm, setMessage } =
     useContext(ChatContext);
 
   const [amount, setAmount] = useState(0.0);
+  const [input, setInput] = useState("");
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     setMessage((prev) => ({
@@ -38,6 +35,7 @@ export default function TransactionForm({
   const handleCancel = () => {
     setToggleTransactionForm((prev) => ({ ...prev, show: false }));
     setAmount(0.0);
+    setInput("");
   };
 
   return (
@@ -64,16 +62,25 @@ export default function TransactionForm({
         >
           <p>
             Enter the amount You wish to{" "}
-            {toggleTransactionForm.type === "request" ? "receive" : "send"}
+            <span
+              className={`font-bold ${
+                toggleTransactionForm.type === "request"
+                  ? "text-green-400"
+                  : "text-brand-darkblue"
+              }`}
+            >
+              {toggleTransactionForm.type === "request" ? "receive" : "send"}
+            </span>
           </p>
           <input
-            value={amount}
+            value={input}
             placeholder="₦0.00"
-            prefix="₦"
-            type="number"
-            onChange={(e) =>
-              setAmount(+formatToNumberWithDecimal(e.target.value))
-            }
+            // prefix="₦"
+            type="text"
+            onChange={(e) => {
+              setAmount(+formatToNumberWithDecimal(e.target.value));
+              setInput(`₦${formatToNumberWithDecimal(e.target.value)}`);
+            }}
             className="w-full mx-auto text-center p-3 !text-3xl text-gray-700 !font-druk-wide-bold !border-none !outline-none focus:!outline-none focus:!border-none focus:before:!hidden focus:after:!hidden "
           />
           <div className="flex justify-around w-full gap-3">

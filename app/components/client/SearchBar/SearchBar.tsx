@@ -3,7 +3,7 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { IconButton } from "@/app/components/mui";
 
-import Search from "@mui/icons-material/Search";
+import SearchLineIcon from "remixicon-react/SearchLineIcon";
 import { useReducer } from "react";
 
 const initialState: ReducerState = {
@@ -27,7 +27,7 @@ const myreducer = (state: ReducerState, action: string): ReducerState => {
   };
 };
 
-export default function SearchBar({
+export default function SearchLineIconBar({
   collection,
   disabled = false,
   placeholder = "search",
@@ -72,7 +72,7 @@ export default function SearchBar({
         disabled={disabled}
         className="p-2 rounded-xl shrink-0"
       >
-        <Search className="w-8 h-8 text-white" />
+        <SearchLineIcon className="w-8 h-8 text-white" />
       </IconButton>
     </form>
   );

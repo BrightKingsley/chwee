@@ -13,7 +13,7 @@ export default function OptionsMenu({
     const timeout = setTimeout(() => {
       setShow(false);
     }, 3000);
-    () => clearTimeout(timeout);
+    return () => clearTimeout(timeout);
   }, [show, setShow]);
 
   return (

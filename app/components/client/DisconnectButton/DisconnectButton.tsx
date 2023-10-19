@@ -2,7 +2,7 @@
 
 import { BASE_URL } from "@/constants/routes";
 import { ModalContext, NotificationContext } from "@/context";
-import PersonRemoveOutlined from "@mui/icons-material/PersonRemoveOutlined";
+import UserUnfollowLineIcon from "remixicon-react/UserUnfollowLineIcon";
 import { IconButton } from "@/app/components/mui";
 import { Session } from "inspector";
 import { useSession } from "next-auth/react";
@@ -61,7 +61,7 @@ export default function DisconnectButton({
         variant === "circle" ? "rounded-full" : "rounded-md"
       }  p-2 font-druk-wide-bold text-white hover:border`}
     >
-      <PersonRemoveOutlined className="w-8 h-8" />
+      <UserUnfollowLineIcon className="w-8 h-8" />
     </IconButton>
   );
 }

@@ -9,13 +9,11 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getWallet } from "@/lib/db";
 import { ClientWallet } from "@/types/models";
 
-import ArrowOutward from "@mui/icons-material/ArrowOutward";
+import ArrowRightUpLineIcon from "remixicon-react/ArrowRightUpLineIcon";
 
-import SignalCellularAltOutlinedIcon from "@mui/icons-material/SignalCellularAltOutlined";
+import ExchangeDollarLineIcon from "remixicon-react/ExchangeDollarLineIcon";
 
-import WifiProtectedSetupOutlinedIcon from "@mui/icons-material/WifiProtectedSetupOutlined";
-
-import WifiOutlinedIcon from "@mui/icons-material/WifiOutlined";
+import WifiLineIcon from "remixicon-react/WifiLineIcon";
 
 // const getWalletData = async (serverSession: Session | null) => {
 //   try {
@@ -76,7 +74,7 @@ export default async function Wallet() {
                       href={`${WALLET}/transfer`}
                       className="flex items-center justify-center w-12 h-12 p-1 text-3xl transition-transform duration-150 bg-white rounded-2xl text-primary active:scale-75 active:bg-primary/50 active:text-white hover:text-white hover:outline hover:outline-white hover:outline-offset-1 hover:outline-1 hover:scale-110 hover:bg-white/30 "
                     >
-                      <WifiProtectedSetupOutlinedIcon className="w-6 h-6 rotate-90" />
+                      <ExchangeDollarLineIcon className="w-6 h-6 rotate-90" />
                     </Link>
                     <small>Transfer</small>
                   </div>
@@ -85,7 +83,7 @@ export default async function Wallet() {
                       href={`${WALLET}/withdraw`}
                       className="flex items-center justify-center w-12 h-12 p-1 text-3xl transition-transform duration-150 bg-white rounded-2xl text-primary active:scale-75 active:bg-primary/50 active:text-white hover:text-white hover:outline hover:outline-white hover:outline-offset-1 hover:outline-1 hover:scale-110 hover:bg-white/30 "
                     >
-                      <ArrowOutward className="w-6 h-6" />
+                      <ArrowRightUpLineIcon className="w-6 h-6" />
                     </Link>
                     <small>Withdraw</small>
                   </div>
@@ -99,7 +97,7 @@ export default async function Wallet() {
                     href={`${WALLET}/buy-airtime`}
                     className="flex items-center justify-center w-12 h-12 p-4 text-2xl rounded-full bg-primary/10 text-primary"
                   >
-                    <SignalCellularAltOutlinedIcon className="w-6 h-6" />
+                    <ExchangeDollarLineIcon className="w-6 h-6" />
                   </Link>
                   <small>Airtime</small>
                 </div>
@@ -108,7 +106,7 @@ export default async function Wallet() {
                     href={`${WALLET}/buy-data`}
                     className="flex items-center justify-center w-12 h-12 p-4 text-2xl rounded-full bg-primary/10 text-primary"
                   >
-                    <WifiOutlinedIcon className="w-6 h-6" />
+                    <WifiLineIcon className="w-6 h-6" />
                   </Link>
                   <small>Data</small>
                 </div>

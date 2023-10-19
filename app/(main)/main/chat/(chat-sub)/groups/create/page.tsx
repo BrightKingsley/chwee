@@ -13,8 +13,8 @@ import {
   Textarea,
 } from "@/app/components/mui";
 import { useUploadThing } from "@/lib/uploadThing";
-import Group from "@mui/icons-material/Group";
-import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
+import GroupLineIcon from "remixicon-react/GroupLineIcon";
+import ImageLineIcon from "remixicon-react/ImageLineIcon";
 import { useDropzone } from "@uploadthing/react/hooks";
 import { FileWithPath } from "@uploadthing/react";
 import { generateClientDropzoneAccept } from "uploadthing/client";
@@ -24,7 +24,7 @@ import { ClientGroup } from "@/types/models";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 import { useImageUpload } from "@/hooks";
 import { lettersAndNumbersOnly } from "@/lib/utils";
-import Warning from "@mui/icons-material/Warning";
+import ErrorWarningLineIcon from "remixicon-react/ErrorWarningLineIcon";
 
 export default function CreateGroup() {
   const { data } = useSession();
@@ -121,7 +121,7 @@ export default function CreateGroup() {
             {previewImage ? (
               <Image src={previewImage} alt="new" fill />
             ) : (
-              <Group className="w-20 h-20 text-gray-200" />
+              <GroupLineIcon className="w-20 h-20 text-gray-200" />
             )}
           </div>
           <div className="absolute bottom-0 -right-4">
@@ -134,7 +134,7 @@ export default function CreateGroup() {
                 htmlFor="image"
                 className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
               >
-                <AddPhotoAlternateOutlined className="w-6 h-6 fill-primary" />
+                <ImageLineIcon className="w-6 h-6 fill-primary" />
               </label>
               <input
                 // value={}
@@ -232,9 +232,9 @@ export default function CreateGroup() {
 
         {groupData.locked && (
           <small className="flex items-center gap-2">
-            <Warning className="w-3 h-3 text-xs text-brand-yellow" /> Note: if
-            you set the locked switch to true, without providing a password, one
-            will be automatically generated
+            <ErrorWarningLineIcon className="w-3 h-3 text-xs text-brand-yellow" />{" "}
+            Note: if you set the locked switch to true, without providing a
+            password, one will be automatically generated
           </small>
         )}
 

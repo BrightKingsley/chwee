@@ -2,6 +2,7 @@
 
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { Notification } from "@/app/components/client";
+import { NotificationContextType } from "../types";
 
 const NotificationContext = createContext<NotificationContextType>({
   showNotification: false,

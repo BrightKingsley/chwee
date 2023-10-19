@@ -1,3 +1,5 @@
+import { ClientUser, MessageBody } from "@/types/models";
+
 // AUTH
 type signUpWithEmailAndPassword = {
   username: string;
@@ -47,6 +49,76 @@ type ChatContextType = {
       type: "request" | "send";
       show: boolean;
     }>
+  >;
+  sendMessage: ({
+    message,
+    images = [],
+    chatID,
+    roomType,
+  }: {
+    message: MessageBody;
+    chatID: string;
+    roomType: string;
+    images?: MessageBody["imageContent"];
+  }) => Promise<{ message: string }>;
+  replyMessage: {
+    sender: string;
+    textContent?: string | undefined;
+    imageContent?: string[] | undefined;
+  };
+  setReplyMessage: Dispatch<
+    SetStateAction<{
+      sender: string;
+      textContent?: string | undefined;
+      imageContent?: string[] | undefined;
+    }>
+  >;
+  // @ts-ignore
+  selectedImages: File[];
+  setSelectedImages: React.Dispatch<React.SetStateAction<File[]>>;
+  resetInput: Function;
+  message: MessageBody;
+  setMessage: React.Dispatch<React.SetStateAction<MessageBody>>;
+  membersModal: {
+    loading: boolean;
+    show: boolean;
+    members: ClientUser[];
+    value: string;
+  };
+  setMembersModal: React.Dispatch<
+    React.SetStateAction<{
+      loading: boolean;
+      show: boolean;
+      members: ClientUser[];
+      value: string;
+    }>
+  >;
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  readURI: (imgs: any[]) => void;
+  previewImages: {
+    images: (string | any)[];
+    show: boolean;
+  };
+  setPreviewImages: React.Dispatch<
+    React.SetStateAction<{
+      images: (string | any)[];
+      show: boolean;
+    }>
+  >;
+  viewImages: {
+    images: string[];
+    clickedImage: number;
+  };
+  setViewImages: React.Dispatch<
+    React.SetStateAction<{
+      images: string[];
+      clickedImage: number;
+    }>
+  >;
+  inputRef: MutableRefObject<HTMLInputElement> | undefined;
+  setInputRef: React.Dispatch<
+    React.SetStateAction<MutableRefObject<HTMLInputElement> | undefined>
   >;
 };
 

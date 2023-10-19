@@ -5,11 +5,9 @@ import { Input } from "@material-tailwind/react";
 import { Card, IconButton, Spinner } from "@/app/components/mui";
 import { useSession } from "next-auth/react";
 import { useContext, useState } from "react";
-import AddPhotoAlternateOutlined from "@mui/icons-material/AddPhotoAlternateOutlined";
-import AbcOutlined from "@mui/icons-material/AbcOutlined";
-import Tag from "@mui/icons-material/TagFaces";
-import Close from "@mui/icons-material/Close";
-import AccountCircle from "@mui/icons-material/AccountCircle";
+import ImageLineIcon from "remixicon-react/ImageLineIcon";
+import CloseLineIcon from "remixicon-react/CloseLineIcon";
+import AccountCircleLineIcon from "remixicon-react/AccountCircleLineIcon";
 import Image from "next/image";
 import { Overlay } from "@/app/components/client";
 import { Button } from "@/app/components/mui";
@@ -121,7 +119,7 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                   }}
                   className="rounded-full"
                 >
-                  <Close className="w-6 h-6" />
+                  <CloseLineIcon className="w-6 h-6" />
                 </IconButton>
               </Link>
             </div>
@@ -133,7 +131,7 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                 {previewImage ? (
                   <Image src={previewImage} alt="new" fill />
                 ) : (
-                  <AccountCircle className="w-20 h-20 text-gray-200" />
+                  <AccountCircleLineIcon className="w-20 h-20 text-gray-200" />
                 )}
               </div>
               <div className="absolute bottom-0 -right-4">
@@ -146,7 +144,7 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                     htmlFor="image"
                     className="flex items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
                   >
-                    <AddPhotoAlternateOutlined className="w-6 h-6 fill-primary" />
+                    <ImageLineIcon className="w-6 h-6 fill-primary" />
                   </label>
                   <input
                     // value={""}
@@ -184,7 +182,7 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                   }}
                   value={updateUser.username}
                   label="username"
-                  icon={<AbcOutlined className="w-6 h-6" />}
+                  icon={<p>ABC</p>}
                   type="text"
                 />
               </div>

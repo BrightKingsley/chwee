@@ -14,12 +14,11 @@ import { ClientUser } from "@/types/models";
 import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 // import { NumberPad, Input } from "../../components";
 import { Input as MInput } from "@/app/components/mui";
 
 import { useLongPress } from "@/hooks";
-import BackspaceOutlined from "@mui/icons-material/BackspaceOutlined";
+import DeleteBackLineIcon from "remixicon-react/DeleteBackLineIcon";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
 import { formatTag, lettersAndNumbersOnly } from "@/lib/utils";
 
@@ -550,7 +549,7 @@ function NumberPad({
           }}
           className="p-2 aspect-video_ aspect-[4/2]_ row-span-1 text-3xl rounded-2xl border flex items-center justify-center"
         >
-          <BackspaceOutlined className="w-8 h-8" />
+          <DeleteBackLineIcon className="w-8 h-8" />
         </Button>
       </div>
     </AnimateInOut>
