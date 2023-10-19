@@ -153,6 +153,7 @@ export const ChatContextProvider = ({
       messageData.sender = message.sender;
       messageData.imageContent = images;
     }
+    resetInput();
     try {
       setLoading(true);
       console.log("SENDING_MESSAGE ==>", { messageData, message });
@@ -167,6 +168,7 @@ export const ChatContextProvider = ({
       setLoading(false);
       resetInput();
       if (message.type === "fund") {
+        if (!result) return triggerNotification("Couldn't make transaction");
         // if (res.message !== "success") {
         return triggerNotification(result.message);
         // }
