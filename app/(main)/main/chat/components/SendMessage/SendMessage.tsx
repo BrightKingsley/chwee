@@ -282,7 +282,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
               animate={{ width: "auto", scale: 1 }}
               out={{ width: 0, scale: 0 }}
               transition={{ type: "keyframes" }}
-              className="flex shrink-0 items-center self-end relative_ -space-x-2"
+              className="flex items-center self-end -space-x-2 shrink-0 relative_"
             >
               <IconButton
                 title="transaction"
@@ -290,7 +290,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
                 onClick={() => {
                   setToggleFunds((prev) => !prev);
                 }}
-                className="flex items-center justify-center rounded-full text-3xl fill-primary"
+                className="flex items-center justify-center text-3xl rounded-full fill-primary"
               >
                 <ExchangeDollarOutlined className="w-6 h-6 fill-primary" />
               </IconButton>
@@ -298,7 +298,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
               <IconButton title="attach image" className="rounded-full">
                 <label
                   htmlFor="image"
-                  className="flex rounded-full items-center justify-center text-3xl cursor-pointer active:scale-90 active:opacity-40"
+                  className="flex items-center justify-center text-3xl rounded-full cursor-pointer active:scale-90 active:opacity-40"
                 >
                   <ImageLineIcon className="w-6 h-6 fill-primary" />
                 </label>
@@ -336,57 +336,66 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
                 scale: 1,
               }}
               out={{ opacity: 0, scale: 0, translateY: 80 }}
-              className="absolute mx-auto bottom-16 left-0 p-2 flex justify-evenly gap-3 rounded-md items-center w-full h-fit"
+              className="absolute left-0 flex items-center w-full mx-auto rounded-md bottom-16 h-fit"
             >
-              <Card
-                title="request for funds"
-                aria-label="request for funds"
-                className="shadow-primary/20  flex-1 w-full active:scale-95 transition-all !p-0 duration-150"
-              >
-                <Button
-                  onClick={() => {
-                    return setToggleTransactionForm((prev) => ({
-                      ...prev,
-                      show: true,
-                      type: "request",
-                    }));
-                  }}
-                  variant="filled"
-                  color="white"
-                  className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
+              <div className="relative flex items-center w-full h-full gap-3 p-2 justify-evenly">
+                <Card
+                  title="request for funds"
+                  aria-label="request for funds"
+                  className="shadow-primary/20  flex-1 w-full active:scale-95 transition-all !p-0 duration-150"
                 >
-                  <HandCoinOutlined className="w-16 h-16 fill-primary" />
-                  <small className="!text-gray-700">request for funds</small>
-                </Button>
-              </Card>
-              <Card
-                title="send funds"
-                aria-label="send funds"
-                className="shadow-primary/20 relative  flex-1 w-full active:scale-95 transition-all !p-0 duration-150"
-              >
-                <Button
-                  onClick={() => {
-                    if (roomType === "p2p")
+                  <Button
+                    onClick={() => {
                       return setToggleTransactionForm((prev) => ({
                         ...prev,
                         show: true,
-                        type: "send",
+                        type: "request",
                       }));
-                    getMembers();
-                  }}
-                  variant="filled"
-                  color="white"
-                  className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
+                    }}
+                    variant="filled"
+                    color="white"
+                    className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
+                  >
+                    <HandCoinOutlined className="w-16 h-16 fill-primary" />
+                    <small className="!text-gray-700">request for funds</small>
+                  </Button>
+                </Card>
+                <Card
+                  title="send funds"
+                  aria-label="send funds"
+                  className="shadow-primary/20 relative  flex-1 w-full active:scale-95 transition-all !p-0 duration-150"
                 >
-                  <CoinsOutlined className="w-16 h-16 fill-primary" />
-                  <small className="!text-gray-700">send funds</small>
-                </Button>
-                <div className="absolute -right-6 w-fit h-fit -top-6 rounded-full">
-                  <IconButton variant="filled" color="white">
-                    <XMarkIcon className="w-8 h-8 fill-gray-700 text-gray-700" />
+                  <Button
+                    onClick={() => {
+                      if (roomType === "p2p")
+                        return setToggleTransactionForm((prev) => ({
+                          ...prev,
+                          show: true,
+                          type: "send",
+                        }));
+                      getMembers();
+                    }}
+                    variant="filled"
+                    color="white"
+                    className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
+                  >
+                    <CoinsOutlined className="w-16 h-16 fill-primary" />
+                    <small className="!text-gray-700">send funds</small>
+                  </Button>
+                </Card>
+                <div className="absolute -right-6 w-fit h-fit -top-6">
+                  <IconButton
+                    onClick={() => {
+                      setToggleFunds(false);
+                    }}
+                    variant="filled"
+                    color="white"
+                    className="rounded-full"
+                  >
+                    <XMarkIcon className="w-8 h-8 text-gray-700 fill-gray-700" />
                   </IconButton>
                 </div>
-              </Card>
+              </div>
             </AnimateInOut>
 
             {!showActionIcons && (
@@ -429,7 +438,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
             type="submit"
             title="send message"
             aria-label="send message"
-            className="flex shrink-0 items-center justify-center bg-body fill-primary text-primary rounded-full p-2"
+            className="flex items-center justify-center p-2 rounded-full shrink-0 bg-body fill-primary text-primary"
           >
             {/* <Send className="w-8 h-8 " /> */}
             {/* <svg
