@@ -44,6 +44,8 @@ export async function POST(request: NextRequest) {
 
     if (accountType === "chwee") {
       const { amount, receiverTag } = res;
+      console.log("TAG_ONLY", { receiverTag });
+
       if (!amount)
         return NextResponse.json({
           error: { message: "Invalid Amount (AMOUNT)" },

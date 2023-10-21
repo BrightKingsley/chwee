@@ -24,14 +24,14 @@ export default function TransactionTile({
   return (
     <Link
       href={`${WALLET}/transaction-history/${transactionID}`}
-      className="flex items-center w-full py-2 px-1"
+      className="flex items-center w-full px-1 py-2"
     >
       <div
         className={`${
           transaction.type === "deposit"
-            ? "bg-primary/10 text-primary"
-            : transaction.type === "withdrawal"
             ? "bg-brand-darkblue/10 text-brand-darkblue"
+            : transaction.type === "withdrawal"
+            ? "bg-primary/10 text-primary"
             : "bg-brand-yellow/10 text-brand-yellow"
         } rounded-full p-2`}
       >
@@ -44,7 +44,7 @@ export default function TransactionTile({
         )}
       </div>
       <div className="ml-3">
-        <small className="text-gray-800 block font-bold">
+        <small className="block font-bold text-gray-800">
           {transaction.title}
         </small>
         <small className="text-gray-600">
@@ -52,7 +52,7 @@ export default function TransactionTile({
         </small>
       </div>
       <div className="ml-auto text-end">
-        <small className="font-bold block text-gray-800">
+        <small className="block font-bold text-gray-800">
           ₦{transaction.amount}
         </small>
         <small

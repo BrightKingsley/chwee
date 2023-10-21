@@ -34,13 +34,13 @@ export async function transferToChweeWallet({
       if (!parsedReceiverID) throw new Error("Invalid ID");
       receiverID = parsedReceiverID;
     } else {
-      if (!receiverTag) throw new Error("No User Tag passed");
+      if (!receiverTag) return "No User Tag passed";
       const receiverDoc = await User.findOne({ tag: receiverTag.trim() });
-      if (!receiverDoc) throw new Error("Couldn't get Receiver document");
+      if (!receiverDoc) return "Couldn't get User With Provided Tag";
       receiverID = receiverDoc._id;
     }
 
-    if (!receiverID) throw new Error("Invalid Receiver ID");
+    if (!receiverID) return "Couldn't process Receiver";
 
     const receiverWallet = await Wallet.findOne({
       owner: receiverID,

@@ -72,7 +72,7 @@ export default function SearchLineIconBar({
         disabled={disabled}
         className="p-2 rounded-xl shrink-0"
       >
-        <SearchLineIcon className="w-8 h-8 text-white" />
+        <SearchLineIcon className="w-6 h-6 text-white" />
       </IconButton>
     </form>
   );

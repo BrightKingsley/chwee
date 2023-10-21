@@ -12,6 +12,7 @@ export { default as Modal } from "./Modal";
 export { default as Navbar } from "./Navbar";
 export { default as NavLink } from "./NavLink";
 export { default as Notification } from "./Notification";
+export { default as NumberPad } from "./NumberPad";
 export { default as OptionsMenu } from "./OptionsMenu";
 export { default as Overlay } from "./Overlay";
 export { default as Rat } from "./Rat";

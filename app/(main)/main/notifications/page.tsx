@@ -10,7 +10,7 @@ for (let i = 0; i < 10; i++) {
 
 export default function Notifications() {
   return (
-    <div className="w-full space-y-2 overflow-hidden">
+    <div className="w-full py-2 space-y-2 overflow-hidden">
       {members.map((_, i) => (
         <ListTile
           key={Math.random()}

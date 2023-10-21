@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { getServerSession } from "next-auth";
-import { stringToObjectId } from "@/lib/utils";
+import { formatToNumberWithDecimal, stringToObjectId } from "@/lib/utils";
 import { Transaction, Wallet } from "@/models";
 
 type PostProps = {
   action: "fund" | "transfer" | "withdraw";
-  amount?: number;
+  amount?: number | string;
 };
 
 export async function POST(request: NextRequest) {
@@ -63,7 +63,9 @@ export async function POST(request: NextRequest) {
         status: "successful",
       });
 
-      wallet.balance += amount;
+      wallet.balance += parseFloat(
+        formatToNumberWithDecimal(amount.toString())
+      );
       wallet.transactions.push(transaction._id);
       wallet.save();
 

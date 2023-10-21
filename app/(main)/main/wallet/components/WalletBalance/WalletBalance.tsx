@@ -25,11 +25,11 @@ export default function WalletBalance({
   return (
     <>
       <div className="flex items-center justify-between">
-        <div className="flex gap-1 font-semibold items-center w-fit">
+        <div className="flex items-center gap-1 font-semibold w-fit">
           <small className="w-fit">Available</small> <small>Balance</small>
           <IconButton
             color="white"
-            className="text-xl rounded-full flex-1 ml-2"
+            className="flex-1 ml-2 text-xl rounded-full"
             onClick={() => setShowBalance((prev) => !prev)}
           >
             {showBalance ? (
@@ -39,14 +39,14 @@ export default function WalletBalance({
             )}
           </IconButton>
         </div>
-        <Link href={`${WALLET}/transaction-history`}>
+        {/* <Link href={`${WALLET}/transaction-history`}>
           <small className="flex items-center">
             Transactions History
             <span>
               <ChevronRightIcon className="w-6 h-6" />
             </span>
           </small>
-        </Link>
+        </Link> */}
       </div>
       <div>
         {showBalance ? (
@@ -55,7 +55,7 @@ export default function WalletBalance({
             {walletData?.balance.toFixed(2)}
           </p>
         ) : (
-          <p className="space-x-1 font-blogh text-2xl w-fit ml-6">
+          <p className="ml-6 space-x-1 text-2xl font-blogh w-fit">
             <span>*</span>
             <span>*</span>
             <span>*</span>

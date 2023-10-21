@@ -1,7 +1,5 @@
 import Link from "next/link";
 import { Notification, Modal, PortalElements } from "@/app/components/client";
-import { useContext } from "react";
-import { ModalContext, NotificationContext } from "@/context";
 import { DASHBOARD } from "@/constants/routes";
 
 export default function Home() {
