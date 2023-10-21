@@ -37,7 +37,7 @@ export default async function Account({
   const user = await getUserByID({ userID: userFromSession.id! });
   if (!user)
     return (
-      <div className="w-screen h-screen flex items-center justify-center">
+      <div className="w-screen h-screen bg-pattern flex items-center justify-center">
         <h1>User Unavailable</h1>
       </div>
     );
@@ -45,7 +45,7 @@ export default async function Account({
 
   return (
     <>
-      <div className="flex flex-col h-screen">
+      <div className="flex flex-col h-screen bg-pattern">
         <div className="shrink-0">
           <Header title="My Account" />
         </div>

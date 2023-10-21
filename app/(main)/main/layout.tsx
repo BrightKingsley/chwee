@@ -87,7 +87,7 @@ export default function RootLayout({
             <ModalContextProvider>
               <ScreenContext>
                 <ChatContextProvider>
-                  <main className="md:flex h-screen w-screen">
+                  <main className="md:flex bg-pattern h-screen w-screen">
                     <Navbar />
                     <div className="w-screen md:w-[calc(100vw-3.5rem)]">
                       {children}

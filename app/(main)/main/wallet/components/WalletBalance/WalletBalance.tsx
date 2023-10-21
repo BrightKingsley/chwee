@@ -39,14 +39,14 @@ export default function WalletBalance({
             )}
           </IconButton>
         </div>
-        {/* <Link href={`${WALLET}/transaction-history`}>
-          <small className="flex items-center">
-            Transactions History
+        <Link href={`${WALLET}/transaction-history`}>
+          <small className="flex items-center text-xs">
+            Transaction History
             <span>
               <ChevronRightIcon className="w-6 h-6" />
             </span>
           </small>
-        </Link> */}
+        </Link>
       </div>
       <div>
         {showBalance ? (

@@ -21,14 +21,14 @@ export default function UserGroup({ groupID }: { groupID: string }) {
   return (
     <Link
       href={`${GROUPS}/info/${group.tag}`}
-      className="rounded-md shrink-0 w-60 !whitespace-nowrap text-ellipsis px-[2px]"
+      className="rounded-md shrink-0 w-80 !whitespace-nowrap text-ellipsis px-[2px]"
     >
       <Card className="border-[1px] w-full">
         <ListItem className="flex items-center w-full gap-2">
           <div className="w-16 h-16 rounded-full shrink-0 overflow-clip">
             <Image src={group.photo} alt={group.name} fill />
           </div>
-          <div className="flex-1 w-full px-1">
+          <div className="flex-1 flex flex-col w-[calc(100%-4rem)] px-1">
             <p className="font-bold !whitespace-nowrap overflow-hidden text-ellipsis w-full">
               {group.name}
             </p>

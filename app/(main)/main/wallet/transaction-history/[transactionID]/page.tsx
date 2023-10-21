@@ -28,28 +28,31 @@ export default async function Transaction({
   const receiverDoc = await getUserByID({ userID: transaction.receiver });
   const senderDoc = await getUserByID({ userID: transaction.sender });
 
-  let transactionIcon: React.JSX.Element;
-  switch (transaction.type) {
-    case "airtime":
-      transactionIcon = <SimCardLineIcon className="w-6 h-6" />;
-      break;
+  console.log({ transaction });
 
-    case "data":
-      transactionIcon = <WifiLineIcon className="w-6 h-6" />;
+  // let transactionIcon: React.JSX.Element;
+  // switch (transaction.type) {
+  //   case "airtime":
+  //     transactionIcon = <SimCardLineIcon className="w-3 h-3" />;
+  //     break;
 
-    case "deposit":
-      transactionIcon = <ArrowDownIcon className="w-6 h-6" />;
+  //   case "data":
+  //     transactionIcon = <WifiLineIcon className="w-3 h-3" />;
 
-    case "transfer":
-      transactionIcon = <ArrowLeftRightLineIcon className="w-6 h-6" />;
+  //   case "deposit":
+  //     transactionIcon = <ArrowDownIcon className="w-3 h-3" />;
 
-    case "withdrawal":
-      transactionIcon = <BankLineIcon className="w-6 h-6" />;
+  //   case "transfer":
+  //     transactionIcon = <ArrowLeftRightLineIcon className="w-3 h-3" />;
 
-    default:
-      transactionIcon = <ArrowLeftRightLineIcon className="w-6 h-6" />;
-      break;
-  }
+  //   case "withdrawal":
+  //     transactionIcon = <BankLineIcon className="w-3 h-3" />;
+
+  //   default:
+  //     console.log({ type: transaction.type });
+  //     transactionIcon = <ArrowLeftRightLineIcon className="w-3 h-3" />;
+  //     break;
+  // }
 
   return (
     <div className="flex flex-col">
@@ -61,9 +64,20 @@ export default async function Transaction({
           <div className="space-y-3 p-4">
             <div className="flex items-center">
               <span className="inline-block bg-primary/10 text-primary fill-primary rounded-full p-2">
-                {transactionIcon}
+                {/* {transactionIcon} */}
+                {transaction.type === "airtime" ? (
+                  <SimCardLineIcon className="w-3 h-3" />
+                ) : transaction.type === "data" ? (
+                  <WifiLineIcon className="w-3 h-3" />
+                ) : transaction.type === "deposit" ? (
+                  <ArrowDownIcon className="w-3 h-3" />
+                ) : transaction.type === "transfer" ? (
+                  <ArrowLeftRightLineIcon className="w-3 h-3" />
+                ) : (
+                  <BankLineIcon className="w-3 h-3" />
+                )}
               </span>
-              <p className="text-gray-600">{transaction.title}</p>
+              <p className="text-gray-600 ml-2">{transaction.title}</p>
               <p className="text-gray-800 ml-auto text-2xl">
                 {transaction.type === "deposit" ? "+" : "-"}₦
                 {transaction.amount}
@@ -78,8 +92,8 @@ export default async function Transaction({
               <small className="text-gray-600">₦{0}.00</small>
             </div>
           </div>
-          <div className="mx-auto py-1 border border-gray-400 px-2 flex items-center relative w-fit rounded-full before:absolute before:-translate-x-full before:w-full after:w-full before:bg-gray-400 after:bg-gray-400 before:h-[1px] after:h-[1px] after:absolute after:translate-x-full">
-            {transaction.date.toDateString()}
+          <div className="mx-auto py-[2px] bg-body border border-gray-400 flex items-center relative w-fit rounded-full before:absolute before:-translate-x-full before:w-full after:w-full before:bg-gray-400 after:bg-gray-400 before:h-[1px] after:h-[1px] after:absolute after:translate-x-full">
+            <small className="px-2">{transaction.date.toDateString()}</small>
           </div>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
