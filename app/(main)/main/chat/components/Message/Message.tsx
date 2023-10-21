@@ -109,7 +109,7 @@ export default function Message({
     setShowMore(true);
   }, []);
   const bind = useLongPress(callback, {
-    onFinish: () => setShowMore(false),
+    // onFinish: () => setShowMore(false),
     threshold: 1000,
     filterEvents: (event) => true,
     captureEvent: true,

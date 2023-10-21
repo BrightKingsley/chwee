@@ -7,6 +7,7 @@
   src: url("../fonts/Aeonik/AeonikTRIAL-Regular.otf") format("opentype");
 }
 
+
 @font-face {
   font-family: "blogh";
   src: url("../fonts/Blogh/Blogh.otf") format("opentype");
@@ -44,6 +45,18 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   width: 0.3rem;
   margin-right: 1rem;
   /* display: none; */
+}
+
+.test{
+  background-color: #eeeeee;
+}
+
+.bg-pattern{
+  background-image: url("../images/pattern-gray.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  /* backg */
 }
 /* 
 *::-webkit-scrollbar-thumb {

@@ -20,14 +20,14 @@ export default async function UserInfo({
   // validate user data
   if (!user)
     return (
-      <div className="flex items-center justify-center w-screen h-screen">
+      <div className="flex items-center bg-pattern justify-center w-screen h-screen">
         <h1>User Unavailable</h1>
       </div>
     );
   const userConnections = user.connections.slice(0, 5);
 
   return (
-    <div className="flex flex-col w-full p-2 pt-20 space-y-6">
+    <div className="flex flex-col w-full h-screen bg-pattern p-2 pt-20 space-y-6">
       <div className="mx-auto space-y-16 w-fit">
         <div className="relative flex items-center justify-center w-32 h-32 mx-auto">
           <div className="w-32 h-32 rounded-full overflow-clip">

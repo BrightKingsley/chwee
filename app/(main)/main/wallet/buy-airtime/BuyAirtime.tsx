@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Ref, useEffect, useRef, useState } from "react";
+import { Ref, useContext, useEffect, useRef, useState } from "react";
 import CloseLineIcon from "remixicon-react/CloseLineIcon";
 import CloseCircleLineIcon from "remixicon-react/CloseCircleLineIcon";
 import CheckboxCircleFillIcon from "remixicon-react/CheckboxCircleFillIcon";
@@ -11,8 +11,11 @@ import ArrowUpFillIcon from "remixicon-react/ArrowUpFillIcon";
 import { Button, IconButton, ListItem, Switch } from "@/app/components/mui";
 import { formatToNumberWithDecimal } from "@/lib/utils";
 import { ClientUser } from "@/types/models";
-import { UserListModal } from "@/app/components/client";
+import { AnimateInOut, UserListModal } from "@/app/components/client";
 import { BASE_URL } from "@/constants/routes";
+import { Amarante } from "next/font/google";
+import { NotificationContext } from "@/context";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 
 type AirtimeDataType = {
   amount: number;
@@ -37,7 +40,10 @@ export default function BuyAirtime({
   userPhone?: string;
   balance: number;
 }) {
+  const { triggerNotification } = useContext(NotificationContext);
+
   const [showNetWorks, setShowNetworks] = useState(false);
+  const [openPaymentModal, setOpenPaymentModal] = useState(false);
   const [sendToConnect, setSendToConnect] = useState(false);
   const [airtimeData, setAirtimeData] = useState<AirtimeDataType>({
     amount: 0,
@@ -59,8 +65,8 @@ export default function BuyAirtime({
 
   const handleHideModal = () => {
     setConnectionsModal((prev) => ({ ...prev, show: false }));
-    setSendToConnect(false);
-    setAirtimeData((prev) => ({ ...prev, receiver: undefined }));
+    // setSendToConnect(false);
+    // setAirtimeData((prev) => ({ ...prev, receiver: undefined }));
   };
   const handleConnectionClicked = (tag: string) => {
     setAirtimeData((prev) => ({ ...prev, receiver: tag }));
@@ -84,8 +90,31 @@ export default function BuyAirtime({
     }
   };
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
+  const handleAmountEntered = (e: React.SyntheticEvent) => {
     e.preventDefault();
+    setOpenPaymentModal(true);
+  };
+
+  const handleTopup = async () => {
+    // try {
+    // } catch (error) {
+    // }
+    triggerNotification("Topped Up successfully");
+    setAirtimeData({
+      amount: 0,
+      network: "Airtel",
+      phone: "",
+      receiver: undefined,
+    });
+    setConnectionsModal({
+      connections: [],
+      loading: false,
+      show: false,
+      value: "",
+    });
+    setOpenPaymentModal(false);
+    setSendToConnect(false);
+    setShowNetworks(false);
   };
 
   const networkListRef = useRef<HTMLDivElement>();
@@ -130,11 +159,15 @@ export default function BuyAirtime({
               )}
             </span>
           </Button>
-          <div className="flex items-center">
+          <div className="flex ml-2 items-center flex-1">
             {sendToConnect ? (
-              <div className="font-bold text-gray-700 font-druk-wide-bold">
-                <p className="text-gray-600">@UserTag</p>
-                <p className="">{airtimeData.receiver}</p>
+              <div className="font-bold text-gray-700 font-druk-wide-bold w-full flex-1">
+                {!airtimeData.receiver && (
+                  <p className="text-gray-600">@UserTag</p>
+                )}
+                {airtimeData.receiver && (
+                  <p className="">{airtimeData.receiver}</p>
+                )}
               </div>
             ) : (
               <input
@@ -165,13 +198,16 @@ export default function BuyAirtime({
           >
             {sendToConnect ? "@" : "#"}
           </Switch> */}
-          <Switch
-            checked={sendToConnect}
-            onChange={(e) => {
-              setSendToConnect(e.target.checked);
-              e.target.checked ? showConnectionsModal() : handleHideModal();
-            }}
-          />
+          <div className="ml-auto w-fit">
+            <Switch
+              checked={sendToConnect}
+              onChange={(e) => {
+                setSendToConnect(e.target.checked);
+                e.target.checked ? showConnectionsModal() : handleHideModal();
+              }}
+              className="ml-auto"
+            />
+          </div>
         </div>
         <div>
           <div
@@ -215,18 +251,22 @@ export default function BuyAirtime({
             <Button
               key={i}
               variant="text"
-              className="py-3 px-4 bg-primary/10 font-druk-wide-bold"
+              onClick={() => {
+                setAirtimeData((prev) => ({ ...prev, amount: option }));
+                setOpenPaymentModal(true);
+              }}
+              className="px-4 aspect-square bg-primary/10 font-druk-wide-bold"
             >
               ₦{option}
             </Button>
           ))}
         </div>
         <form
-          onSubmit={handleSubmit}
-          className="flex items-center justify-between my-3"
+          onSubmit={handleAmountEntered}
+          className="flex items-center justify-between py-4 gap-2"
         >
-          <div className="flex relative after:w-11/12 after:bg-gray-800 after:inset-0 after:top-full after:absolute flex-1 p-2 items-center gap-2">
-            <p className="font-bold">₦</p>
+          <div className="flex flex-1 p-2 items-center gap-1 bg-primary/10 rounded-md">
+            <p className="font-bold ">₦</p>
             <input
               type="number"
               placeholder="50-500,000"
@@ -237,16 +277,18 @@ export default function BuyAirtime({
                   amount: parseFloat(formatToNumberWithDecimal(e.target.value)),
                 }))
               }
-              className="focus:outline-none focus:border-none font-bold"
+              className="focus:outline-none text-xl w-fit focus:border-none bg-red-400 font-bold p-2 bg-transparent_"
             />
           </div>
-          <Button
-            type="submit"
-            disabled={airtimeData.amount < 50}
-            className="rounded-full font-bold py-1 px-2"
-          >
-            Pay{airtimeData.amount > 50 && ` ₦${airtimeData.amount}`}
-          </Button>
+          <div className="shrink-0 flex-1">
+            <Button
+              type="submit"
+              disabled={airtimeData.amount < 50}
+              className="rounded-full text-xs whitespace-nowrap font-bold py-2 px-3 font-druk-wide-bold"
+            >
+              Pay{airtimeData.amount > 50 && ` ₦${airtimeData.amount}`}
+            </Button>
+          </div>
         </form>
       </div>
       <UserListModal
@@ -257,6 +299,42 @@ export default function BuyAirtime({
         userList={connectionsModal.connections}
         overlay
       />
+      <AnimateInOut
+        init={{ translateY: "100%" }}
+        out={{ translateY: "100%" }}
+        animate={{ translateY: "70%" }}
+        transition={{ type: "keyframes" }}
+        show={openPaymentModal && airtimeData.amount > 50}
+        className={`fixed left-0 space-y-4 bg-body rounded-t-3xl h-full mx-auto w-full z-20 pt-4`}
+      >
+        <div className="space-y-2 px-3 relative w-full h-full">
+          <div className="absolute top-0 right-0">
+            <IconButton
+              onClick={() => {
+                setOpenPaymentModal(false);
+              }}
+              className="rounded-full"
+            >
+              <XMarkIcon className="w-6 h-6 text-gray-600 fill-gray-600" />
+            </IconButton>
+          </div>
+          <p className="text-gray-600 text-center">Available Balance</p>
+          <p className="text-3xl font-bold text-center">₦{balance}</p>
+          <div className="flex mt-1 justify-between">
+            <p className="text-gray-600">Your new balance will be</p>
+            <p className="text-gray-800 font-bold">
+              ₦{balance - airtimeData.amount}
+            </p>
+          </div>
+        </div>
+        <Button
+          onClick={handleTopup}
+          fullWidth
+          className="rounded-full font-druk-wide-bold"
+        >
+          Confirm
+        </Button>
+      </AnimateInOut>
     </>
   );
 }
