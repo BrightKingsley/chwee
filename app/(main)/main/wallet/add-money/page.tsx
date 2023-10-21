@@ -1,6 +1,6 @@
 "use client";
 
-import { Header } from "@/app/components/client";
+import { Header, NumberPad } from "@/app/components/client";
 import { BASE_URL, WALLET } from "@/constants/routes";
 import { NotificationContext } from "@/context";
 import { useLongPress } from "@/hooks";
@@ -10,23 +10,24 @@ import { useContext, useState } from "react";
 import { AnimateInOut } from "@/app/components/client";
 import DeleteBackLineIcon from "remixicon-react/DeleteBackLineIcon";
 import { Button, Spinner, Input as MInput } from "@/app/components/mui";
+import { formatToNumberWithDecimal } from "@/lib/utils";
 
 export default function AddMoney() {
   const { triggerNotification } = useContext(NotificationContext);
 
-  const [value, setValue] = useState("0");
+  const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(false);
   const { push } = useRouter();
 
   const gestures = useLongPress({
-    callback: () => setValue("0"),
+    callback: () => setValue(0),
     duration: 800,
   });
 
   const handleAddMoney = async () => {
     try {
       setLoading(true);
-      if (value === "0") {
+      if (value < 100) {
         setLoading(false);
         return triggerNotification("invalid amount");
       }
@@ -36,7 +37,7 @@ export default function AddMoney() {
         method: "POST",
         body: JSON.stringify({
           action: "fund",
-          amount: parseFloat(parseInt(value).toFixed(2).toString()),
+          amount: formatToNumberWithDecimal(value.toString()),
         }),
       });
 
@@ -48,7 +49,7 @@ export default function AddMoney() {
 
       console.log(result);
 
-      setValue("0");
+      setValue(0);
       setLoading(false);
 
       console.log({ result });
@@ -59,11 +60,11 @@ export default function AddMoney() {
   };
 
   return (
-    <div className="font-druk-wide-bold_ w-full h-full flex flex-col">
+    <div className="flex flex-col w-full h-full font-druk-wide-bold_">
       <Header title="Add Money" />
       <div className="space-y-3 px-4 mt-16 flex-[1] flex_ items-center_ justify-center_">
         {/* <div
-          className="w-full p-3 text-3xl text-gray-700 border rounded-md outline-none resize-none bg-primary/20 border-primary_ focus:outline-primary overflow-auto"
+          className="w-full p-3 overflow-auto text-3xl text-gray-700 border rounded-md outline-none resize-none bg-primary/20 border-primary_ focus:outline-primary"
           // type="number"
           // name=""
           id=""
@@ -74,15 +75,15 @@ export default function AddMoney() {
         </div> */}
         <Input
           label="amount"
-          icon={<p className="font-bold">@</p>}
-          value={value}
+          icon={<p className="font-bold">₦</p>}
+          value={value.toFixed(2)}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setValue(e.target.value)
+            setValue(parseFloat(formatToNumberWithDecimal(e.target.value)))
           }
           type="number"
           maxLength={4}
           name="receiverTag"
-          placeholder="@johnDoe"
+          // placeholder="@johnDoe"
         />
         <Button
           disabled={loading}
@@ -93,7 +94,7 @@ export default function AddMoney() {
         </Button>
         {/* <input
           value={parseInt(value).toFixed(2)}
-          className="w-full p-3 text-3xl text-gray-700 border rounded-md outline-none resize-none bg-primary/20 border-primary_ focus:outline-primary overflow-auto"
+          className="w-full p-3 overflow-auto text-3xl text-gray-700 border rounded-md outline-none resize-none bg-primary/20 border-primary_ focus:outline-primary"
           type="number"
           // name=""
           id=""
@@ -107,7 +108,7 @@ export default function AddMoney() {
         valueInput={value}
       />
       {/* <div className="h-full flex-[2] px-1 space-y-2 flex flex-col">
-        <div className="grid grid-cols-3 gap-2 h-full">
+        <div className="grid h-full grid-cols-3 gap-2">
           {numbers.map((number) => (
             <button
               key={number}
@@ -117,12 +118,12 @@ export default function AddMoney() {
                     return value !== "0" ? (prev += number) : number.toString();
                   });
               }}
-              className="p-2 rounded-lg border"
+              className="p-2 border rounded-lg"
             >
               {number}
             </button>
           ))}
-          <button className="p-2 rounded-md border">.</button> */}
+          <button className="p-2 border rounded-md">.</button> */}
       {/* @ts-ignore */}
       {/* <button
             {...gestures}
@@ -137,7 +138,7 @@ export default function AddMoney() {
                 );
               }
             }}
-            className="p-2 rounded-md border flex items-center justify-center"
+            className="flex items-center justify-center p-2 border rounded-md"
           >
             <BackspaceIcon className="w-8 h-8" />
           </button>
@@ -148,78 +149,78 @@ export default function AddMoney() {
   );
 }
 
-const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
-function NumberPad({
-  showAmountModal,
-  valueInput,
-  setValueInput,
-}: {
-  showAmountModal: boolean;
-  valueInput: string;
-  setValueInput: React.Dispatch<React.SetStateAction<string>>;
-}) {
-  const gestures = useLongPress({
-    callback: () => setValueInput("0"),
-    duration: 800,
-  });
+// const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+// function NumberPad({
+//   showAmountModal,
+//   valueInput,
+//   setValueInput,
+// }: {
+//   showAmountModal: boolean;
+//   valueInput: string;
+//   setValueInput: React.Dispatch<React.SetStateAction<string>>;
+// }) {
+//   const gestures = useLongPress({
+//     callback: () => setValueInput("0"),
+//     duration: 800,
+//   });
 
-  return (
-    <AnimateInOut
-      init={{ translateY: "100%" }}
-      out={{ translateY: "100%" }}
-      show={showAmountModal}
-      animate={{ translateY: 0 }}
-      transition={{ type: "keyframes" }}
-      className="fixed top-[40%] flex flex-col left-0 space-y-2 bg-body rounded-t-3xl h-[60%] overflow-y-auto mx-auto w-full"
-    >
-      <div className="bg-gray-300 rounded-full w-1/3 h-1 mx-auto my-3" />
-      <div className="grid gap-4 px-2 pb-2 grid-cols-3 grid-rows-4 flex-1 shrink-0">
-        {numbers.map((number) => (
-          <Button
-            variant="text"
-            key={number}
-            onClick={() => {
-              !(valueInput === "0" && number === 0) &&
-                setValueInput((prev) => {
-                  return valueInput !== "0"
-                    ? (prev += number)
-                    : number.toString();
-                });
-            }}
-            className="p-2 aspect-video_ aspect-[4/2]_ row-span-1 text-3xl rounded-2xl border"
-          >
-            {number}
-          </Button>
-        ))}
-        <Button
-          variant="text"
-          className="p-2 rounded-2xl border aspect-video_ aspect-[4/2]_ row-span-1 text-3xl"
-        >
-          .
-        </Button>
-        {/* @ts-ignore */}
-        <Button
-          variant="text"
-          {...gestures}
-          onClick={() => {
-            if (valueInput !== "0") {
-              console.log("DELETE ALL");
+//   return (
+//     <AnimateInOut
+//       init={{ translateY: "100%" }}
+//       out={{ translateY: "100%" }}
+//       show={showAmountModal}
+//       animate={{ translateY: 0 }}
+//       transition={{ type: "keyframes" }}
+//       className="fixed top-[40%] flex flex-col left-0 space-y-2 bg-body rounded-t-3xl h-[60%] overflow-y-auto mx-auto w-full"
+//     >
+//       <div className="w-1/3 h-1 mx-auto my-3 bg-gray-300 rounded-full" />
+//       <div className="grid flex-1 grid-cols-3 grid-rows-4 gap-4 px-2 pb-2 shrink-0">
+//         {numbers.map((number) => (
+//           <Button
+//             variant="text"
+//             key={number}
+//             onClick={() => {
+//               !(valueInput === "0" && number === 0) &&
+//                 setValueInput((prev) => {
+//                   return valueInput !== "0"
+//                     ? (prev += number)
+//                     : number.toString();
+//                 });
+//             }}
+//             className="p-2 aspect-video_ aspect-[4/2]_ row-span-1 text-3xl rounded-2xl border"
+//           >
+//             {number}
+//           </Button>
+//         ))}
+//         <Button
+//           variant="text"
+//           className="p-2 rounded-2xl border aspect-video_ aspect-[4/2]_ row-span-1 text-3xl"
+//         >
+//           .
+//         </Button>
+//         {/* @ts-ignore */}
+//         <Button
+//           variant="text"
+//           {...gestures}
+//           onClick={() => {
+//             if (valueInput !== "0") {
+//               console.log("DELETE ALL");
 
-              setValueInput((prev) =>
-                prev !== "0"
-                  ? prev.replace(prev.charAt(prev.length - 1), "")
-                  : "0"
-              );
-            }
-          }}
-          className="p-2 aspect-video_ aspect-[4/2]_ row-span-1 text-3xl rounded-2xl border flex items-center justify-center"
-        >
-          <DeleteBackLineIcon className="w-8 h-8" />
-        </Button>
-      </div>
-    </AnimateInOut>
-  );
-}
+//               setValueInput((prev) =>
+//                 prev !== "0"
+//                   ? prev.replace(prev.charAt(prev.length - 1), "")
+//                   : "0"
+//               );
+//             }
+//           }}
+//           className="p-2 aspect-video_ aspect-[4/2]_ row-span-1 text-3xl rounded-2xl border flex items-center justify-center"
+//         >
+//           <DeleteBackLineIcon className="w-8 h-8" />
+//         </Button>
+//       </div>
+//     </AnimateInOut>
+//   );
+// }
 
 function Input({
   className,

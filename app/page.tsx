@@ -93,13 +93,14 @@ export default function Landing() {
           <p className="font-extrabold text-primary">Chweee</p>
         </div>
         <div className="flex items-center gap-3 ml-auto text-sm md:flex-row-reverse whitespace-nowrap">
-          <Button className="rounded-full px-3 py-2 text-white font-bold">
+          <Button className="px-3 py-2 font-bold text-white rounded-full">
             Download
           </Button>
           <IconButton
             title="toggle menu"
+            aria-label="toggle menu"
             variant="text"
-            className="md:hidden text-primary flex items-center justify-center rounded-full"
+            className="flex items-center justify-center rounded-full md:hidden text-primary"
           >
             {/* <Bars3Icon className="w-8 h-8 fill-primary" /> */}
             <MenuLineIcon />
@@ -132,12 +133,12 @@ export default function Landing() {
               <Button className="">Get the app</Button>
             </Link>
             <div className="flex items-center gap-2 text-primary">
-              <button>
+              <IconButton aria-label="get for desktop" title="get for desktop">
                 <ComputerDesktopIcon className="w-6 h-6" />
-              </button>
-              <button>
+              </IconButton>
+              <IconButton aria-label="get for mobile" title="get for mobile">
                 <DevicePhoneMobileIcon className="w-6 h-6" />
-              </button>
+              </IconButton>
             </div>
           </div>
         </div>
@@ -448,12 +449,15 @@ export default function Landing() {
                 Get the app
               </Link>
               <div className="flex items-center gap-2 text-primary">
-                <button>
+                <IconButton
+                  aria-label="get for desktop"
+                  title="get for desktop"
+                >
                   <ComputerDesktopIcon className="w-6 h-6" />
-                </button>
-                <button>
+                </IconButton>
+                <IconButton aria-label="get for mobile" title="get for mobile">
                   <DevicePhoneMobileIcon className="w-6 h-6" />
-                </button>
+                </IconButton>
               </div>
             </div>
           </div>

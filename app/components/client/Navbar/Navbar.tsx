@@ -38,7 +38,7 @@ import NotificationLineIcon from "remixicon-react/NotificationLineIcon";
 import LinksLineIcon from "remixicon-react/LinksLineIcon";
 import UserLineIcon from "remixicon-react/UserLineIcon";
 import CloseLineIconIcon from "remixicon-react/CloseLineIcon";
-import MenuLineIconIcon from "remixicon-react/MenuLineIcon";
+// import MenuLineIconIcon from "remixicon-react/MenuLineIcon";
 
 import NavLink from "../NavLink";
 import { AnimateInOut, Overlay } from "..";
@@ -109,7 +109,7 @@ export default function Navbar() {
             aria-label="open nav"
             onClick={() => setShowMenu((prev) => !prev)}
           >
-            <MenuLineIconIcon className="w-8 h-8 fill-gray-600 text-gray-600" />
+            <Bars3Icon className="w-8 h-8 text-gray-600 fill-gray-600" />
           </IconButton>
         </div>
       )}
@@ -121,7 +121,7 @@ export default function Navbar() {
       {showMenu && (
         <div
           onClick={handleShowOverlay}
-          className="fixed h-screen w-screen bg-primary/40_ z-10 cursor-pointer top-0 left-0 flex items-center justify-center backdrop-blur-sm_"
+          className="fixed top-0 left-0 z-10 flex items-center justify-center w-screen h-screen cursor-pointer bg-primary/40_ backdrop-blur-sm_"
         />
       )}
 
@@ -143,7 +143,7 @@ export default function Navbar() {
                   onClick={() => setShowMenu((prev) => !prev)}
                   className="flex items-center justify-center mx-auto mt-3 md:hidden"
                 >
-                  <CloseLineIconIcon className="w-8 h-8 fill-gray-600 text-gray-600" />
+                  <CloseLineIconIcon className="w-8 h-8 text-gray-600 fill-gray-600" />
                 </IconButton>
                 {navLinks.map(({ icon, link, name }) => (
                   <div key={Math.random()}>

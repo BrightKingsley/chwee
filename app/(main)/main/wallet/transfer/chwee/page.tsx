@@ -20,7 +20,11 @@ import { Input as MInput } from "@/app/components/mui";
 import { useLongPress } from "@/hooks";
 import DeleteBackLineIcon from "remixicon-react/DeleteBackLineIcon";
 import { ChevronUpIcon } from "@heroicons/react/20/solid";
-import { formatTag, lettersAndNumbersOnly } from "@/lib/utils";
+import {
+  formatTag,
+  formatToNumberWithDecimal,
+  lettersAndNumbersOnly,
+} from "@/lib/utils";
 
 export default function TranferToChwee() {
   const { triggerNotification } = useContext(NotificationContext);
@@ -75,7 +79,6 @@ export default function TranferToChwee() {
     e.preventDefault();
     if (!receiverTag) return triggerNotification("Invalid User tag");
     setValues((prev) => ({ ...prev, receiverTag }));
-    // setShowEntries((prev) => ({ ...prev, amount: true, receiverTag: false }));
     return handleNext();
   };
 
@@ -87,15 +90,12 @@ export default function TranferToChwee() {
     if (!amount) return triggerNotification("Invalid amount");
     setValues((prev) => ({ ...prev, amount }));
 
-    // setShowEntries((prev) => ({ ...prev, pin: true, amount: false }));
     return handleNext();
   };
   const handlePinSubmit = (e: React.SyntheticEvent, pin: number) => {
     e.preventDefault();
 
     setValues((prev) => ({ ...prev, transferPin: pin }));
-
-    // setShowEntries((prev) => ({ ...prev, amount: true }));
 
     transfer();
   };
@@ -118,12 +118,6 @@ export default function TranferToChwee() {
 
       console.log({ result });
 
-      // setValues((prev) => ({
-      //   ...prev,
-      //   amount: 0,
-      //   receiverTag: "",
-      //   transferPin: 0,
-      // }));
       setShowEntries((prev) => ({ ...prev, loading: false }));
     } catch (error) {
       console.error(error);
@@ -137,7 +131,7 @@ export default function TranferToChwee() {
       </div>
       <div className="flex flex-1 w-full h-full shrink-0 bg-primary/10">
         {showEntries.loading && (
-          <div className="fixed top-0 left-0 z-40 flex items-center justify-center w-screen h-screen overflow-y-auto bg-white">
+          <div className="fixed top-0 left-0 z-40 flex items-center justify-center w-screen h-screen overflow-y-auto backdrop-blur-sm">
             <Spinner />
           </div>
         )}
@@ -152,7 +146,10 @@ export default function TranferToChwee() {
           </SwiperSlide>
           <SwiperSlide>
             <div className="relative w-full h-full pt-16 rounded-md">
-              <AmountInput handleSubmit={handleAmountSubmit} />{" "}
+              <AmountInput
+                handleCancel={handlePrevious}
+                handleSubmit={handleAmountSubmit}
+              />
             </div>
           </SwiperSlide>
           <SwiperSlide>
@@ -160,71 +157,12 @@ export default function TranferToChwee() {
               <PinInput
                 show={showEntries.pin}
                 setShow={setShowEntries}
+                handleCancel={handlePrevious}
                 handleSubmit={handlePinSubmit}
               />
             </div>
           </SwiperSlide>
         </Swiper>
-        {/* <AnimateInOut
-          init={{
-            opacity: 0,
-            translateX: 100,
-          }}
-          animate={{
-            opacity: 1,
-            translateX: 0,
-          }}
-          out={{
-            opacity: 0,
-            translateX: -100,
-          }}
-          show={showEntries.receiverTag}
-          className="w-full rounded-md"
-        >
-          <TagInput handleSubmit={handleTagSubmit} />
-        </AnimateInOut>
-        <AnimateInOut
-          init={{
-            opacity: 0,
-            translateX: 100,
-          }}
-          animate={{
-            opacity: 1,
-            translateX: 0,
-          }}
-          out={{
-            opacity: 0,
-            translateX: -100,
-          }}
-          show={showEntries.amount}
-          className="w-full rounded-md "
-          transition={{ delay: 0.5 }}
-        >
-          <AmountInput handleSubmit={handleAmountSubmit} />
-        </AnimateInOut>
-        <AnimateInOut
-          init={{
-            opacity: 0,
-            translateX: 100,
-          }}
-          animate={{
-            opacity: 1,
-            translateX: 0,
-          }}
-          out={{
-            opacity: 0,
-            translateX: -100,
-          }}
-          show={showEntries.pin}
-          transition={{ delay: 0.7 }}
-          className="w-full rounded-md"
-        >
-          <PinInput
-            show={showEntries.pin}
-            setShow={setShowEntries}
-            handleSubmit={handlePinSubmit}
-          />
-        </AnimateInOut> */}
       </div>
     </div>
   );
@@ -273,7 +211,7 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
   return (
     <div className="relative w-full h-full">
       <form
-        onSubmit={(e) => handleSubmit(e, formatTag(receiverTagInput))}
+        onSubmit={(e) => handleSubmit(e, receiverTagInput)}
         className="px-4 space-y-3 "
       >
         {/* <label htmlFor="receiverTag">input {"recipient's"} Tag</label> */}
@@ -294,45 +232,6 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
         </Button>
         {/* </div> */}
       </form>
-      {/* <AnimateInOut
-        init={{ translateY: "100%" }}
-        out={{ translateY: "100%" }}
-        show={connectionsModal.show}
-        animate={{ translateY: 0 }}
-        transition={{ type: "keyframes" }}
-        className="fixed top-[40%] left-0 space-y-2 bg-body rounded-t-3xl h-full mx-auto w-full"
-      >
-        <div className="w-1/3 h-1 mx-auto my-3 bg-gray-300 rounded-full" />
-        {connectionsModal.loading ? (
-          <div className="mx-auto mt-32 w-fit">
-            <Spinner className="" />
-          </div>
-        ) : (
-          connectionsModal.connections.map(({ tag, photo, username }, i) => (
-            <ListTile key={tag} onClick={() => setTagInput(tag)}>
-              <div className="flex items-center p-2">
-                <div className="w-10 h-10 rounded-full overflow-clip">
-                  {photo ? (
-                    <Image
-                      src={photo}
-                      alt={username}
-                      fill
-                      className="object-cover w-full h-full"
-                    />
-                  ) : (
-                    <AccountCircle className="w-20 h-20 text-gray-200" />
-                  )}
-                </div>
-                <div className="ml-3">
-                  <p>{username}</p>
-                  <small className="text-primary">{tag}</small>
-                </div>
-              </div>
-            </ListTile>
-          ))
-        )}
-      </AnimateInOut> */}
-
       <UserListModal
         loading={connectionsModal.loading}
         show={connectionsModal.show}
@@ -345,7 +244,7 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
         init={{ scale: 0, translateY: 100 }}
         out={{ scale: 0, translateY: 100 }}
         animate={{ scale: 1, translateY: 0 }}
-        className="absolute bottom-5 w-full flex justify-center"
+        className="absolute flex justify-center w-full bottom-5"
       >
         <IconButton
           variant="filled"
@@ -363,7 +262,13 @@ function TagInput({ handleSubmit }: { handleSubmit: Function }) {
 }
 
 const amounts = [100, 200, 500, 1000, 2000, 10000];
-function AmountInput({ handleSubmit }: { handleSubmit: Function }) {
+function AmountInput({
+  handleSubmit,
+  handleCancel,
+}: {
+  handleSubmit: Function;
+  handleCancel: Function;
+}) {
   const [amountInput, setAmountInput] = useState("0");
   const [showAmountModal, setShowAmountModal] = useState(false);
   // const [value, setValue] = useState("0");
@@ -393,9 +298,23 @@ function AmountInput({ handleSubmit }: { handleSubmit: Function }) {
           name="amount"
           placeholder="10,000"
         />
-        <Button fullWidth type="submit" className="">
-          confirm
-        </Button>
+        <div className="flex items-center w-full gap-2">
+          <Button
+            variant="outlined"
+            onClick={() => {
+              handleCancel();
+              setAmountInput("");
+            }}
+            fullWidth
+            type="reset"
+            className=""
+          >
+            cancel
+          </Button>
+          <Button fullWidth type="submit" className="">
+            confirm
+          </Button>
+        </div>
       </form>
       <div className="grid grid-cols-3 gap-3 px-4 py-8">
         {amounts.map((amount) => (
@@ -424,10 +343,12 @@ function AmountInput({ handleSubmit }: { handleSubmit: Function }) {
 
 function PinInput({
   handleSubmit,
+  handleCancel,
   show,
   setShow,
 }: {
   handleSubmit: Function;
+  handleCancel: Function;
   show: boolean;
   setShow: React.Dispatch<
     React.SetStateAction<{
@@ -438,22 +359,25 @@ function PinInput({
     }>
   >;
 }) {
-  const [pinInput, setPinInput] = useState("1234");
+  const [pinInput, setPinInput] = useState("");
 
   return (
     <>
       <form
-        onSubmit={(e) => handleSubmit(e, pinInput)}
+        onSubmit={(e) =>
+          handleSubmit(e, parseInt(formatToNumberWithDecimal(pinInput)))
+        }
         className="px-4 space-y-3 "
       >
         <label htmlFor="pin"></label>
         <Input
-          label="transfer pin"
+          // label="transfer pin"
           value={pinInput}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             // setPinInput(parseFloat(e.target.value))
             setPinInput(e.target.value)
           }
+          placeholder="1234"
           type="password"
           maxLength={4}
           name="pin"
@@ -463,9 +387,11 @@ function PinInput({
           <Button
             fullWidth
             variant="outlined"
-            onClick={() =>
-              setShow((prev) => ({ ...prev, pin: false, amount: true }))
-            }
+            onClick={() => {
+              // setShow((prev) => ({ ...prev, pin: false, amount: true }))
+              handleCancel();
+              setPinInput("");
+            }}
           >
             cancel
           </Button>
@@ -590,7 +516,7 @@ function Input({
         onFocus={(e) => (onFocus ? onFocus(e) : null)}
         type={type}
         maxLength={maxLength}
-        // placeholder={placeholder}
+        placeholder={placeholder}
       />
     </div>
   );

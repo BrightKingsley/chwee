@@ -16,30 +16,33 @@ import {
 import "@/public/css/globals.css";
 import "swiper/css";
 import type { Metadata } from "next";
+import { Rat } from "@/app/components/server";
 const keywords = [
-  "online raffle draw",
-  "gaming event solution",
-  "community gaming",
-  "online gaming event",
-  "hassle-free raffle",
-  "gaming event management",
-  "DRAWR platform",
-  "raffle logistics",
-  "online gaming community",
-  "customer engagement",
-  "seamless event management",
-  "captivating gaming experiences",
-  "gaming event organizers",
-  "powerful gaming platform",
-  "organize raffle draw online",
-  "effortless gaming events",
-  "interactive raffle experience",
-  "enhance customer experience",
-  "digital gaming events",
-  "online event ticketing",
-  "online prize draws",
-  "exciting raffle campaigns",
-  "raffle software solution",
+  "bill while in chat",
+  "send, recive money",
+  "real-time communication",
+  // "gaming event solution",
+  // "community gaming",
+  // "online gaming event",
+  // "hassle-free raffle",
+  // "gaming event management",
+  // "DRAWR platform",
+  // "raffle logistics",
+  // "online gaming community",
+  // "customer engagement",
+  // "seamless event management",
+  // "captivating gaming experiences",
+  // "gaming event organizers",
+  // "powerful gaming platform",
+  // "organize raffle draw online",
+  // "effortless gaming events",
+  // "interactive raffle experience",
+  // "enhance customer experience",
+  // "digital gaming events",
+  // "online event ticketing",
+  // "online prize draws",
+  // "exciting raffle campaigns",
+  // "raffle software solution",
 ];
 
 // export const metadata: Metadata = {
@@ -93,6 +96,7 @@ export default function RootLayout({
                       <PortalElements />
                     </div>
                   </main>
+                  <Rat />
                 </ChatContextProvider>
               </ScreenContext>
             </ModalContextProvider>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { Ref, useContext, useEffect, useRef, useState } from "react";
 
 import ImageLineIcon from "remixicon-react/ImageLineIcon";
 import SendPlane2LineIcon from "remixicon-react/SendPlane2LineIcon";
@@ -22,11 +22,15 @@ import TextareaAutosize from "react-textarea-autosize";
 import { useImageUpload } from "@/hooks";
 import { Button, Card, IconButton, Spinner } from "@/app/components/mui";
 import { ClientUser, MessageBody } from "@/types/models";
-import {
-  CoinsOutlined,
-  ExchangeDollarOutlined,
-  HandCoinOutlined,
-} from "@/app/components/Icons";
+import ExchangeDollarLineIcon from "remixicon-react/ExchangeDollarLineIcon";
+import HandCoinLineIcon from "remixicon-react/HandCoinLineIcon";
+import CoinsLineIcon from "remixicon-react/CoinsLineIcon";
+import { useRouter } from "next/navigation";
+// import {
+//   CoinsOutlined,
+//   ExchangeDollarOutlined,
+//   HandCoinOutlined,
+// } from "@/app/components/Icons";
 
 export default function SendMessage({ chatID, roomType }: SendMessageType) {
   const { data } = useSession();
@@ -52,7 +56,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
     setInputRef,
   } = useContext(ChatContext);
 
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLTextAreaElement>();
 
   const [showActionIcons, setShowActionIcons] = useState(true);
   const [toggleFunds, setToggleFunds] = useState(false);
@@ -292,7 +296,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
                 }}
                 className="flex items-center justify-center text-3xl rounded-full fill-primary"
               >
-                <ExchangeDollarOutlined className="w-6 h-6 fill-primary" />
+                <ExchangeDollarLineIcon className="w-6 h-6 fill-primary" />
               </IconButton>
 
               <IconButton title="attach image" className="rounded-full">
@@ -356,7 +360,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
                     color="white"
                     className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
                   >
-                    <HandCoinOutlined className="w-16 h-16 fill-primary" />
+                    <HandCoinLineIcon className="w-16 h-16 fill-primary" />
                     <small className="!text-gray-700">request for funds</small>
                   </Button>
                 </Card>
@@ -379,11 +383,11 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
                     color="white"
                     className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
                   >
-                    <CoinsOutlined className="w-16 h-16 fill-primary" />
+                    <CoinsLineIcon className="w-16 h-16 fill-primary" />
                     <small className="!text-gray-700">send funds</small>
                   </Button>
                 </Card>
-                <div className="absolute -right-6 w-fit h-fit -top-6">
+                {/* <div className="absolute -right-6 w-fit h-fit -top-6">
                   <IconButton
                     onClick={() => {
                       setToggleFunds(false);
@@ -394,7 +398,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
                   >
                     <XMarkIcon className="w-8 h-8 text-gray-700 fill-gray-700" />
                   </IconButton>
-                </div>
+                </div> */}
               </div>
             </AnimateInOut>
 
@@ -409,8 +413,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
 
             {/* MESSAGE INPUT */}
             <TextareaAutosize
-              // @ts-ignore
-              ref={inputRef}
+              ref={inputRef as Ref<HTMLTextAreaElement>}
               title="enter text"
               placeholder="Send a message..."
               aria-label="enter message text"

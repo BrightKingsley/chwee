@@ -8,13 +8,20 @@ import {
 
 import { AnimateInOut, OptionsMenu } from "@/app/components/client";
 import { IconButton, Button } from "@/app/components/mui";
-import { Ref, memo, useContext, useEffect, useRef, useState } from "react";
+import {
+  Ref,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { MotionContext, motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ACCOUNT, CONNECT } from "@/constants/routes";
 import { MessageClass } from "@/models/Message";
-import { useLongPress } from "@/hooks";
 import { UserClass } from "@/models";
 import { SendMessageType } from "../SendMessage/types";
 import { useSession } from "next-auth/react";
@@ -26,6 +33,26 @@ import { decodeTextContent } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { MessageProps } from "../types";
 import { classNames } from "uploadthing/client";
+import {
+  LongPressCallback,
+  LongPressEventType,
+  LongPressHandlers,
+  LongPressOptions,
+  LongPressResult,
+  useLongPress,
+} from "use-long-press";
+
+// declare function useLongPress<
+//   Target extends Element = Element,
+//   Context = unknown,
+//   Callback extends LongPressCallback<Target, Context> = LongPressCallback<
+//     Target,
+//     Context
+//   >
+// >(
+//   callback: Callback | null,
+//   options?: LongPressOptions<Target, Context>
+// ): LongPressResult<LongPressHandlers<Target>, Context>;
 
 const emotes = ["😂", "💩", "😢", "😭", "💔"];
 
@@ -78,10 +105,20 @@ export default function Message({
 
   const messageRef = useRef<HTMLDivElement>();
 
-  const gestures = useLongPress({
-    callback: () => setShowMore(true),
-    duration: 800,
+  const callback = useCallback(() => {
+    setShowMore(true);
+  }, []);
+  const bind = useLongPress(callback, {
+    onFinish: () => setShowMore(false),
+    threshold: 1000,
+    filterEvents: (event) => true,
+    captureEvent: true,
+    cancelOnMovement: false,
+    cancelOutsideElement: true,
+    detect: LongPressEventType.Touch,
   });
+
+  const handlers = bind("test context");
 
   useEffect(() => {
     messageRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -90,13 +127,12 @@ export default function Message({
   if (!session || !session.user || !session.user.id) return null;
 
   return type === "notification" ? (
-    <div className="mx-auto text-center w-full px-4">
-      <p className="text-gray-600 text-xs">{textContent}</p>
+    <div className="w-full px-4 mx-auto text-center">
+      <p className="text-xs text-gray-600">{textContent}</p>
     </div>
   ) : (
-    // @ts-ignore TODO
     <motion.div
-      {...gestures}
+      {...handlers}
       ref={messageRef as Ref<HTMLDivElement>}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
@@ -314,7 +350,7 @@ export default function Message({
                 )}
               </>
             ) : transaction?.type === "request" ? (
-              <div className="space-y-2 p-1 flex-1 pr-10">
+              <div className="flex-1 p-1 space-y-2 pr-10__">
                 <div className="">
                   <p>
                     <Link
@@ -334,7 +370,7 @@ export default function Message({
                         : textContent?.split(textCode)[1].split(":")[1]}
                     </Link>{" "}
                     requested for{" "}
-                    <span className="font-bold font-druk-wide-bold text-sm">
+                    <span className="text-sm font-bold font-druk-wide-bold">
                       ₦{transaction.amount}
                     </span>{" "}
                     {/* to{" "}
@@ -405,7 +441,7 @@ export default function Message({
                       }}
                       color="white"
                       fullWidth
-                      className="text-primary font-bold"
+                      className="font-bold text-primary"
                     >
                       Send
                     </Button>
@@ -413,7 +449,7 @@ export default function Message({
                 )}
               </div>
             ) : (
-              <div className="space-y-2 p-1 flex-1 pr-10">
+              <div className="flex-1 p-1 space-y-2 pr-10_">
                 <div className="">
                   <p>
                     <Link
@@ -423,7 +459,7 @@ export default function Message({
                       {username === session.user.name ? "You" : tag}
                     </Link>{" "}
                     sent{" "}
-                    <span className="font-bold font-druk-wide-bold text-sm">
+                    <span className="text-sm font-bold font-druk-wide-bold">
                       ₦{transaction?.amount}
                     </span>{" "}
                     to{" "}
@@ -431,7 +467,7 @@ export default function Message({
                       href={`${CONNECT}/${
                         textContent?.split(textCode)[1].split(":")[1]
                       }`}
-                      className="text-white font-bold"
+                      className="font-bold text-white"
                     >
                       {textContent?.split(textCode)[1].split(":")[1] ===
                       session.user.name
@@ -467,7 +503,7 @@ export default function Message({
                       }}
                       color="white"
                       fullWidth
-                      className="text-primary font-bold"
+                      className="font-bold text-primary"
                     >
                       Say Thanks
                     </Button>

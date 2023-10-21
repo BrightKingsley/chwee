@@ -153,7 +153,7 @@ export async function updateGroup({
       sendMessage({
         chatID: group._id.toString(),
         message: {
-          textContent: "An admin changed the group name to " + name,
+          textContent: `An admin changed the group name to "${name}"`,
           sender: group.owner,
           sendDate: new Date(),
           type: "notification",
@@ -191,7 +191,7 @@ export async function updateGroup({
       await sendMessage({
         chatID: group._id.toString(),
         message: {
-          textContent: `An admin changed the group tag to ${groupTag}`,
+          textContent: `An admin changed the group tag to "${groupTag}"`,
           sender: group.owner,
           sendDate: new Date(),
           type: "notification",

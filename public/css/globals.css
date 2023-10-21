@@ -10,6 +10,7 @@
 @font-face {
   font-family: "blogh";
   src: url("../fonts/Blogh/Blogh.otf") format("opentype");
+  transition: all 1s ease-in;
 }
 
 @font-face {

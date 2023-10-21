@@ -54,7 +54,7 @@ export default function Notification() {
                     }}
                     drag
                     dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
-                    className="fixed inset-0 z-50 flex items-center w-11/12 gap-2 p-3 mx-auto bg-white rounded-lg shadow-lg md:w-80 md:rounded-xl outline_ outline-primary_ ring-offset-4_ top-4 md:top-auto md:bottom-16 md:right-16 md:left-auto md:mx-0 h-fit shadow-primary/30 active:scale-90"
+                    className="fixed inset-0 z-50 flex items-center w-11/12 gap-2 p-3 mx-auto bg-white rounded-lg shadow-lg md:w-80 md:rounded-xl outline_ outline-primary_ border-primary border ring-offset-4_ top-4 md:top-auto md:bottom-16 md:right-16 md:left-auto md:mx-0 h-fit shadow-primary/30 active:scale-90"
                   >
                     <span className="relative flex items-center justify-center text-primary">
                       <BellAlertIcon className="w-6 h-6 animate-ping" />
