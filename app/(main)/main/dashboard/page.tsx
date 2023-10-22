@@ -15,7 +15,7 @@ export default async function DashboardPage() {
     return (
       <>
         {/* Signed in as {session ?? session?.user?.email} <br /> */}
-        <h1 className="mt-4 font-extrabold text-3xl">
+        <h1 className="pt-4 text-3xl font-extrabold">
           Hello,{" "}
           <span className="text-primary">
             {session.user.name.split(" ")[0]}

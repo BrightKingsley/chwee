@@ -42,18 +42,6 @@ import {
   useLongPress,
 } from "use-long-press";
 
-// declare function useLongPress<
-//   Target extends Element = Element,
-//   Context = unknown,
-//   Callback extends LongPressCallback<Target, Context> = LongPressCallback<
-//     Target,
-//     Context
-//   >
-// >(
-//   callback: Callback | null,
-//   options?: LongPressOptions<Target, Context>
-// ): LongPressResult<LongPressHandlers<Target>, Context>;
-
 const emotes = ["😂", "💩", "😢", "😭", "💔"];
 
 export default function Message({

@@ -99,7 +99,7 @@ export default function GroupEditForm({
 
     if (group)
       return triggerNotification(
-        <Link href={`${GROUPS}/${group._id}`}>
+        <Link replace href={`${GROUPS}/${group._id}`}>
           Success! Click to go to group chat
         </Link>
       );

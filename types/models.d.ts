@@ -7,6 +7,7 @@ interface ClientUser {
   photo: string;
   connections: (string | mongoose.Types.ObjectId)[];
   groups: (string | mongoose.Types.ObjectId)[];
+  groupsRequested?: (string | mongoose.Types.ObjectId)[];
   chats: (string | mongoose.Types.ObjectId)[];
   _id: string;
 }

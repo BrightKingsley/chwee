@@ -13,11 +13,11 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 // routes
 import { CONNECT, GROUPS } from "@/constants/routes";
 // functions
-import { getGroupByTag } from "@/lib/db";
+import { getGroupByTag, getUserByID } from "@/lib/db";
 // icons
 import { UserIcon } from "@heroicons/react/20/solid";
 import GroupLineIcon from "remixicon-react/GroupLineIcon";
-import { JoinGroupTrigger } from "../../../../components";
+import { JoinGroupTrigger, LeaveGroupTrigger } from "../../../../components";
 
 export default async function GroupInfo({
   params,
@@ -38,7 +38,51 @@ export default async function GroupInfo({
   const userFromSession = serverSession.user;
   const group = await getGroupByTag({ tag: decodedTag });
   console.log({ group, decodedTag });
-  if (!group) return <h1>User Unavailable</h1>;
+  if (!group)
+    return (
+      <div className="flex items-center justify-center w-screen h-screen">
+        <div className="space-y-4 text-center h-fit px-4">
+          <p className="text-3xl font-bold text-primary">
+            {"Couldn't"} retrieve Group
+          </p>
+          <p>
+            The requested group may have either been deleted or you {"don't"}{" "}
+            have the authorizatiion to access this group.
+          </p>
+          {/* TODO: check if this is needed */}
+          {/* <GroupNotFoundActions /> */}
+        </div>
+      </div>
+    );
+
+  if (!userFromSession || !userFromSession.id)
+    return (
+      <div className="flex items-center justify-center w-screen h-screen">
+        <div className="space-y-4 text-center h-fit px-4">
+          <p className="text-3xl font-bold text-primary">
+            {"Couldn't"} retrieve User
+          </p>
+
+          {/* TODO: check if this is needed */}
+          {/* <GroupNotFoundActions /> */}
+        </div>
+      </div>
+    );
+
+  const userDoc = await getUserByID({ userID: userFromSession.id });
+  if (!userDoc)
+    return (
+      <div className="flex items-center justify-center w-screen h-screen">
+        <div className="space-y-4 text-center h-fit px-4">
+          <p className="text-3xl font-bold text-primary">
+            {"Couldn't"} retrieve User
+          </p>
+
+          {/* TODO: check if this is needed */}
+          {/* <GroupNotFoundActions /> */}
+        </div>
+      </div>
+    );
 
   return (
     <>
@@ -65,22 +109,57 @@ export default async function GroupInfo({
             <p className="ml-auto">{group.members.length}</p>
           </div>
           <div className="w-full px-12 mt-[80px]">
-            <Link href={`${GROUPS}/info/${group.tag}?join=true`}>
-              <Button className="rounded-md font-druk-wide-bold" fullWidth>
-                Join Group
-              </Button>
-            </Link>
+            {!userDoc.groups
+              .map((group) => group.toString())
+              .includes(group.id) ? (
+              <Link href={`${GROUPS}/info/${group.tag}?join=true`}>
+                <Button className="rounded-md font-druk-wide-bold" fullWidth>
+                  Join Group
+                </Button>
+              </Link>
+            ) : userDoc.groups
+                .map((group) => group.toString())
+                .includes(group.id) ? (
+              <Link href={`${GROUPS}/info/${group.tag}?leave=true`}>
+                <Button className="rounded-md font-druk-wide-bold" fullWidth>
+                  Leave Group
+                </Button>
+              </Link>
+            ) : userDoc.groupsRequested &&
+              !userDoc.groupsRequested
+                .map((group) => group.toString())
+                .includes(group.id) ? (
+              <Link href={`${GROUPS}/info/${group.tag}?cancel=true`}>
+                <Button className="rounded-md font-druk-wide-bold" fullWidth>
+                  Cancel Request
+                </Button>
+              </Link>
+            ) : null}
           </div>
         </div>
       </div>
-      {searchParams && searchParams.join === "true" && (
+      {searchParams && searchParams.join === "true" ? (
         <JoinGroupTrigger
           groupID={group.id}
           groupName={group.name}
           returnURL={`${GROUPS}/info/${group.tag}`}
           locked={group.hasPassword}
         />
-      )}
+      ) : searchParams && searchParams.leave === "true" ? (
+        <LeaveGroupTrigger
+          groupID={group.id}
+          groupName={group.name}
+          returnURL={`${GROUPS}`}
+          userID={userFromSession.id}
+        />
+      ) : searchParams && searchParams.cancel === "true" ? (
+        <JoinGroupTrigger
+          groupID={group.id}
+          groupName={group.name}
+          returnURL={`${GROUPS}/info/${group.tag}`}
+          locked={group.hasPassword}
+        />
+      ) : null}
     </>
   );
 }

@@ -8,67 +8,64 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 
-export default function JoinGroupTrigger({
+export default function LeaveGroupTrigger({
   groupID,
   groupName,
   returnURL,
-  locked,
+  userID,
 }: {
   groupID: string;
   groupName: string;
   returnURL: string;
-  locked: boolean;
+  userID: string;
 }) {
   const { triggerModal } = useContext(ModalContext);
   const { triggerNotification } = useContext(NotificationContext);
   const [loading, setLoading] = useState(false);
 
-  const { push, replace } = useRouter();
+  const { replace } = useRouter();
 
   const { data } = useSession();
   const session = data;
 
-  const joinGroup = async () => {
-    setLoading(true);
-    triggerNotification("Processing join request");
-    const res = await fetch(`${BASE_URL}/api/groups/${groupID}`, {
-      method: "PUT",
-      body: JSON.stringify({ userID: session?.user.id }),
-    });
-    const group = await res.json();
-    console.log({ group });
-    if (!group) {
+  const exitGroup = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${BASE_URL}/api/groups/${groupID}/members`, {
+        method: "DELETE",
+        body: JSON.stringify({
+          userID,
+          groupID,
+        }),
+        cache: "no-cache",
+      });
+      const data = await res.json();
+      if (!data && !data.message) {
+        setLoading(false);
+        return triggerNotification("Something Went wrong");
+      }
       setLoading(false);
-      triggerNotification(
-        locked ? "Join request failed" : "You couldn't be added to this group"
-      );
-      return replace(returnURL);
+      triggerNotification(data.message);
+      return replace(GROUPS);
+    } catch (error) {
+      console.error({ error });
+      setLoading(false);
+      return triggerNotification("Something Went wrong");
     }
-    setLoading(false);
-    replace(returnURL);
-    return triggerNotification(
-      locked ? (
-        "Join request sent successfully"
-      ) : (
-        <Link replace href={`${GROUPS}/${groupID}`}>
-          Joined Successfully Click to enter chat
-        </Link>
-      )
-    );
   };
-
-  const cancelJoinGroup = () => {
+  const cancelExitGroup = () => {
     triggerModal({});
     replace(returnURL);
   };
 
   useEffect(() => {
     triggerModal({
-      cancel: cancelJoinGroup,
-      confirm: () => joinGroup(),
+      cancel: cancelExitGroup,
+      confirm: () => exitGroup(),
       message: (
         <p>
-          Join <span className="font-bold text-primary">{groupName}</span>{" "}
+          Leave{" "}
+          <span className="font-bold text-primary">(exit) {groupName}</span>{" "}
           group?
         </p>
       ),

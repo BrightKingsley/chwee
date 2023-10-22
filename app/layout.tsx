@@ -8,6 +8,9 @@ import {
 import { AuthContextProvider, ThemeContextProvider } from "@/context";
 import "@/public/css/globals.css";
 import "swiper/css";
+import "swiper/css/scrollbar";
+import "swiper/css/pagination";
+import "swiper/css/autoplay";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 

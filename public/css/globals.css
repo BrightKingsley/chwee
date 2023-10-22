@@ -7,7 +7,6 @@
   src: url("../fonts/Aeonik/AeonikTRIAL-Regular.otf") format("opentype");
 }
 
-
 @font-face {
   font-family: "blogh";
   src: url("../fonts/Blogh/Blogh.otf") format("opentype");
@@ -19,7 +18,20 @@
   src: url("../fonts/Druk/Druk-Wide/DrukWide-Bold-Trial.otf") format("opentype");
 }
 
-input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-touch-callout: rgba(var(--primary) / 0.2);
+  -webkit-user-drag: none;
+  -webkit-user-drag: none;
+  -khtml-user-select:none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -35,43 +47,43 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   }
 }
 
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-  /* @apply border-[1px] border-red-500; */
-}
-
 *::-webkit-scrollbar {
   width: 0.3rem;
   margin-right: 1rem;
   /* display: none; */
 }
 
-.test{
+.test {
   background-color: #eeeeee;
+  background-color: #FFBA1F;
+  background-color: #31003A;
+  background-color: #44004E;
+    background-color: #FAF0FC;
+    background-color: #ECDFEF;
+    background-color: #44004E;
+      background-color: #EC4545;
+      background-color: #FAF0FC;
+        background-color: #FAF0FC;
 }
 
-.bg-pattern{
+.bg-pattern {
   background-image: url("../images/pattern-gray.svg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  /* backg */
-}
-/* 
-*::-webkit-scrollbar-thumb {
-  @apply border-2 border-white bg-primary rounded-2xl;
-}
-*::-webkit-scrollbar-track {
-  @apply w-2 bg-white rounded-2xl;
 }
 
-*::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400 rounded-2xl;
+.white-pattern {
+  background-image: url("../images/pattern.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
-*::-webkit-scrollbar-thumb:active {
-  @apply bg-gray-500 rounded-2xl;
-} */
+
+
+.swiper-pagination-bullet-active {
+  background-color: #f4511e !important;
+}
 
 *::-webkit-scrollbar-thumb {
   @apply bg-transparent border-2 border-white rounded-2xl;
@@ -128,7 +140,6 @@ input[type="number"]::-webkit-outer-spin-button {
     -moz-user-select: none;
     -moz-user-drag: none;
     position: relative;
-    /* border: 1px solid red; */
   }
 
   @media (min-width: 640px) {

@@ -70,6 +70,7 @@ export default function BuyAirtime({
   };
   const handleConnectionClicked = (tag: string) => {
     setAirtimeData((prev) => ({ ...prev, receiver: tag }));
+    handleHideModal();
   };
   const showConnectionsModal = async () => {
     try {
@@ -189,15 +190,7 @@ export default function BuyAirtime({
               />
             )}
           </div>
-          {/* <Switch
-            checked={sendToConnect}
-            onChange={(e) => {
-              setSendToConnect(e.target.checked);
-              e.target.checked && showConnectionsModal();
-            }}
-          >
-            {sendToConnect ? "@" : "#"}
-          </Switch> */}
+
           <div className="ml-auto w-fit">
             <Switch
               checked={sendToConnect}
@@ -277,7 +270,7 @@ export default function BuyAirtime({
                   amount: parseFloat(formatToNumberWithDecimal(e.target.value)),
                 }))
               }
-              className="focus:outline-none text-xl w-fit focus:border-none bg-red-400 font-bold p-2 bg-transparent_"
+              className="focus:outline-none text-xl w-fit focus:border-none font-bold p-2 bg-transparent max-w-[14rem]"
             />
           </div>
           <div className="shrink-0 flex-1">
