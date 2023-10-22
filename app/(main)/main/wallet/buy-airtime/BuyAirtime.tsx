@@ -203,38 +203,42 @@ export default function BuyAirtime({
           </div>
         </div>
         <div>
-          <div
-            ref={networkListRef as Ref<HTMLDivElement>}
-            className={`${
-              showNetWorks ? "" : "h-0"
-            } px-3 py-2 space-y-1 transition-transform duration-1000 bg-primary/10 rounded-md`}
-            // className="rounded-md"
-          >
-            {networks.map((network, i) => (
-              <ListItem
-                key={i}
-                onClick={() => setAirtimeData((prev) => ({ ...prev, network }))}
-                className="flex items-center py-1"
-              >
-                <div className="rounded-full overflow-clip w-10 bg-brand-yellow h-10">
-                  {/* <Image
+          {showNetWorks && (
+            <div
+              ref={networkListRef as Ref<HTMLDivElement>}
+              className={`${
+                showNetWorks ? "" : "h-0"
+              } px-3 py-2 space-y-1 transition-transform duration-1000 bg-primary/10 rounded-md`}
+              // className="rounded-md"
+            >
+              {networks.map((network, i) => (
+                <ListItem
+                  key={i}
+                  onClick={() =>
+                    setAirtimeData((prev) => ({ ...prev, network }))
+                  }
+                  className="flex items-center py-1"
+                >
+                  <div className="rounded-full overflow-clip w-10 bg-brand-yellow h-10">
+                    {/* <Image
                       src={`/images/networks/${network}.png`}
                       alt=""
                       width={80}
                       height={80}
                     /> */}
-                </div>
-                <p className="pl-2">{network}</p>
-                <span className="inline-block ml-auto">
-                  {airtimeData.network === network ? (
-                    <CheckboxCircleFillIcon className="w-3 h-3  fill-primary text-primary" />
-                  ) : (
-                    <RadioButtonLineIcon className="w-3 h-3  fill-gray-400 text-gray-400" />
-                  )}
-                </span>
-              </ListItem>
-            ))}
-          </div>
+                  </div>
+                  <p className="pl-2">{network}</p>
+                  <span className="inline-block ml-auto">
+                    {airtimeData.network === network ? (
+                      <CheckboxCircleFillIcon className="w-3 h-3  fill-primary text-primary" />
+                    ) : (
+                      <RadioButtonLineIcon className="w-3 h-3  fill-gray-400 text-gray-400" />
+                    )}
+                  </span>
+                </ListItem>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <div className="mx-3 px-3 py-4 bg-white">
@@ -300,7 +304,7 @@ export default function BuyAirtime({
         show={openPaymentModal && airtimeData.amount > 50}
         className={`fixed left-0 space-y-4 bg-body rounded-t-3xl h-full mx-auto w-full z-20 pt-4`}
       >
-        <div className="space-y-2 px-3 relative w-full h-full">
+        <div className="space-y-2 px-3 relative w-full">
           <div className="absolute -top-3 right-0">
             <IconButton
               onClick={() => {

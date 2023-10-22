@@ -1,4 +1,5 @@
 import { Header } from "@/app/components/client";
+import { Button } from "@/app/components/mui";
 import { getTransactionByID, getUserByID } from "@/lib/db";
 import { ArrowDownIcon } from "@heroicons/react/20/solid";
 import ArrowLeftRightLineIcon from "remixicon-react/ArrowLeftRightLineIcon";
@@ -7,6 +8,9 @@ import SimCardLineIcon from "remixicon-react/SimCardLineIcon";
 import WifiLineIcon from "remixicon-react/WifiLineIcon";
 import ErrorWarningLineIcon from "remixicon-react/ErrorWarningLineIcon";
 import { ShareTransaction } from "../../components";
+import RefreshLineIcon from "remixicon-react/RefreshLineIcon";
+import Link from "next/link";
+import { WALLET } from "@/constants/routes";
 
 export default async function Transaction({
   params,
@@ -22,6 +26,19 @@ export default async function Transaction({
       <div className="flex items-center justify-center text-red-400 w-full h-full gap-3">
         <ErrorWarningLineIcon className="w-8 h-8" />
         <p className="text-xl font-bold">Transaction data not found</p>
+        <div className="space-y-2 w-fit mx-auto">
+          <small>Try Refreshing the page</small>
+          <Link href={`${WALLET}/transaction-history/${params.transactionID}`}>
+            <Button
+              // onClick={() => refresh()}
+              variant="outlined"
+              className="flex px-2 py-2 gap-3 mx-auto items-center"
+            >
+              <p>refresh</p>
+              <RefreshLineIcon className="w-6 h-6" />
+            </Button>
+          </Link>
+        </div>
       </div>
     );
 
@@ -61,7 +78,7 @@ export default async function Transaction({
       </div>
       <div className="px-4 py-3 space-y-3 flex-1 overflow-auto">
         <div className="space-y-4">
-          <div className="space-y-3 p-4">
+          <div className="space-y-3 py-4 px-2">
             <div className="flex items-center">
               <span className="inline-block bg-primary/10 text-primary fill-primary rounded-full p-2">
                 {/* {transactionIcon} */}
@@ -78,7 +95,7 @@ export default async function Transaction({
                 )}
               </span>
               <p className="text-gray-600 ml-2">{transaction.title}</p>
-              <p className="text-gray-800 ml-auto text-2xl">
+              <p className="text-gray-800 ml-auto text-2xl whitespace-nowrap">
                 {transaction.type === "deposit" ? "+" : "-"}₦
                 {transaction.amount}
               </p>
@@ -92,7 +109,7 @@ export default async function Transaction({
               <small className="text-gray-600">₦{0}.00</small>
             </div>
           </div>
-          <div className="mx-auto py-[2px] bg-body border border-gray-400 flex items-center relative w-fit rounded-full before:absolute before:-translate-x-full before:w-full after:w-full before:bg-gray-400 after:bg-gray-400 before:h-[1px] after:h-[1px] after:absolute after:translate-x-full">
+          <div className="mx-auto py-[2px] bg-body border border-gray-400 flex items-center relative w-fit rounded-full before:absolute before:-translate-x-full before:w-11/12 after:w-11/12 before:bg-gray-400 after:bg-gray-400 before:h-[1px] after:h-[1px] after:absolute after:translate-x-full">
             <small className="px-2">{transaction.date.toDateString()}</small>
           </div>
           <div className="space-y-3">

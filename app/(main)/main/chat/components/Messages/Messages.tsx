@@ -90,17 +90,17 @@ export default function Messages({
         {loading ? (
           <LoadingMessages />
         ) : messages.length < 1 || !session || !session.user.id ? (
-          <div className="space-y-3 w-full h-full flex flex-col mx-auto justify-center">
+          <div className="space-y-3 w-full h-full text-center flex flex-col mx-auto justify-center">
             <div className="flex items-center justify-center">
               <p className="font-bold">no messages available</p>
               <ZzzLineIcon className="w-4 h-4 text-brand-lightblue" />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 w-fit mx-auto">
               <small>Try Refreshing the page</small>
               <Button
                 onClick={() => refresh()}
                 variant="outlined"
-                className="flex px-2 py-2 gap-3 items-center"
+                className="flex px-2 py-2 gap-3 mx-auto items-center"
               >
                 <p>refresh</p>
                 <RefreshLineIcon className="w-6 h-6" />
