@@ -31,9 +31,11 @@ export default function AccountEditForm({ show }: { show: boolean }) {
   const [updateUser, setUpdateUser] = useState<{
     username: string;
     tag: string;
+    phone: string;
     loading: boolean;
   }>({
     username: "",
+    phone: "",
     tag: "",
     loading: false,
   });
@@ -49,6 +51,10 @@ export default function AccountEditForm({ show }: { show: boolean }) {
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
+
+    if (!updateUser.username && !updateUser.tag && !updateUser.phone) {
+      return triggerNotification("Please Input valid details");
+    }
     setUpdateUser((prev) => ({ ...prev, loading: true }));
     try {
       let photoURL: string = "";
@@ -69,6 +75,7 @@ export default function AccountEditForm({ show }: { show: boolean }) {
           username: updateUser.username,
           tag: updateUser.tag,
           photo: photoURL,
+          phone: updateUser.phone,
         }),
       });
       const data = await response.json();
@@ -200,7 +207,22 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                   type="text"
                 />
               </div>
+              <div>
+                <Input
+                  onChange={(e) => {
+                    setUpdateUser((prev) => ({
+                      ...prev,
+                      phone: lettersAndNumbersOnly(e.target.value),
+                    }));
+                  }}
+                  value={updateUser.phone}
+                  icon={<p className="">@</p>}
+                  label="phone No."
+                  type="tel"
+                />
+              </div>
             </div>
+
             <Button
               type="submit"
               fullWidth

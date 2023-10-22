@@ -2,7 +2,7 @@
 import Message from "../Message";
 import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "@/context";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { pusherClient } from "@/lib/config";
 import { BASE_URL } from "@/constants/routes";
 import { useSession } from "next-auth/react";
@@ -42,6 +42,8 @@ export default function Messages({
   const { data } = useSession();
   const session: Session | any = data;
   const params = useParams();
+
+  const { refresh } = useRouter();
 
   useEffect(() => {
     if (!chatID) return;
@@ -88,14 +90,18 @@ export default function Messages({
         {loading ? (
           <LoadingMessages />
         ) : messages.length < 1 || !session || !session.user.id ? (
-          <div className="space-y-3">
-            <div className="flex items-center justify-center w-full h-full">
+          <div className="space-y-3 w-full h-full flex flex-col mx-auto justify-center">
+            <div className="flex items-center justify-center">
               <p className="font-bold">no messages available</p>
-              <ZzzLineIcon className="w-6 h-6 text-brand-lightblue" />
+              <ZzzLineIcon className="w-4 h-4 text-brand-lightblue" />
             </div>
             <div className="space-y-2">
               <small>Try Refreshing the page</small>
-              <Button variant="outlined" className="flex px-2 py-2 gap-3">
+              <Button
+                onClick={() => refresh()}
+                variant="outlined"
+                className="flex px-2 py-2 gap-3 items-center"
+              >
                 <p>refresh</p>
                 <RefreshLineIcon className="w-6 h-6" />
               </Button>
