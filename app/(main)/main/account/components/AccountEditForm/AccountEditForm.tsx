@@ -189,7 +189,7 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                   }}
                   value={updateUser.username}
                   label="username"
-                  icon={<p>ABC</p>}
+                  icon={<small className="font-bold">ABC</small>}
                   type="text"
                 />
               </div>
@@ -216,7 +216,7 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                     }));
                   }}
                   value={updateUser.phone}
-                  icon={<p className="">@</p>}
+                  icon={<p className="">#</p>}
                   label="phone No."
                   type="tel"
                 />

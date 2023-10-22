@@ -76,9 +76,9 @@ export default async function Transaction({
       <div className="shrink-0">
         <Header title="Transaction Details" />
       </div>
-      <div className="px-4 py-3 space-y-3 flex-1 overflow-auto">
+      <div className="px-4 py-3 space-y-4 flex-1 overflow-auto">
         <div className="space-y-4">
-          <div className="space-y-3 py-4 px-2">
+          <div className="space-y-3 py-4 px-2 rounded-md bg-white">
             <div className="flex items-center">
               <span className="inline-block bg-primary/10 text-primary fill-primary rounded-full p-2">
                 {/* {transactionIcon} */}
@@ -112,7 +112,7 @@ export default async function Transaction({
           <div className="mx-auto py-[2px] bg-body border border-gray-400 flex items-center relative w-fit rounded-full before:absolute before:-translate-x-full before:w-11/12 after:w-11/12 before:bg-gray-400 after:bg-gray-400 before:h-[1px] after:h-[1px] after:absolute after:translate-x-full">
             <small className="px-2">{transaction.date.toDateString()}</small>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-3 rounded-md bg-white">
             <div className="flex justify-between items-center">
               <small className="text-gray-600">Status</small>
               <small className="text-sm uppercase font-bold">
