@@ -102,6 +102,16 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
       )
         return triggerNotification("Invalid message data");
 
+      if (message.type === "fund") {
+        if (
+          message.transaction?.type === "send" &&
+          message.transaction.amount &&
+          !message.transaction.amount
+        ) {
+          return triggerNotification("Invalid amount");
+        }
+      }
+
       if (selectedImages.length > 0) return startUpload(selectedImages);
       const messageToSend: MessageBody = {
         ...message,
@@ -340,7 +350,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
                 scale: 1,
               }}
               out={{ opacity: 0, scale: 0, translateY: 80 }}
-              className="absolute left-0 flex_ items-center_ w-full mx-auto rounded-md bottom-16 h-fit"
+              className="absolute left-0 flex items-center gap-3 p-2 justify-evenly w-full mx-auto rounded-md bottom-16 h-fit"
             >
               {/* <div className="relative flex items-center w-full h-full gap-3 p-2 justify-evenly"> */}
               <Card

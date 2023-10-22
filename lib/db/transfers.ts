@@ -1,9 +1,9 @@
 import { Transaction, User, Wallet } from "@/models";
-import { stringToObjectId } from "../utils";
+import { formatToNumberWithDecimal, stringToObjectId } from "../utils";
 import mongoose from "mongoose";
 
 export async function transferToChweeWallet({
-  amount,
+  amount: amnt,
   senderID,
   receiverTag,
   receiverID: rID = "",
@@ -16,6 +16,9 @@ export async function transferToChweeWallet({
   findBy?: "tag" | "ID";
 }) {
   try {
+    const amount = parseFloat(formatToNumberWithDecimal(amnt.toString()));
+
+    if (!amount || amount < 1) return "invalid amount";
     const parsedSenderID = stringToObjectId(senderID);
 
     const senderWallet = await Wallet.findOne({
