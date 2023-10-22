@@ -141,7 +141,7 @@ export default function BuyAirtime({
     <>
       <div
         ref={networkListRef as Ref<HTMLDivElement>}
-        className="rounded-b-xl bg-white p-3 transition-all duration-200"
+        className="rounded-b-xl shadow-md bg-white p-3 transition-all duration-200"
       >
         <div className="flex items-center">
           <Button
@@ -162,7 +162,7 @@ export default function BuyAirtime({
           </Button>
           <div className="flex ml-2 items-center flex-1">
             {sendToConnect ? (
-              <div className="font-bold text-gray-700 font-druk-wide-bold w-full flex-1">
+              <div className="font-bold text-gray-700 font-druk-wide-bold flex-1">
                 {!airtimeData.receiver && (
                   <p className="text-gray-600">@UserTag</p>
                 )}
@@ -175,7 +175,7 @@ export default function BuyAirtime({
                 value={airtimeData.phone}
                 type="tel"
                 placeholder="080 1234 5678"
-                className="focus:outline-none focus:border-none font-bold"
+                className="focus:outline-none focus:border-none font-bold max-w-[14rem]"
                 onChange={(e) =>
                   setAirtimeData((prev) => ({ ...prev, phone: e.target.value }))
                 }
@@ -207,7 +207,7 @@ export default function BuyAirtime({
             ref={networkListRef as Ref<HTMLDivElement>}
             className={`${
               showNetWorks ? "" : "h-0"
-            } px-3 transition-transform duration-1000`}
+            } px-3 transition-transform duration-1000 bg-primary/10 rounded-md`}
             // className="rounded-md"
           >
             {networks.map((network, i) => (
@@ -216,7 +216,7 @@ export default function BuyAirtime({
                 onClick={() => setAirtimeData((prev) => ({ ...prev, network }))}
                 className="flex items-center py-1"
               >
-                <div className="rounded-full overflow-clip w-10 h-10">
+                <div className="rounded-full overflow-clip w-10 bg-brand-yellow h-10">
                   {/* <Image
                       src={`/images/networks/${network}.png`}
                       alt=""
@@ -248,7 +248,7 @@ export default function BuyAirtime({
                 setAirtimeData((prev) => ({ ...prev, amount: option }));
                 setOpenPaymentModal(true);
               }}
-              className="px-4 aspect-square bg-primary/10 font-druk-wide-bold"
+              className="px-4 py-6 bg-primary/10 font-druk-wide-bold"
             >
               ₦{option}
             </Button>

@@ -28,7 +28,7 @@ export async function GET(request: NextRequest, { params: { userID } }: Props) {
 
 export async function PATCH(request: NextRequest, { params }: Props) {
   try {
-    const { username, tag, photo } = await request.json();
+    const { username, tag, photo, phone } = await request.json();
 
     const sessionUser = await getServerSession(authOptions);
 
@@ -46,6 +46,10 @@ export async function PATCH(request: NextRequest, { params }: Props) {
 
     if (tag) {
       userDoc.tag = formatTag(lettersAndNumbersOnly(tag));
+    }
+
+    if (phone) {
+      userDoc.phone = phone;
     }
 
     if (photo) {

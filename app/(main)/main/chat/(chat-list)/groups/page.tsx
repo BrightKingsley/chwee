@@ -37,7 +37,7 @@ export default async function Groups({
   if (!groups) return null;
   serverSession.user.id!;
   return (
-    <>
+    <div className="space-y-2">
       {groups?.length > 0 ? (
         groups.map((group, i) => {
           return (
@@ -91,6 +91,6 @@ export default async function Groups({
           <XMarkIcon className="w-6 h-6 fill fill-red-400" />
         </div>
       )}
-    </>
+    </div>
   );
 }
