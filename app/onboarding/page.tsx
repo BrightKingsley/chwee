@@ -27,7 +27,7 @@ export default function Onboarding() {
       <div className="rounded-full absolute -bottom-1/2 -left-1/2 bg-pattern w-[40rem] h-[40rem] bg-brand-yellow" />
 
       <Swiper
-        autoplay={{ disableOnInteraction: true, delay: 3000 }}
+        autoplay={{ delay: 3000 }}
         speed={1000}
         loop
         navigation

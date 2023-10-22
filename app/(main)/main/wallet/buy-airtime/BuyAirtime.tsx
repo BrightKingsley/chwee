@@ -141,7 +141,7 @@ export default function BuyAirtime({
     <>
       <div
         ref={networkListRef as Ref<HTMLDivElement>}
-        className="rounded-b-xl shadow-md bg-white p-3 transition-all duration-200"
+        className="rounded-b-xl shadow-md bg-white p-3 transition-all duration-200 space-y-2"
       >
         <div className="flex items-center">
           <Button
@@ -160,7 +160,7 @@ export default function BuyAirtime({
               )}
             </span>
           </Button>
-          <div className="flex ml-2 items-center flex-1">
+          <div className="flex ml-2 items-center">
             {sendToConnect ? (
               <div className="font-bold text-gray-700 font-druk-wide-bold flex-1">
                 {!airtimeData.receiver && (
@@ -175,7 +175,7 @@ export default function BuyAirtime({
                 value={airtimeData.phone}
                 type="tel"
                 placeholder="080 1234 5678"
-                className="focus:outline-none focus:border-none font-bold max-w-[14rem]"
+                className="focus:outline-none focus:border-none font-bold max-w-[12rem]"
                 onChange={(e) =>
                   setAirtimeData((prev) => ({ ...prev, phone: e.target.value }))
                 }
@@ -207,7 +207,7 @@ export default function BuyAirtime({
             ref={networkListRef as Ref<HTMLDivElement>}
             className={`${
               showNetWorks ? "" : "h-0"
-            } px-3 transition-transform duration-1000 bg-primary/10 rounded-md`}
+            } px-3 py-2 space-y-1 transition-transform duration-1000 bg-primary/10 rounded-md`}
             // className="rounded-md"
           >
             {networks.map((network, i) => (
@@ -258,7 +258,7 @@ export default function BuyAirtime({
           onSubmit={handleAmountEntered}
           className="flex items-center justify-between py-4 gap-2"
         >
-          <div className="flex flex-1 p-2 items-center gap-1 bg-primary/10 rounded-md">
+          <div className="flex p-2 items-center gap-1 bg-primary/10 rounded-md">
             <p className="font-bold ">₦</p>
             <input
               type="number"
@@ -270,10 +270,10 @@ export default function BuyAirtime({
                   amount: parseFloat(formatToNumberWithDecimal(e.target.value)),
                 }))
               }
-              className="focus:outline-none text-xl w-fit focus:border-none font-bold p-2 bg-transparent max-w-[14rem]"
+              className="focus:outline-none text-xl w-fit focus:border-none font-bold p-2 bg-transparent max-w-[12rem]"
             />
           </div>
-          <div className="shrink-0 flex-1">
+          <div className="shrink-0">
             <Button
               type="submit"
               disabled={airtimeData.amount < 50}
@@ -295,28 +295,30 @@ export default function BuyAirtime({
       <AnimateInOut
         init={{ translateY: "100%" }}
         out={{ translateY: "100%" }}
-        animate={{ translateY: "70%" }}
+        animate={{ translateY: "60%" }}
         transition={{ type: "keyframes" }}
         show={openPaymentModal && airtimeData.amount > 50}
         className={`fixed left-0 space-y-4 bg-body rounded-t-3xl h-full mx-auto w-full z-20 pt-4`}
       >
         <div className="space-y-2 px-3 relative w-full h-full">
-          <div className="absolute top-0 right-0">
+          <div className="absolute -top-3 right-0">
             <IconButton
               onClick={() => {
                 setOpenPaymentModal(false);
               }}
               className="rounded-full"
             >
-              <XMarkIcon className="w-6 h-6 text-gray-600 fill-gray-600" />
+              <XMarkIcon className="w-10 h-10 p-1 text-gray-600 fill-gray-600" />
             </IconButton>
           </div>
           <p className="text-gray-600 text-center">Available Balance</p>
-          <p className="text-3xl font-bold text-center">₦{balance}</p>
+          <p className="text-3xl font-bold text-center">
+            ₦{balance.toFixed(2)}
+          </p>
           <div className="flex mt-1 justify-between">
-            <p className="text-gray-600">Your new balance will be</p>
+            <small className="text-gray-600">Your new balance will be</small>
             <p className="text-gray-800 font-bold">
-              ₦{balance - airtimeData.amount}
+              ₦{(balance - airtimeData.amount).toFixed(2)}
             </p>
           </div>
         </div>

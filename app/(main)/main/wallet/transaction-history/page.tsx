@@ -28,9 +28,7 @@ export default async function TransactionHistory() {
       </div>
       <div className="space-y-2 flex-1 px-2 h-full w-full overflow-auto shrink-0 overflow-y-auto py-1">
         {walletData.transactions.reverse().map((transaction, i) => (
-          <ListTile key={i}>
-            <TransactionTile transactionID={transaction.toString()} />
-          </ListTile>
+          <TransactionTile key={i} transactionID={transaction.toString()} />
         ))}
       </div>
     </div>
