@@ -123,9 +123,10 @@ export default async function Wallet() {
             </div>
             <div className="space-y-2 flex-1 px-2 h-full w-full shrink-0 overflow-y-auto">
               {walletData.transactions.map((transaction, i) => (
-                <ListTile key={i}>
-                  <TransactionTile transactionID={transaction.toString()} />
-                </ListTile>
+                <TransactionTile
+                  key={i}
+                  transactionID={transaction.toString()}
+                />
               ))}
             </div>
           </div>
