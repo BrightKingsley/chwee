@@ -21,7 +21,7 @@ export default async function Transaction({
     return (
       <div className="flex items-center justify-center text-red-400 w-full h-full gap-3">
         <ErrorWarningLineIcon className="w-8 h-8" />
-        <p className="text-2xl">Transaction data not found</p>
+        <p className="text-xl font-bold">Transaction data not found</p>
       </div>
     );
 

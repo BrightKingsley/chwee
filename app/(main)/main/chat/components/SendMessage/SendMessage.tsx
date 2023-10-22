@@ -342,52 +342,52 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
               out={{ opacity: 0, scale: 0, translateY: 80 }}
               className="absolute left-0 flex_ items-center_ w-full mx-auto rounded-md bottom-16 h-fit"
             >
-              <div className="relative flex items-center w-full h-full gap-3 p-2 justify-evenly">
-                <Card
-                  title="request for funds"
-                  aria-label="request for funds"
-                  className="shadow-primary/20  flex-1 w-full active:scale-95 transition-all !p-0 duration-150"
+              {/* <div className="relative flex items-center w-full h-full gap-3 p-2 justify-evenly"> */}
+              <Card
+                title="request for funds"
+                aria-label="request for funds"
+                className="shadow-primary/20  flex-1 w-full active:scale-95 transition-all !p-0 duration-150"
+              >
+                <Button
+                  onClick={() => {
+                    return setToggleTransactionForm((prev) => ({
+                      ...prev,
+                      show: true,
+                      type: "request",
+                    }));
+                  }}
+                  variant="filled"
+                  color="white"
+                  className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
                 >
-                  <Button
-                    onClick={() => {
+                  <HandCoinLineIcon className="w-16 h-16 fill-primary" />
+                  <small className="!text-gray-700">request for funds</small>
+                </Button>
+              </Card>
+              <Card
+                title="send funds"
+                aria-label="send funds"
+                className="shadow-primary/20 relative  flex-1 w-full active:scale-95 transition-all !p-0 duration-150"
+              >
+                <Button
+                  onClick={() => {
+                    if (roomType === "p2p")
                       return setToggleTransactionForm((prev) => ({
                         ...prev,
                         show: true,
-                        type: "request",
+                        type: "send",
                       }));
-                    }}
-                    variant="filled"
-                    color="white"
-                    className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
-                  >
-                    <HandCoinLineIcon className="w-16 h-16 fill-primary" />
-                    <small className="!text-gray-700">request for funds</small>
-                  </Button>
-                </Card>
-                <Card
-                  title="send funds"
-                  aria-label="send funds"
-                  className="shadow-primary/20 relative  flex-1 w-full active:scale-95 transition-all !p-0 duration-150"
+                    getMembers();
+                  }}
+                  variant="filled"
+                  color="white"
+                  className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
                 >
-                  <Button
-                    onClick={() => {
-                      if (roomType === "p2p")
-                        return setToggleTransactionForm((prev) => ({
-                          ...prev,
-                          show: true,
-                          type: "send",
-                        }));
-                      getMembers();
-                    }}
-                    variant="filled"
-                    color="white"
-                    className="space-y-2 h-full  p-2 flex-1 w-full flex !flex-col items-center"
-                  >
-                    <CoinsLineIcon className="w-16 h-16 fill-primary" />
-                    <small className="!text-gray-700">send funds</small>
-                  </Button>
-                </Card>
-                {/* <div className="absolute -right-6 w-fit h-fit -top-6">
+                  <CoinsLineIcon className="w-16 h-16 fill-primary" />
+                  <small className="!text-gray-700">send funds</small>
+                </Button>
+              </Card>
+              {/* <div className="absolute -right-6 w-fit h-fit -top-6">
                   <IconButton
                     onClick={() => {
                       setToggleFunds(false);
@@ -399,7 +399,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
                     <XMarkIcon className="w-8 h-8 text-gray-700 fill-gray-700" />
                   </IconButton>
                 </div> */}
-              </div>
+              {/* </div> */}
             </AnimateInOut>
 
             {!showActionIcons && (
