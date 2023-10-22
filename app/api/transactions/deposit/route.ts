@@ -6,7 +6,7 @@ import { Transaction, Wallet } from "@/models";
 
 type PostProps = {
   action: "fund" | "transfer" | "withdraw";
-  amount?: number | string;
+  amount?: number;
 };
 
 export async function POST(request: NextRequest) {
@@ -36,7 +36,11 @@ export async function POST(request: NextRequest) {
 
     if (action === "fund") {
       const { amount } = res;
-      if (!amount)
+      if (
+        !amount ||
+        parseFloat(formatToNumberWithDecimal(amount.toString())) < 100 ||
+        parseFloat(formatToNumberWithDecimal(amount.toString())) > 500000
+      )
         return NextResponse.json({
           error: { message: "Please enter a valid amount" },
         });
