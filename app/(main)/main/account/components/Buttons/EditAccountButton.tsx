@@ -2,7 +2,7 @@
 import { IconButton } from "@/app/components/mui";
 import { ACCOUNT } from "@/constants/routes";
 import Link from "next/link";
-import EditLineIcon from "remixicon-react/EditLineIcon";
+import PencilLineIcon from "remixicon-react/PencilLineIcon";
 
 export default function EditAccountButton() {
   return (
@@ -12,7 +12,7 @@ export default function EditAccountButton() {
       className="rounded-full bg-gray-600"
     >
       <Link href={`${ACCOUNT}?edit=true`}>
-        <EditLineIcon className="w-8 h-8" />
+        <PencilLineIcon className="w-8 h-8 p-1" />
       </Link>
     </IconButton>
   );

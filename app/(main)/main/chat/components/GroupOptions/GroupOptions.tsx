@@ -6,6 +6,7 @@ import { ModalContext, NotificationContext } from "@/context";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
+import { LeaveGroupTrigger } from "..";
 
 export default function GroupOptions({
   groupID,
@@ -22,34 +23,41 @@ export default function GroupOptions({
   const { triggerModal } = useContext(ModalContext);
   const { triggerNotification } = useContext(NotificationContext);
   const [loading, setLoading] = useState(false);
+  const [groupActions, setGroupActions] = useState<{
+    exitGroup: boolean;
+    deleteGroup: boolean;
+  }>({
+    exitGroup: false,
+    deleteGroup: false,
+  });
 
   const { push } = useRouter();
 
-  const exitGroup = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`${BASE_URL}/api/groups/${groupID}/members`, {
-        method: "DELETE",
-        body: JSON.stringify({
-          userID,
-          groupID,
-        }),
-        cache: "no-cache",
-      });
-      const data = await res.json();
-      if (!data && !data.message) {
-        setLoading(false);
-        return triggerNotification("Something Went wrong");
-      }
-      setLoading(false);
-      triggerNotification(data.message);
-      return push(GROUPS);
-    } catch (error) {
-      console.error({ error });
-      setLoading(false);
-      return triggerNotification("Something Went wrong");
-    }
-  };
+  // const exitGroup = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await fetch(`${BASE_URL}/api/groups/${groupID}/members`, {
+  //       method: "DELETE",
+  //       body: JSON.stringify({
+  //         userID,
+  //         groupID,
+  //       }),
+  //       cache: "no-cache",
+  //     });
+  //     const data = await res.json();
+  //     if (!data && !data.message) {
+  //       setLoading(false);
+  //       return triggerNotification("Something Went wrong");
+  //     }
+  //     setLoading(false);
+  //     triggerNotification(data.message);
+  //     return push(GROUPS);
+  //   } catch (error) {
+  //     console.error({ error });
+  //     setLoading(false);
+  //     return triggerNotification("Something Went wrong");
+  //   }
+  // };
 
   const deleteGroup = async () => {
     try {
@@ -87,12 +95,13 @@ export default function GroupOptions({
               label: "leave group",
               onClick: () => {
                 // TODO topped here
-                triggerModal({
-                  clickToDisable: true,
-                  confirm: exitGroup,
-                  cancel: triggerModal,
-                  message: `Are you sure you want to Exit ${groupName}?`,
-                });
+                // triggerModal({
+                //   clickToDisable: true,
+                //   confirm: exitGroup,
+                //   cancel: triggerModal,
+                //   message: `Are you sure you want to Exit ${groupName}?`,
+                // });
+                setGroupActions((prev) => ({ ...prev, exitGroup: true }));
                 setShowOptions(false);
               },
             },
@@ -125,6 +134,14 @@ export default function GroupOptions({
           ]}
         />
       </div>
+      {groupActions.exitGroup && (
+        <LeaveGroupTrigger
+          groupID={groupID}
+          groupName={groupName}
+          returnURL={GROUPS}
+          userID={userID}
+        />
+      )}
     </div>
   );
 }

@@ -63,6 +63,7 @@ export function dbToClientUser(dbUser: UserClass) {
     photo: dbUser.photo,
     tag: dbUser.tag,
     username: dbUser.username,
+    groupsRequested: dbUser.groupsRequested,
   };
 
   return user;

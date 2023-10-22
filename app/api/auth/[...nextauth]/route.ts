@@ -114,6 +114,10 @@ export const authOptions: NextAuthOptions = {
     //   },
     // }),
   ],
+  pages: {
+    signIn: "/onboarding",
+    signOut: "/onboarding",
+  },
   // jwt: {
   //   secret: process.env.NEXTAUTH_SECRET,
   // },

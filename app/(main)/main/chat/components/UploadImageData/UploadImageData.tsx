@@ -10,6 +10,7 @@ import { useContext } from "react";
 import { UploadFileResponse } from "uploadthing/client";
 import { ChatContext } from "@/context";
 import SendPlane2LineIcon from "remixicon-react/SendPlane2LineIcon";
+import { EffectCreative, Navigation, Pagination } from "swiper/modules";
 
 export default function UploadImageData({
   startUpload,
@@ -48,8 +49,13 @@ export default function UploadImageData({
     >
       <div className="relative flex flex-col items-center w-full h-full">
         <Swiper
-          className="w-full h-full"
+          className="w-full h-[calc(100%-4rem)]"
           spaceBetween={1}
+          pagination={{
+            type: "fraction",
+          }}
+          keyboard={true}
+          modules={[Pagination, Navigation]}
           breakpoints={{
             640: {
               slidesPerView: 1,
@@ -128,7 +134,7 @@ export default function UploadImageData({
                 d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
               />
             </svg>{" "} */}
-            <SendPlane2LineIcon className="w-8 h-8" />
+            <SendPlane2LineIcon className="w-8 h-8 p-1" />
           </IconButton>
         </form>
       </div>

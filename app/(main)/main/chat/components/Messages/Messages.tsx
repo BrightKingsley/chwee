@@ -8,14 +8,22 @@ import { BASE_URL } from "@/constants/routes";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import LoadingMessages from "../LoadingMessages";
-import ZzzLineIcon from "remixicon-react/ZzzLineIcon";
 import { AnimateInOut } from "@/app/components/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
-import { IconButton } from "@material-tailwind/react";
+import { IconButton, Button } from "@/app/components/mui";
 import { XMarkIcon } from "@heroicons/react/20/solid";
-import { MessageProps } from "../types";
 import { ClientMessage } from "@/types/models";
+
+import {
+  EffectCreative,
+  Navigation,
+  Pagination,
+  Scrollbar,
+} from "swiper/modules";
+
+import RefreshLineIcon from "remixicon-react/RefreshLineIcon";
+import ZzzLineIcon from "remixicon-react/ZzzLineIcon";
 //TODO typecheck
 export default function Messages({
   chatID,
@@ -80,11 +88,18 @@ export default function Messages({
         {loading ? (
           <LoadingMessages />
         ) : messages.length < 1 || !session || !session.user.id ? (
-          <div className="flex items-center justify-center w-full h-full">
-            <p className="font-bold">
-              no messages available{" "}
-              <ZzzLineIcon className="w-6 h-6 text-brand-lightblue" />{" "}
-            </p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-center w-full h-full">
+              <p className="font-bold">no messages available</p>
+              <ZzzLineIcon className="w-6 h-6 text-brand-lightblue" />
+            </div>
+            <div className="space-y-2">
+              <small>Try Refreshing the page</small>
+              <Button variant="outlined" className="flex px-2 py-2 gap-3">
+                <p>refresh</p>
+                <RefreshLineIcon className="w-6 h-6" />
+              </Button>
+            </div>
           </div>
         ) : (
           messages.map((message, i) => (
@@ -109,7 +124,22 @@ export default function Messages({
           <Swiper
             initialSlide={viewImages.clickedImage}
             className="w-full h-full"
+            navigation
             spaceBetween={1}
+            pagination={{
+              bulletActiveClass: "active-bullet",
+              clickable: true,
+            }}
+            effect={"creative"}
+            creativeEffect={{
+              prev: {
+                translate: [0, 0, -400],
+              },
+              next: {
+                translate: ["100%", 0, 0],
+              },
+            }}
+            modules={[EffectCreative, Pagination, Navigation]}
             breakpoints={{
               640: {
                 slidesPerView: 1,
@@ -152,9 +182,4 @@ export default function Messages({
       </AnimateInOut>
     </>
   );
-  // : (
-  //   <div className="flex items-center justify-center w-full h-full">
-  //     <h1>No Messages Available</h1>
-  //   </div>
-  // );
 }

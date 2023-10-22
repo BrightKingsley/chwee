@@ -28,13 +28,13 @@ export default async function Chats() {
   console.log("GOTTEN_CHATS", chats);
 
   return (
-    <>
+    <div className="space-y-2">
       {chats && chats?.length > 0 ? (
         chats.map(
           (chat, i) =>
             chat.memberUserData && (
               <ListTile key={i} index={i}>
-                <div className="flex items-center w-full gap-2 p-2 rounded-md bg-primary/10_">
+                <div className="flex items-center w-full gap-2 p-2 border rounded-md bg-primary/10_ backdrop-blur-sm">
                   <Link
                     href={`${CONNECT}/${chat.memberUserData.tag}`}
                     className="flex items-center justify-center w-12 h-12 text-gray-200 rounded-full overflow-clip shrink-0 bg-primary"
@@ -54,16 +54,16 @@ export default async function Chats() {
                   </Link>
                   <Link
                     href={`${CHATS}/${chat.chatData._id}`}
-                    className="flex-1 text-left w-full overflow-hidden"
+                    className="flex-1 w-full overflow-hidden text-left"
                   >
-                    <p className="font-semibold whitespace-nowrap text-ellipsis overflow-hidden w-full">
+                    <p className="w-full overflow-hidden font-semibold whitespace-nowrap text-ellipsis">
                       {chat.memberUserData.username}
                     </p>
-                    <p className="whitespace-nowrap text-ellipsis overflow-hidden w-full m-0 p-0">
+                    <p className="w-full p-0 m-0 overflow-hidden whitespace-nowrap text-ellipsis">
                       last message, will do this soon
                     </p>
                   </Link>
-                  <div className="flex-col shrink-0 items-center pr-3">
+                  <div className="flex-col items-center pr-3 shrink-0">
                     <small className="mx-auto text-gray-700">17:00</small>
                     <div className="flex items-center justify-center w-5 h-5 p-1 mx-auto text-xs font-bold text-white rounded-full shadow-md bg-primary shadow-primary/20">
                       <small>1</small>
@@ -74,11 +74,11 @@ export default async function Chats() {
             )
         )
       ) : (
-        <div className="flex items-center justify-center w-full h-full mt-40">
+        <div className="flex items-center justify-center w-full h-full pt-40">
           <h1>You have no available chats</h1>
           <XMarkIcon className="w-6 h-6 fill fill-red-400" />
         </div>
       )}
-    </>
+    </div>
   );
 }

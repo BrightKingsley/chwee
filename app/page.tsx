@@ -1,6 +1,6 @@
 import { Button, IconButton } from "@/app/components/mui";
 import MenuLineIcon from "remixicon-react/MenuLineIcon";
-import { DASHBOARD } from "@/constants/routes";
+import { CHATS } from "@/constants/routes";
 import {
   Bars3Icon,
   BoltIcon,
@@ -127,7 +127,7 @@ export default function Landing() {
 
           <div className="flex items-center gap-3 mx-auto md:mx-0 w-fit">
             <Link
-              href={DASHBOARD}
+              href={CHATS}
               // className={`hover:scale-110 active:scale-75 active:opacity-60 transition-all duration-150 ${buttonStyles}`}
             >
               <Button className="">Get the app</Button>
@@ -443,7 +443,7 @@ export default function Landing() {
             </h2>
             <div className="flex items-center gap-3 mx-auto md:mx-0 w-fit">
               <Link
-                href={DASHBOARD}
+                href={CHATS}
                 className={`hover:scale-110 active:scale-75 active:opacity-60 transition-all duration-150 ${buttonStyles}`}
               >
                 Get the app

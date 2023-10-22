@@ -42,7 +42,7 @@ export default async function Groups({
         groups.map((group, i) => {
           return (
             <ListTile key={group._id.toString()} index={i}>
-              <div className="flex items-center w-full gap-2 p-2 rounded-md">
+              <div className="flex items-center w-full gap-2 p-2 rounded-md border backdrop-blur-sm">
                 {searchParams &&
                   searchParams.join === "true" &&
                   searchParams.groupTag === group.tag && (
@@ -67,9 +67,9 @@ export default async function Groups({
                       ? `${GROUPS}/${group._id}`
                       : `${GROUPS}?join=true&groupTag=${group.tag}`
                   }
-                  className="flex-1 text-left overflow-hidden w-full"
+                  className="flex-1 w-full overflow-hidden text-left"
                 >
-                  <p className="font-semibold whitespace-nowrap text-ellipsis overflow-hidden w-full">
+                  <p className="w-full overflow-hidden font-semibold whitespace-nowrap text-ellipsis">
                     {group.name}
                   </p>
                   <p className="whitespace-nowrap  overflow-hidden text-ellipsis  w-[14rem] m-0 p-0">
@@ -86,7 +86,7 @@ export default async function Groups({
           );
         })
       ) : (
-        <div className="flex items-center justify-center w-full h-full mt-40">
+        <div className="flex items-center justify-center w-full h-full pt-40">
           <h1>You have no available groups</h1>
           <XMarkIcon className="w-6 h-6 fill fill-red-400" />
         </div>

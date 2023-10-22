@@ -104,7 +104,7 @@ export default function AccountEditForm({ show }: { show: boolean }) {
         <Card className="relative bg-white border w-80">
           <form className="w-full h-full p-4 space-y-4" onSubmit={handleSubmit}>
             <div className="absolute top-2 right-2">
-              <Link href={ACCOUNT}>
+              <Link replace href={ACCOUNT}>
                 <IconButton
                   type="reset"
                   title="close edit form"
