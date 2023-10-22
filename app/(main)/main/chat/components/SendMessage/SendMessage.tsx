@@ -108,7 +108,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
           message.transaction.amount &&
           !message.transaction.amount
         ) {
-          return triggerNotification("Invalid amount");
+          return triggerNotification("Invalid amount input");
         }
       }
 
