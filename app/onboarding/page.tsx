@@ -21,7 +21,7 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="relative w-screen h-screen">
+    <div className="relative w-screen h-screen overflow-clip">
       <div className="rounded-full absolute -top-20 -right-20 bg-pattern w-64 h-64 bg-brand-lightblue" />
 
       <div className="rounded-full absolute -bottom-1/2 -left-1/2 bg-pattern w-[40rem] h-[40rem] bg-brand-yellow" />
