@@ -57,7 +57,7 @@ export default function PushNotificationProvider() {
                   const data = await response.json();
                   console.log("FCM_TOKEN_REPONSE", { data });
                 })
-                .then(() => beamsClient.addDeviceInterest("@generalChat"))
+                .then(() => beamsClient.addDeviceInterest("debug-@generalChat"))
                 .then(() => beamsClient.getDeviceInterests())
                 .then((interests) =>
                   console.log("Current interests:", interests)
