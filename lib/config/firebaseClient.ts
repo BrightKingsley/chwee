@@ -3,14 +3,12 @@ import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import localforage from "localforage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBFfImYMw4uHbtiHQwCJVFD6IusEUtzVZI",
-  authDomain: "chat-2a619.firebaseapp.com",
-  // databaseURL: "https://chat-2a619-default-rtdb.firebaseio.com",
-  databaseURL: "http://127.0.0.1:4000/firestore",
-  projectId: "chat-2a619",
-  storageBucket: "chat-2a619.appspot.com",
-  messagingSenderId: "793046143836",
-  appId: "1:793046143836:web:bf50ae8914f224dde3a799",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
