@@ -7,3 +7,4 @@ export {
 } from "./Notification";
 export { default as AuthContextProvider } from "./Auth";
 export { default as ScreenContext } from "./ScreenWidth";
+export { default as PushNotificationProvider } from "./PushNotificationProvider";

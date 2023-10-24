@@ -7,6 +7,7 @@ import { Button } from "@/app/components/mui";
 import { CHATS } from "@/constants/routes";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+// import { useFcmToken } from "@/hooks";
 
 export default function Onboarding() {
   const { data } = useSession();
@@ -22,12 +23,16 @@ export default function Onboarding() {
 
   return (
     <div className="relative w-screen h-screen overflow-clip">
-      <div className="rounded-full absolute -top-20 -right-20 bg-pattern w-64 h-64 bg-brand-lightblue" />
+      <div className="absolute w-64 h-64 rounded-full -top-20 -right-20 bg-pattern bg-brand-lightblue" />
 
       <div className="rounded-full absolute -bottom-1/2 -left-1/2 bg-pattern w-[40rem] h-[40rem] bg-brand-yellow" />
 
       <Swiper
-        autoplay={{ delay: 3000 }}
+        autoplay={{
+          delay: 3000,
+          pauseOnMouseEnter: false,
+          disableOnInteraction: false,
+        }}
         speed={1000}
         loop
         navigation
@@ -37,6 +42,7 @@ export default function Onboarding() {
         <SwiperSlide className="flex items-center justify-center">
           <div className="h-80 w-80_">
             <Image
+              priority
               width={100}
               height={80}
               src="/images/onboarding/finance.svg"
@@ -47,6 +53,7 @@ export default function Onboarding() {
         <SwiperSlide className="flex items-center justify-center">
           <div className="h-60 w-60">
             <Image
+              priority
               width={80}
               height={80}
               src="/images/onboarding/chat.svg"

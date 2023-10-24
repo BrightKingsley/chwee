@@ -10,6 +10,7 @@ import {
   ChatContextProvider,
   ModalContextProvider,
   NotificationContextProvider,
+  PushNotificationProvider,
   ScreenContext,
   ThemeContextProvider,
 } from "@/context";
@@ -83,24 +84,26 @@ export default function RootLayout({
       <div id="notification" />
       <AuthContextProvider>
         <ThemeContextProvider>
-          <NotificationContextProvider>
-            <ModalContextProvider>
-              <ScreenContext>
-                <ChatContextProvider>
-                  <main className="md:flex bg-pattern h-screen w-screen">
-                    <Navbar />
-                    <div className="w-screen md:w-[calc(100vw-3.5rem)]">
-                      {children}
-                    </div>
-                    <div className="fixed bottom-0 left-0">
-                      <PortalElements />
-                    </div>
-                  </main>
-                  <Rat />
-                </ChatContextProvider>
-              </ScreenContext>
-            </ModalContextProvider>
-          </NotificationContextProvider>
+          <PushNotificationProvider>
+            <NotificationContextProvider>
+              <ModalContextProvider>
+                <ScreenContext>
+                  <ChatContextProvider>
+                    <main className="w-screen h-screen md:flex bg-pattern">
+                      <Navbar />
+                      <div className="w-screen md:w-[calc(100vw-3.5rem)]">
+                        {children}
+                      </div>
+                      <div className="fixed bottom-0 left-0">
+                        <PortalElements />
+                      </div>
+                    </main>
+                    <Rat />
+                  </ChatContextProvider>
+                </ScreenContext>
+              </ModalContextProvider>
+            </NotificationContextProvider>
+          </PushNotificationProvider>
         </ThemeContextProvider>
       </AuthContextProvider>
     </>

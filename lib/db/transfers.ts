@@ -1,6 +1,7 @@
-import { Transaction, User, Wallet } from "@/models";
+import { FcmToken, Transaction, User, Wallet } from "@/models";
 import { formatToNumberWithDecimal, stringToObjectId } from "../utils";
 import mongoose from "mongoose";
+import { sendNotification } from "../config/firebaseAdmin";
 
 export async function transferToChweeWallet({
   amount: amnt,
@@ -90,6 +91,13 @@ export async function transferToChweeWallet({
     senderWallet.save();
     receiverWallet.save();
     transaction.save();
+
+    const fcmToken = await FcmToken.findOne({ userID: receiverID.toString() });
+
+    sendNotification({
+      notification: { body: "Funds Sent Successfully", title: "Success" },
+      registrationToken: fcmToken && fcmToken.token ? fcmToken.token : "",
+    });
 
     console.log("Transfer", { senderWallet, receiverWallet });
 
