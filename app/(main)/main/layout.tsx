@@ -84,26 +84,25 @@ export default function RootLayout({
       <div id="notification" />
       <AuthContextProvider>
         <ThemeContextProvider>
-          <PushNotificationProvider>
-            <NotificationContextProvider>
-              <ModalContextProvider>
-                <ScreenContext>
-                  <ChatContextProvider>
-                    <main className="w-screen h-screen md:flex bg-pattern">
-                      <Navbar />
-                      <div className="w-screen md:w-[calc(100vw-3.5rem)]">
-                        {children}
-                      </div>
-                      <div className="fixed bottom-0 left-0">
-                        <PortalElements />
-                      </div>
-                    </main>
-                    <Rat />
-                  </ChatContextProvider>
-                </ScreenContext>
-              </ModalContextProvider>
-            </NotificationContextProvider>
-          </PushNotificationProvider>
+          <NotificationContextProvider>
+            <ModalContextProvider>
+              <ScreenContext>
+                <ChatContextProvider>
+                  <PushNotificationProvider />
+                  <main className="w-screen h-screen md:flex bg-pattern">
+                    <Navbar />
+                    <div className="w-screen md:w-[calc(100vw-3.5rem)]">
+                      {children}
+                    </div>
+                    <div className="fixed bottom-0 left-0">
+                      <PortalElements />
+                    </div>
+                  </main>
+                  <Rat />
+                </ChatContextProvider>
+              </ScreenContext>
+            </ModalContextProvider>
+          </NotificationContextProvider>
         </ThemeContextProvider>
       </AuthContextProvider>
     </>
