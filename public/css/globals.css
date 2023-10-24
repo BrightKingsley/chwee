@@ -24,7 +24,7 @@
   -webkit-touch-callout: rgba(var(--primary) / 0.2);
   -webkit-user-drag: none;
   -webkit-user-drag: none;
-  -khtml-user-select:none;
+  -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
@@ -55,15 +55,15 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .test {
   background-color: #eeeeee;
-  background-color: #FFBA1F;
-  background-color: #31003A;
-  background-color: #44004E;
-    background-color: #FAF0FC;
-    background-color: #ECDFEF;
-    background-color: #44004E;
-      background-color: #EC4545;
-      background-color: #FAF0FC;
-        background-color: #FAF0FC;
+  background-color: #ffba1f;
+  background-color: #31003a;
+  background-color: #44004e;
+  background-color: #faf0fc;
+  background-color: #ecdfef;
+  background-color: #44004e;
+  background-color: #ec4545;
+  background-color: #faf0fc;
+  background-color: #faf0fc;
 }
 
 .bg-pattern {
@@ -79,7 +79,6 @@ input[type="number"]::-webkit-outer-spin-button {
   background-position: center;
   background-size: cover;
 }
-
 
 .swiper-pagination-bullet-active {
   background-color: #f4511e !important;
