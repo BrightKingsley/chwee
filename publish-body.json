@@ -1,0 +1,10 @@
+{
+  "interests": ["@generalChat"],
+  "web": {
+    "notification": {
+      "title": "Hello",
+      "body": "Hello, Gen_Chat!",
+      "deep_link": "https://chwee.vercel.app/main/chat"
+    }
+  }
+}

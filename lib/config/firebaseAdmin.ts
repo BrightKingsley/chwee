@@ -1,3 +1,4 @@
+/*
 import { initializeApp, applicationDefault } from "firebase-admin/app";
 import { Message, getMessaging } from "firebase-admin/messaging";
 
@@ -39,3 +40,4 @@ export function sendNotification({
       console.log("Error sending message:", error);
     });
 }
+*/

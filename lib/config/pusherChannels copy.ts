@@ -4,9 +4,8 @@ import PusherClient from "pusher-js";
 export const pusherServer = new PusherServer({
   appId: "1670973",
   // key: process.env.PUSHER_APIKEY as string,
-  
-  key: 
-  "7c895a59e881e3c9a5dc",
+
+  key: "7c895a59e881e3c9a5dc",
   // secret: process.env.PUSHER_SECRET as string,
   secret: "5b248c4f126d00a39d15",
   cluster: "eu",

@@ -1,18 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { getMessaging, onMessage } from "firebase/messaging";
+// import { getMessaging, onMessage } from "firebase/messaging";
 // import { useFcmToken } from "@/hooks";
 import { useSession } from "next-auth/react";
 import { BASE_URL } from "@/constants/routes";
-import { firebaseCloudMessaging } from "@/lib/config/firebaseClient";
+import { initializeBeamsClient } from "@/lib/config/pusherBeams";
+// import { firebaseCloudMessaging } from "@/lib/config/firebaseClient";
 
 export default function PushNotificationProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { data } = useSession();
-  const session = data;
+  // const { data } = useSession();
+  // const session = data;
 
   // const { fcmToken, notificationPermissionStatus } = useFcmToken();
   // // Use the token as needed
@@ -47,26 +48,49 @@ export default function PushNotificationProvider({
   // }, []);
 
   const [mounted, setMounted] = useState(false);
-  if (mounted) {
-    firebaseCloudMessaging.onMessage();
-  }
+  // if (mounted) {
+  //   firebaseCloudMessaging.onMessage();
+  // }
+  // useEffect(() => {
+  //   firebaseCloudMessaging.init();
+  //   const setToken = async () => {
+  //     const token = await firebaseCloudMessaging.tokenInlocalforage();
+  //     const response = await fetch(`${BASE_URL}/api/notifications`, {
+  //       method: "POST",
+  //       body: JSON.stringify({ fcmToken: token }),
+  //     });
+  //     const data = await response.json();
+  //     console.log("FCM_TOKEN_REPONSE", { data });
+  //     if (token) {
+  //       setMounted(true);
+  //       // not working
+  //     }
+  //   };
+  //   const result = setToken();
+  //   console.log("result", result);
+  // }, []);
+
   useEffect(() => {
-    firebaseCloudMessaging.init();
-    const setToken = async () => {
-      const token = await firebaseCloudMessaging.tokenInlocalforage();
-      const response = await fetch(`${BASE_URL}/api/notifications`, {
-        method: "POST",
-        body: JSON.stringify({ fcmToken: token }),
-      });
-      const data = await response.json();
-      console.log("FCM_TOKEN_REPONSE", { data });
-      if (token) {
-        setMounted(true);
-        // not working
-      }
-    };
-    const result = setToken();
-    console.log("result", result);
+    console.log("REGISTER REACCHEED");
+
+    if ("serviceWorker" in navigator) {
+      console.log("WORKER TRUE");
+
+      navigator.serviceWorker
+        .register("/service-worker.js") // Specify the correct path to your service worker file.
+        .then((registration) => {
+          console.log(
+            "Service Worker registered with scope:",
+            registration.scope
+          );
+        })
+        .then(() => {
+          initializeBeamsClient();
+        })
+        .catch((error) => {
+          console.error("Service Worker registration failed:", error);
+        });
+    }
   }, []);
 
   return <>{children}</>;

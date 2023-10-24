@@ -1,3 +1,4 @@
+/*
 "use client";
 import { useEffect, useState } from "react";
 import { getMessaging, getToken } from "firebase/messaging";
@@ -44,3 +45,5 @@ import { getMessaging, getToken } from "firebase/messaging";
 // };
 
 // export default useFcmToken;
+
+*/
