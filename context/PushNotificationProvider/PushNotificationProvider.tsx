@@ -4,14 +4,11 @@ import React, { useEffect, useState } from "react";
 // import { useFcmToken } from "@/hooks";
 import { useSession } from "next-auth/react";
 import { BASE_URL } from "@/constants/routes";
-import { initializeBeamsClient } from "@/lib/config/pusherBeams";
 // import { firebaseCloudMessaging } from "@/lib/config/firebaseClient";
 
-export default function PushNotificationProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+import * as PusherPushNotifications from "@pusher/push-notifications-web";
+
+export default function PushNotificationProvider() {
   // const { data } = useSession();
   // const session = data;
 
@@ -70,11 +67,35 @@ export default function PushNotificationProvider({
   //   console.log("result", result);
   // }, []);
 
+  // function initializeBeamsClient() {
+  // beamsClient
+  //   .start()
+  //   .then((result) => {
+  //     const beamsClient = result as unknown as PusherPushNotifications.Client;
+  //     return beamsClient.getDeviceId();
+  //   })
+  //   .then(async (deviceId) => {
+  //     console.log("Successfully registered with Beams. Device ID:", deviceId);
+  //     const response = await fetch(`${BASE_URL}/api/notifications`, {
+  //       method: "POST",
+  //       body: JSON.stringify({ fcmToken: deviceId }),
+  //     });
+  //     const data = await response.json();
+  //     console.log("FCM_TOKEN_REPONSE", { data });
+  //   })
+  //   .then(() => beamsClient.addDeviceInterest("@generalChat"))
+  //   .then(() => beamsClient.getDeviceInterests())
+  //   .then((interests) => console.log("Current interests:", interests))
+  //   .catch(console.error);
+  // }
+
   useEffect(() => {
     console.log("REGISTER REACCHEED");
 
-    if ("serviceWorker" in navigator) {
-      console.log("WORKER TRUE");
+    if (window && "serviceWorker" in navigator) {
+      const beamsClient = new PusherPushNotifications.Client({
+        instanceId: process.env.NEXT_PUBLIC_PUSHER_INSTANCE_ID as string,
+      });
 
       navigator.serviceWorker
         .register("/service-worker.js") // Specify the correct path to your service worker file.
@@ -85,7 +106,29 @@ export default function PushNotificationProvider({
           );
         })
         .then(() => {
-          initializeBeamsClient();
+          beamsClient
+            .start()
+            .then((result) => {
+              const beamsClient =
+                result as unknown as PusherPushNotifications.Client;
+              return beamsClient.getDeviceId();
+            })
+            .then(async (deviceId) => {
+              console.log(
+                "Successfully registered with Beams. Device ID:",
+                deviceId
+              );
+              const response = await fetch(`${BASE_URL}/api/notifications`, {
+                method: "POST",
+                body: JSON.stringify({ fcmToken: deviceId }),
+              });
+              const data = await response.json();
+              console.log("FCM_TOKEN_REPONSE", { data });
+            })
+            .then(() => beamsClient.addDeviceInterest("@generalChat"))
+            .then(() => beamsClient.getDeviceInterests())
+            .then((interests) => console.log("Current interests:", interests))
+            .catch(console.error);
         })
         .catch((error) => {
           console.error("Service Worker registration failed:", error);
@@ -93,5 +136,5 @@ export default function PushNotificationProvider({
     }
   }, []);
 
-  return <>{children}</>;
+  return <></>;
 }
