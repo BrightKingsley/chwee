@@ -15,9 +15,9 @@ const withPWA = require("next-pwa")({
   skipWaiting: true,
   disable: process.env.NODE_ENV === "development",
   fallbacks: {
-    document: "/_offline",
+    document: "/app/_offline",
   },
-  sw: "service-worker",
+  importScripts: ["/service-worker.js"],
 });
 
 module.exports = withPWA({
