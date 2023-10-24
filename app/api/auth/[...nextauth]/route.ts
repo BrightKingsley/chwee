@@ -18,7 +18,6 @@ import { signJwtAccessToken } from "@/lib/jwt";
 import { BASE_URL } from "@/constants/routes";
 import { Jwt, JwtPayload } from "jsonwebtoken";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import { sendNotification } from "@/lib/config/firebaseAdmin";
 // import { clientPromise } from "@/lib/config";
 
 export const authOptions: NextAuthOptions = {
@@ -182,10 +181,6 @@ export const authOptions: NextAuthOptions = {
 
         // const accessToken = signJwtAccessToken({ payload: userWithoutPass });
         console.log("USER_RETURNED: ", user);
-        sendNotification({
-          notification: { body: "This is a text notification", title: "Test" },
-          registrationToken: "",
-        });
 
         return true;
       } catch (error) {

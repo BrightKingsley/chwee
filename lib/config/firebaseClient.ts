@@ -1,4 +1,4 @@
-import { getApp, getApps, initializeApp } from "firebase/app";
+/* import { getApp, getApps, initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import localforage from "localforage";
 
@@ -68,3 +68,4 @@ const firebaseCloudMessaging = {
 };
 
 export { firebaseCloudMessaging };
+*/

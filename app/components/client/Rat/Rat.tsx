@@ -10,7 +10,6 @@ export default function Rat() {
   useEffect(() => {
     console.log("LOGOUT_RAT_SESSION", session);
     // if (session && !session?.user.id) signOut();
-    console.log("LOGOUT_RAT_SESSION: ", session);
   }, [session]);
   return <></>;
 }
