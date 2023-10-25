@@ -38,7 +38,7 @@ import { ChatClass } from ".";
 @index(
   { tag: "text", username: "text" },
   {
-    unique: true,
+    // unique: true,
     default_language: "english",
     weights: {
       tag: 3,

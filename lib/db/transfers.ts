@@ -106,26 +106,26 @@ export async function transferToChweeWallet({
     receiverWallet.save();
     transaction.save();
 
-    pushNotificationToUser({
+    await pushNotificationToUser({
       users: [senderID.toString()],
       title: "Debit",
       body: `Transfer of ₦${amount} successful`,
       deep_link: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
     });
-    pushNotificationToUser({
+    await pushNotificationToUser({
       users: [receiverID.toString()],
       title: "Credit",
       body: `You received ₦${amount}`,
       deep_link: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
     });
-    createNotification({
+    await createNotification({
       userID: senderID,
       title: "Debit",
       body: "Transaction successful",
       route: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
       type: "wallet",
     });
-    createNotification({
+    await createNotification({
       userID: receiverID.toString(),
       title: "Credit",
       body: "Credit",

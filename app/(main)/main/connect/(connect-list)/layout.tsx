@@ -19,7 +19,7 @@ export default function ConnectionsLayout({
       />
       <div className="space-y-4">
         <div className="md:max-w-md">
-          <SearchBar collection="users" getSearchResults={() => {}} />
+          <SearchBar collection="users" />
         </div>
         <div className="px-2 space-y-2 md:grid md:grid-cols-2 md:space-y-0 md:gap-2">
           {children}
