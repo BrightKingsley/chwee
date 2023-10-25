@@ -75,7 +75,7 @@ export default function UsersModal({
         <div className="w-1/3 h-1 mx-auto my-3 bg-gray-300 rounded-full" />
         <div className="px-6">
           <SearchBar
-            // getSearchResults={handleSearchBar}
+            getSearchResults={handleSearchBar}
             onFocus={() => SetFullHeight(true)}
             onBlur={() => SetFullHeight(false)}
             collection="users"
@@ -115,7 +115,7 @@ export default function UsersModal({
             </MyListTile>
           ))
         ) : (
-          <div className="pt-20 w-fit mx-auto">
+          <div className="pt-20 mx-auto w-fit">
             <p className="text-gray-700">No users available</p>
           </div>
         )}

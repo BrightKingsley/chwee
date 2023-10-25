@@ -6,8 +6,12 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q") || "";
   try {
+    // const usersDocs = await User.find({
+    //   $text: { $search: query },
+    // });
+
     const usersDocs = await User.find({
-      $text: { $search: query },
+      username: { $regex: query, $options: "i" },
     });
 
     console.log("USERS FROM SEARCH", { usersDocs });

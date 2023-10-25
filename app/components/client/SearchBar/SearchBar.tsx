@@ -11,14 +11,14 @@ export default function SearchBar({
   placeholder = "search",
   onFocus,
   onBlur,
-}: // getSearchResults,
-{
+  getSearchResults,
+}: {
   collection: "users" | "groups" | "events";
   disabled?: boolean;
   placeholder?: string;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
-  // getSearchResults?: any;
+  getSearchResults?: any;
 }) {
   const [query, setQuery] = useState("");
 
@@ -26,18 +26,18 @@ export default function SearchBar({
     e.preventDefault();
   };
 
-  // useEffect(() => {
-  //   if (!query || !getSearchResults) return;
-  //   const timeout = setTimeout(async () => {
-  //     const response = await fetch(
-  //       `${BASE_URL}/api/search/${collection}?q=${query}`
-  //     );
-  //     const suggestion = await response.json();
-  //     if (!suggestion) return getSearchResults([]);
-  //     getSearchResults(suggestion);
-  //   }, 500);
-  //   return () => clearTimeout(timeout);
-  // }, [query]);
+  useEffect(() => {
+    if (!query || !getSearchResults) return;
+    const timeout = setTimeout(async () => {
+      const response = await fetch(
+        `${BASE_URL}/api/search/${collection}?q=${query}`
+      );
+      const suggestion = await response.json();
+      if (!suggestion) return getSearchResults([]);
+      getSearchResults(suggestion);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [query]);
 
   return (
     <form
