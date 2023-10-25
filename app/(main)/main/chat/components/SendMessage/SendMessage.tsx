@@ -154,6 +154,18 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
     }
   };
 
+  const handleSearchForMember = (
+    searchMembers: { image: string; tag: string; name: string }[]
+  ) => {
+    const members: { photo: string; tag: string; username: string }[] =
+      searchMembers.map((member) => ({
+        photo: member.image,
+        tag: member.tag,
+        username: member.name,
+      }));
+    setMembersModal((prev) => ({ ...prev, members }));
+  };
+
   const handleShowMembers = () => {
     setMembersModal((prev) => ({ ...prev, show: false }));
   };
@@ -479,6 +491,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
         handleItemClicked={handleMemberClicked}
         handleShowModal={handleShowMembers}
         overlay
+        handleSearch={handleSearchForMember}
       />
     </>
   );

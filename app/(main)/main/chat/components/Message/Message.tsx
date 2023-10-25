@@ -28,7 +28,7 @@ import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { usePathname } from "next/navigation";
 import { ChatContext, ModalContext } from "@/context";
-import { textCode } from "@/constants/codes";
+import { textCode } from "@/constants/utils";
 import { decodeTextContent } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { MessageProps } from "../types";

@@ -2,6 +2,7 @@
 import { Group, User } from "@/models";
 import connectDB from "./connect-db";
 import {
+  dbToClientGroup,
   formatTag,
   generatePassword,
   lettersAndNumbersOnly,
@@ -474,17 +475,9 @@ export async function getGroups({ filter }: { filter?: GroupFilter }) {
 
     if (!groupDocs) throw new Error("Couldnt get Groups");
 
-    const groups: ClientGroup[] = groupDocs.map((group) => ({
-      _id: group._id.toString(),
-      admins: group.admins,
-      description: group.description,
-      members: group.members,
-      name: group.name,
-      owner: group.owner.toString(),
-      photo: group.photo,
-      tag: group.tag,
-      hasPassWord: group.password.length > 0,
-    }));
+    const groups: ClientGroup[] = groupDocs.map((group) =>
+      dbToClientGroup(group)
+    );
 
     console.log("GROUPSS:", groups);
     return groups;

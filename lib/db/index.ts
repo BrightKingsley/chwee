@@ -47,5 +47,6 @@ export {
   deleteUserConnection,
 } from "./connections";
 export { transferToChweeWallet } from "./transfers";
+export { createNotification, getNotifications } from "./notifications";
 
 export { default as connectDB } from "./connect-db";

@@ -35,7 +35,17 @@ import { ChatClass } from ".";
     allowMixed: Severity.ALLOW,
   },
 })
-@index({ tag: 1 })
+@index(
+  { tag: "text", username: "text" },
+  {
+    unique: true,
+    default_language: "english",
+    weights: {
+      tag: 3,
+      userName: 2,
+    },
+  }
+)
 class UserClass {
   @prop({ required: true })
   public username: string;

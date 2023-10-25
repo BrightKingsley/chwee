@@ -132,7 +132,7 @@ export default function Landing() {
             >
               <Button className="">Get the app</Button>
             </Link>
-            <div className="flex items-center gap-2 text-primary">
+            <div className="flex items-center text-primary">
               <IconButton aria-label="get for desktop" title="get for desktop">
                 <ComputerDesktopIcon className="w-6 h-6" />
               </IconButton>

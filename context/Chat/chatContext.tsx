@@ -125,7 +125,7 @@ export const ChatContextProvider = ({
   const [membersModal, setMembersModal] = useState<{
     loading: boolean;
     show: boolean;
-    members: ClientUser[];
+    members: { tag: string; username: string; photo: string }[];
     value: string;
   }>({
     loading: false,

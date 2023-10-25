@@ -1,55 +1,48 @@
 "use client";
 
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { IconButton } from "@/app/components/mui";
-
 import SearchLineIcon from "remixicon-react/SearchLineIcon";
-import { useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
+import { BASE_URL } from "@/constants/routes";
 
-const initialState: ReducerState = {
-  me: "Kvng",
-  you: "Babe",
-  us: "married",
-};
-
-type ReducerState = {
-  me: string;
-  you: string;
-  us: string;
-};
-
-const myreducer = (state: ReducerState, action: string): ReducerState => {
-  console.log(action);
-  return {
-    me: "",
-    us: "",
-    you: "",
-  };
-};
-
-export default function SearchLineIconBar({
+export default function SearchBar({
   collection,
   disabled = false,
   placeholder = "search",
   onFocus,
   onBlur,
-}: {
-  collection: string;
+}: // getSearchResults,
+{
+  collection: "users" | "groups" | "events";
   disabled?: boolean;
   placeholder?: string;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  // getSearchResults?: any;
 }) {
-  const [state, dispatch] = useReducer(myreducer, initialState);
+  const [query, setQuery] = useState("");
 
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
   };
 
+  // useEffect(() => {
+  //   if (!query || !getSearchResults) return;
+  //   const timeout = setTimeout(async () => {
+  //     const response = await fetch(
+  //       `${BASE_URL}/api/search/${collection}?q=${query}`
+  //     );
+  //     const suggestion = await response.json();
+  //     if (!suggestion) return getSearchResults([]);
+  //     getSearchResults(suggestion);
+  //   }, 500);
+  //   return () => clearTimeout(timeout);
+  // }, [query]);
+
   return (
     <form
       onSubmit={(e) => handleSubmit(e)}
-      className="flex items-center gap-2 mx-2 mt-4"
+      className="flex relative items-center gap-2 mx-2 mt-4"
     >
       <input
         disabled={disabled}
@@ -62,6 +55,7 @@ export default function SearchLineIconBar({
           disabled &&
           "cursor-not-allowed bg-gray-200 outline-red-400 outline-dashed"
         }`}
+        onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
       />
       <IconButton

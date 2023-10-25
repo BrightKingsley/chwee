@@ -5,6 +5,7 @@ import {
   prop,
   post,
   type Ref,
+  index,
 } from "@typegoose/typegoose";
 import mongoose, { Schema } from "mongoose";
 import { User, UserClass } from "./User";
@@ -35,10 +36,20 @@ import { ConversationClass } from "./Conversation";
     allowMixed: Severity.ALLOW,
   },
 })
-
 // class Member extends UserClass {
 //   isBlocked: false;
 // }
+@index(
+  { tag: "text", name: "text" },
+  {
+    unique: true,
+    default_language: "english",
+    weights: {
+      tag: 3,
+      name: 2,
+    },
+  }
+)
 class GroupClass {
   @prop({ required: true })
   public name: string;

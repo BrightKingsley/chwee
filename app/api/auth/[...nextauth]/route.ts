@@ -144,7 +144,7 @@ export const authOptions: NextAuthOptions = {
         console.log("ALSO_REACHED!!!");
 
         let googleProfile: GoogleProfile = profile as GoogleProfile;
-        let user: any;
+        let user: UserClass;
 
         if (!profile || !profile.email)
           throw new Error("Google profile not found");
@@ -178,6 +178,8 @@ export const authOptions: NextAuthOptions = {
           if (!newUser) return false;
           user = newUser;
         }
+
+        if (!user) return false;
 
         // const accessToken = signJwtAccessToken({ payload: userWithoutPass });
         console.log("USER_RETURNED: ", user);
@@ -217,7 +219,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user?.email) {
         try {
           await connectDB();
-          const userFromDB: any = await User.findOne({
+          const userFromDB = await User.findOne({
             email: session.user.email,
           });
 

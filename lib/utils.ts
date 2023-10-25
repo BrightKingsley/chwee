@@ -1,7 +1,15 @@
-import { textCode } from "@/constants/codes";
-import { UserClass } from "@/models";
-import { ClientUser } from "@/types/models";
+import { textCode } from "@/constants/utils";
+import { GroupClass, UserClass } from "@/models";
+import { ClientGroup, ClientUser } from "@/types/models";
 import mongoose from "mongoose";
+
+export function shouldRunFunction(func: string) {
+  const hasRunBefore = getItemFromLocalStorage(func);
+  console.log(hasRunBefore, !hasRunBefore);
+
+  return !hasRunBefore;
+}
+
 // import bcrypt from "bcrypt";
 // REPLACE_ELEMENT_IN_STRING
 export const replaceWith = ({
@@ -69,6 +77,22 @@ export function dbToClientUser(dbUser: UserClass) {
   return user;
 }
 
+export function dbToClientGroup(dbGroup: GroupClass) {
+  const group: ClientGroup = {
+    _id: dbGroup._id.toString(),
+    admins: dbGroup.admins,
+    description: dbGroup.description,
+    members: dbGroup.members,
+    name: dbGroup.name,
+    owner: dbGroup.owner.toString(),
+    photo: dbGroup.photo,
+    tag: dbGroup.tag,
+    hasPassWord: dbGroup.password.length > 0,
+  };
+
+  return group;
+}
+
 // FORMAT_LINK
 export function formatLink({
   string,
@@ -98,9 +122,9 @@ export const addItemToLocalStorage = ({
   localStorage.setItem(name, item);
 };
 
-export const getItemFromLocalStorage = (name: string) => {
+export function getItemFromLocalStorage(name: string) {
   return localStorage.getItem(name);
-};
+}
 
 export const removeItemFromLocalStorage = (name: string) => {
   console.log("removing");
