@@ -1,3 +1,4 @@
+import { Group, User } from "@/models";
 import _mongoose, { connect } from "mongoose";
 
 declare global {
@@ -38,6 +39,8 @@ async function connectDB() {
     cached.promise = connect(MONGODB_URI!, opts)
       .then((mongoose) => {
         console.log("✅ New connection established");
+        User.createIndexes();
+        Group.createIndexes();
         return mongoose;
       })
       .catch((error) => {

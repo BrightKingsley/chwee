@@ -15,6 +15,7 @@ export default function UsersModal({
   handleShowModal,
   overlay = false,
   handleItemClicked,
+  handleSearch,
 }: {
   userList: { tag: string; photo: string; username: string }[];
   show: boolean;
@@ -22,12 +23,17 @@ export default function UsersModal({
   handleShowModal: Function;
   overlay?: boolean;
   handleItemClicked: Function;
+  handleSearch?: Function;
 }) {
   const [fullHeight, SetFullHeight] = useState(false);
 
   useEffect(() => {
     console.log({ userList });
   }, [userList]);
+
+  const handleSearchBar = (result: any) => {
+    handleSearch && handleSearch(result);
+  };
 
   return (
     <>
@@ -69,9 +75,10 @@ export default function UsersModal({
         <div className="w-1/3 h-1 mx-auto my-3 bg-gray-300 rounded-full" />
         <div className="px-6">
           <SearchBar
+            // getSearchResults={handleSearchBar}
             onFocus={() => SetFullHeight(true)}
             onBlur={() => SetFullHeight(false)}
-            collection="members"
+            collection="users"
             disabled={loading || userList.length < 1}
             placeholder="Search for Member"
           />

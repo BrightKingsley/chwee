@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
       if (!credentials || !(credentials.email && credentials?.password)) return;
 
-      const user: UserClass | any = await User.find({
+      const user: UserClass | any = await User.findOne({
         email: credentials.email,
       });
 

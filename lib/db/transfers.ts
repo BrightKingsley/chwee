@@ -1,7 +1,14 @@
 import { FcmToken, Transaction, User, Wallet } from "@/models";
 import { formatToNumberWithDecimal, stringToObjectId } from "../utils";
 import mongoose from "mongoose";
+import { pushNotificationToUser } from "../config/notificationHandler";
+import { createNotification } from "./notifications";
 // import { sendNotification } from "../config/firebaseAdmin";
+
+const baseUrl =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3000"
+    : "https://chwee.vercel.app";
 
 export async function transferToChweeWallet({
   amount: amnt,
@@ -66,6 +73,13 @@ export async function transferToChweeWallet({
         // TODO check status confirmation
         status: "declined",
       });
+
+      pushNotificationToUser({
+        users: [senderID.toString()],
+        title: "Transfer to chwee wallet",
+        body: "Transaction failed. Insufficient balance",
+        deep_link: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
+      });
       return "Insufficient Balance";
     }
 
@@ -92,12 +106,32 @@ export async function transferToChweeWallet({
     receiverWallet.save();
     transaction.save();
 
-    const fcmToken = await FcmToken.findOne({ userID: receiverID.toString() });
-
-    // sendNotification({
-    //   notification: { body: "Funds Sent Successfully", title: "Success" },
-    //   registrationToken: fcmToken && fcmToken.token ? fcmToken.token : "",
-    // });
+    pushNotificationToUser({
+      users: [senderID.toString()],
+      title: "Debit",
+      body: `Transfer of ₦${amount} successful`,
+      deep_link: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
+    });
+    pushNotificationToUser({
+      users: [receiverID.toString()],
+      title: "Credit",
+      body: `You received ₦${amount}`,
+      deep_link: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
+    });
+    createNotification({
+      userID: senderID,
+      title: "Debit",
+      body: "Transaction successful",
+      route: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
+      type: "wallet",
+    });
+    createNotification({
+      userID: receiverID.toString(),
+      title: "Credit",
+      body: "Credit",
+      route: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
+      type: "wallet",
+    });
 
     console.log("Transfer", { senderWallet, receiverWallet });
 

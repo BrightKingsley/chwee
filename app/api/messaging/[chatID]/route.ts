@@ -16,7 +16,7 @@ import { decodeTextContent, stringToObjectId } from "@/lib/utils";
 import { Conversation } from "@/models/Conversation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
-import { textCode } from "@/constants/codes";
+import { textCode } from "@/constants/utils";
 
 type PostProps = {
   params: {

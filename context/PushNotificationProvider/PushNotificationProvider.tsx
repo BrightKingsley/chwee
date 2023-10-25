@@ -1,24 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
-// import { getMessaging, onMessage } from "firebase/messaging";
-// import { useFcmToken } from "@/hooks";
 import { useSession } from "next-auth/react";
 import { BASE_URL } from "@/constants/routes";
-// import { firebaseCloudMessaging } from "@/lib/config/firebaseClient";
 
 import * as PusherPushNotifications from "@pusher/push-notifications-web";
+import { addItemToLocalStorage, shouldRunFunction } from "@/lib/utils";
 
 export default function PushNotificationProvider() {
   const [mounted, setMounted] = useState(false);
+
+  const { data } = useSession();
+  const session = data;
 
   useEffect(() => {
     console.log("REGISTER REACCHEED");
 
     if (window && "serviceWorker" in navigator) {
-      // const beamsClient = new PusherPushNotifications.Client({
-      //   instanceId: process.env.NEXT_PUBLIC_PUSHER_INSTANCE_ID as string,
-      // });
-
       navigator.serviceWorker
         .register("/service-worker.js") // Specify the correct path to your service worker file.
         .then((registration) => {
@@ -35,34 +32,60 @@ export default function PushNotificationProvider() {
                   .NEXT_PUBLIC_PUSHER_INSTANCE_ID as string,
                 serviceWorkerRegistration: serviceWorkerRegistration,
               });
+              if (!session || !session.user || !session.user.id)
+                return beamsClient.stop().catch(console.error);
+
+              beamsClient.getUserId().then((userId) => {
+                if (userId !== session?.user.id)
+                  return beamsClient.stop().catch(console.error);
+              });
+              // if (shouldRunFunction("requestNotificationPermissionHasRun")) {
+              const beamsTokenProvider =
+                new PusherPushNotifications.TokenProvider({
+                  url: `${BASE_URL}/api/pusher/beams-auth`,
+                });
+
               beamsClient
                 .start()
-                .then((result) => {
-                  const beamsClient =
-                    result as unknown as PusherPushNotifications.Client;
-                  return beamsClient.getDeviceId();
-                })
-                .then(async (deviceId) => {
-                  console.log(
-                    "Successfully registered with Beams. Device ID:",
-                    deviceId
-                  );
-                  const response = await fetch(
-                    `${BASE_URL}/api/notifications`,
-                    {
-                      method: "POST",
-                      body: JSON.stringify({ fcmToken: deviceId }),
-                    }
-                  );
-                  const data = await response.json();
-                  console.log("FCM_TOKEN_REPONSE", { data });
-                })
-                .then(() => beamsClient.addDeviceInterest("debug-@generalChat"))
-                .then(() => beamsClient.getDeviceInterests())
-                .then((interests) =>
-                  console.log("Current interests:", interests)
-                )
-                .catch(console.error);
+                .then(() =>
+                  beamsClient.setUserId(
+                    session?.user.id || "",
+                    beamsTokenProvider
+                  )
+                );
+              addItemToLocalStorage({
+                name: "requestNotificationPermissionHasRun",
+                item: true,
+              });
+              // }
+              // beamsClient
+              //   .start()
+              //   .then((result) => {
+              //     const beamsClient =
+              //       result as unknown as PusherPushNotifications.Client;
+              //     return beamsClient.getDeviceId();
+              //   })
+              //   .then(async (deviceId) => {
+              //     console.log(
+              //       "Successfully registered with Beams. Device ID:",
+              //       deviceId
+              //     );
+              //     const response = await fetch(
+              //       `${BASE_URL}/api/notifications`,
+              //       {
+              //         method: "POST",
+              //         body: JSON.stringify({ fcmToken: deviceId }),
+              //       }
+              //     );
+              //     const data = await response.json();
+              //     console.log("FCM_TOKEN_REPONSE", { data });
+              //   })
+              //   .then(() => beamsClient.addDeviceInterest("debug-@generalChat"))
+              //   .then(() => beamsClient.getDeviceInterests())
+              //   .then((interests) =>
+              //     console.log("Current interests:", interests)
+              //   )
+              //   .catch(console.error);
             }
           );
         })
