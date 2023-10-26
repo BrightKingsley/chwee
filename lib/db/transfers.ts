@@ -78,7 +78,7 @@ export async function transferToChweeWallet({
         users: [senderID.toString()],
         title: "Transfer to chwee wallet",
         body: "Transaction failed. Insufficient balance",
-        deep_link: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
+        deep_link: `${baseUrl}/main/wallet/transaction-history/${transaction._id.toString()}`,
       });
       return "Insufficient Balance";
     }
@@ -110,26 +110,26 @@ export async function transferToChweeWallet({
       users: [senderID.toString()],
       title: "Debit",
       body: `Transfer of ₦${amount} successful`,
-      deep_link: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
+      deep_link: `${baseUrl}/main/wallet/transaction-history/${transaction._id.toString()}`,
     });
     await pushNotificationToUser({
       users: [receiverID.toString()],
       title: "Credit",
       body: `You received ₦${amount}`,
-      deep_link: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
+      deep_link: `${baseUrl}/main/wallet/transaction-history/${transaction._id.toString()}`,
     });
     await createNotification({
       userID: senderID,
       title: "Debit",
       body: "Transaction successful",
-      route: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
+      route: `${baseUrl}/main/wallet/transaction-history/${transaction._id.toString()}`,
       type: "wallet",
     });
     await createNotification({
       userID: receiverID.toString(),
       title: "Credit",
       body: "Credit",
-      route: `${baseUrl}/wallet/transaction-history/${transaction._id.toString()}`,
+      route: `${baseUrl}/main/wallet/transaction-history/${transaction._id.toString()}`,
       type: "wallet",
     });
 

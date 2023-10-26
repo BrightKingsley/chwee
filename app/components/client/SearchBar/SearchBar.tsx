@@ -27,7 +27,8 @@ export default function SearchBar({
   };
 
   useEffect(() => {
-    if (!query || !getSearchResults) return;
+    if (!query || !getSearchResults || query.length === 0 || query.length < 3)
+      return;
     const timeout = setTimeout(async () => {
       const response = await fetch(
         `${BASE_URL}/api/search/${collection}?q=${query}`
@@ -42,7 +43,7 @@ export default function SearchBar({
   return (
     <form
       onSubmit={(e) => handleSubmit(e)}
-      className="flex relative items-center gap-2 mx-2 mt-4"
+      className="relative flex items-center gap-2 mx-2 mt-4"
     >
       <input
         disabled={disabled}
