@@ -42,7 +42,7 @@ import { ConversationClass } from "./Conversation";
 @index(
   { tag: "text", name: "text" },
   {
-    unique: true,
+    // unique: true, TODO
     default_language: "english",
     weights: {
       tag: 3,
