@@ -154,14 +154,15 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
     }
   };
 
+  // TODO: fix type check and simplify
   const handleSearchForMember = (
-    searchMembers: { image: string; tag: string; name: string }[]
+    searchMembers: { photo: string; tag: string; username: string }[]
   ) => {
     const members: { photo: string; tag: string; username: string }[] =
       searchMembers.map((member) => ({
-        photo: member.image,
+        photo: member.photo,
         tag: member.tag,
-        username: member.name,
+        username: member.username,
       }));
     setMembersModal((prev) => ({ ...prev, members }));
   };
@@ -362,7 +363,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
                 scale: 1,
               }}
               out={{ opacity: 0, scale: 0, translateY: 80 }}
-              className="absolute left-0 flex items-center gap-3 p-2 justify-evenly w-full mx-auto rounded-md bottom-16 h-fit"
+              className="absolute left-0 flex items-center w-full gap-3 p-2 mx-auto rounded-md justify-evenly bottom-16 h-fit"
             >
               {/* <div className="relative flex items-center w-full h-full gap-3 p-2 justify-evenly"> */}
               <Card

@@ -79,7 +79,7 @@ export default function UsersModal({
             onFocus={() => SetFullHeight(true)}
             onBlur={() => SetFullHeight(false)}
             collection="users"
-            disabled={loading || userList.length < 1}
+            disabled={loading}
             placeholder="Search for Member"
           />
         </div>
