@@ -23,10 +23,9 @@ export default async function Notifications() {
   return (
     <div className="w-full py-2 space-y-2 overflow-hidden">
       {userNotifications.map((notification, i) => (
-        <ListTile index={i} className="w-full gap-2 bg-white rounded-xl">
+        <ListTile key={Math.random()} index={i} className="w-full gap-2 bg-white rounded-xl">
           <Link
             href={notification.route}
-            key={Math.random()}
             className="flex items-center w-full gap-2 p-2 bg-white rounded-lg bg-primary/10_"
           >
             <div className="w-12 h-12 rounded-full overflow-clip shrink-0">
