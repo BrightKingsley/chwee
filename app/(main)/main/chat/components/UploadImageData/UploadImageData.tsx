@@ -10,15 +10,12 @@ import { useContext } from "react";
 import { UploadFileResponse } from "uploadthing/client";
 import { ChatContext } from "@/context";
 import SendPlane2LineIcon from "remixicon-react/SendPlane2LineIcon";
-import { EffectCreative, Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination } from "swiper/modules";
 
 export default function UploadImageData({
-  startUpload,
+  handleSend,
 }: {
-  startUpload: (
-    files: File[],
-    input?: undefined
-  ) => Promise<UploadFileResponse[] | undefined>;
+  handleSend: Function;
 }) {
   const {
     previewImages,
@@ -27,13 +24,15 @@ export default function UploadImageData({
     sendMessage,
     message,
     setMessage,
+    resetInput,
   } = useContext(ChatContext);
   const handleUploadImage = async (e: React.SyntheticEvent) => {
     try {
       e.preventDefault();
+      setPreviewImages({ images: [], show: false });
       console.log({ selectedImages });
-      const res = await startUpload(selectedImages);
-      console.log("FRON_UPLOAD_IMG", { res });
+      const res = await handleSend(e);
+      console.log("FROM_UPLOAD_IMG", { res });
     } catch (error) {
       console.error(error);
     }
@@ -111,7 +110,7 @@ export default function UploadImageData({
                   textContent: e.target.value,
                 }))
               }
-              className="relative w-full p-1 text-gray-700 border-none outline-none resize-none bg-primary/10 rounded-lg focus:outline-primary before:w-full before:h-full before:absolute before:top-0 before:left-0"
+              className="relative w-full p-1 text-gray-700 border-none rounded-lg outline-none resize-none bg-primary/10 focus:outline-primary before:w-full before:h-full before:absolute before:top-0 before:left-0"
             />
           </div>
           <IconButton

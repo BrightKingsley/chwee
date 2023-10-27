@@ -69,7 +69,7 @@ export default async function Group({
           />,
         ]}
       />
-      <GroupChat params={params} />
+      <GroupChat params={params} userID={userID} />
       {/* </main> */}
     </>
   );

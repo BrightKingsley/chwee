@@ -6,41 +6,32 @@ import {
   UserIcon,
 } from "@heroicons/react/20/solid";
 
-import { AnimateInOut, OptionsMenu } from "@/app/components/client";
+import {
+  AnimateInOut,
+  CircularProgress,
+  OptionsMenu,
+} from "@/app/components/client";
 import { IconButton, Button } from "@/app/components/mui";
 import {
   Ref,
-  memo,
   useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { MotionContext, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ACCOUNT, CONNECT } from "@/constants/routes";
-import { MessageClass } from "@/models/Message";
-import { UserClass } from "@/models";
-import { SendMessageType } from "../SendMessage/types";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
-import { usePathname } from "next/navigation";
 import { ChatContext, ModalContext } from "@/context";
 import { textCode } from "@/constants/utils";
 import { decodeTextContent } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { MessageProps } from "../types";
-import { classNames } from "uploadthing/client";
-import {
-  LongPressCallback,
-  LongPressEventType,
-  LongPressHandlers,
-  LongPressOptions,
-  LongPressResult,
-  useLongPress,
-} from "use-long-press";
+import { LongPressEventType, useLongPress } from "use-long-press";
 
 const emotes = ["😂", "💩", "😢", "😭", "💔"];
 
@@ -49,6 +40,7 @@ export default function Message({
   userID, //TODO typecheck
   message: messageWithSenderData,
   roomType,
+  inTransit,
 }: MessageProps) {
   const { triggerModal } = useContext(ModalContext);
   const {
@@ -58,11 +50,16 @@ export default function Message({
     setReplyMessage,
     resetInput,
     setViewImages,
+    uploadProgress,
     inputRef,
   } = useContext(ChatContext);
 
   const [showMore, setShowMore] = useState(false);
-  const params = useParams();
+
+  // TODO: comeback to this, its linked with the circular progress/uploadprogress
+  useEffect(() => {
+    if (uploadProgress >= 100) inTransit = false;
+  }, [uploadProgress]);
 
   const messageData = {
     ...messageWithSenderData.senderInfo,
@@ -245,22 +242,21 @@ export default function Message({
       )}
       <div className="relative flex flex-col">
         <div
-          className={`absolute -bottom-2 ${
+          className={`absolute flex items-center py-1 gap-1 -bottom-2 ${
             sender === userID ? "-left-8" : "-right-8"
           } text-2xl`}
         >
-          {
-            <IconButton
-              onClick={() => setShowMore((prev) => !prev)}
-              className="rounded-full"
-            >
-              {showMore ? (
-                <XMarkIcon className="w-6 h-6 text-gray-600" />
-              ) : (
-                <EllipsisVerticalIcon className="w-6 h-6 text-gray-600" />
-              )}
-            </IconButton>
-          }
+          <IconButton
+            onClick={() => setShowMore((prev) => !prev)}
+            className="rounded-full"
+          >
+            {showMore ? (
+              <XMarkIcon className="w-6 h-6 text-gray-600" />
+            ) : (
+              <EllipsisVerticalIcon className="w-6 h-6 text-gray-600" />
+            )}
+          </IconButton>
+
           <div className="fixed z-20  -translate-x-1/2 -translate-y-1/2 !text-sm left-1/2 top-1/2">
             <OptionsMenu
               setShow={setShowMore}
@@ -306,7 +302,12 @@ export default function Message({
             {type === "conversation" ? (
               <>
                 {imageContent && imageContent.length > 0 && (
-                  <div className="grid rounded-md bg-brand-yellow/70 grid-cols-2 w-52 h-52 gap-[2px]">
+                  <div className="grid rounded-md bg-brand-yellow/70 grid-cols-2 w-52 h-52 gap-[2px] relative">
+                    <div className="absolute inset-0 m-auto">
+                      {inTransit && sender === userID && (
+                        <CircularProgress radius={20} value={uploadProgress} />
+                      )}
+                    </div>
                     {imageContent.slice(0, 4).map((image, i) => (
                       // <></>
                       <div

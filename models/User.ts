@@ -40,10 +40,10 @@ import { ChatClass } from ".";
   {
     // unique: true,
     default_language: "english",
-    weights: {
-      tag: 3,
-      userName: 2,
-    },
+    // weights: {
+    //   tag: 3,
+    //   userName: 2,
+    // },
   }
 )
 class UserClass {

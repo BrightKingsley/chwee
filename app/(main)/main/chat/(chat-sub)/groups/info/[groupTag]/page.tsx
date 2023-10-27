@@ -41,7 +41,7 @@ export default async function GroupInfo({
   if (!group)
     return (
       <div className="flex items-center justify-center w-screen h-screen">
-        <div className="space-y-4 text-center h-fit px-4">
+        <div className="px-4 space-y-4 text-center h-fit">
           <p className="text-3xl font-bold text-primary">
             {"Couldn't"} retrieve Group
           </p>
@@ -58,7 +58,7 @@ export default async function GroupInfo({
   if (!userFromSession || !userFromSession.id)
     return (
       <div className="flex items-center justify-center w-screen h-screen">
-        <div className="space-y-4 text-center h-fit px-4">
+        <div className="px-4 space-y-4 text-center h-fit">
           <p className="text-3xl font-bold text-primary">
             {"Couldn't"} retrieve User
           </p>
@@ -73,7 +73,7 @@ export default async function GroupInfo({
   if (!userDoc)
     return (
       <div className="flex items-center justify-center w-screen h-screen">
-        <div className="space-y-4 text-center h-fit px-4">
+        <div className="px-4 space-y-4 text-center h-fit">
           <p className="text-3xl font-bold text-primary">
             {"Couldn't"} retrieve User
           </p>
@@ -89,7 +89,7 @@ export default async function GroupInfo({
       <div className="flex flex-col h-screen pt-14">
         <div className="flex-1 h-full px-2 py-4 space-y-6 overflow-y-auto shrink-0">
           <div className="space-y-4">
-            <div className="w-32 mx-auto h-32 border rounded-full overflow-clip">
+            <div className="w-32 h-32 mx-auto border rounded-full overflow-clip">
               {group.photo ? (
                 <Image src={group.photo} alt="" fill />
               ) : (
@@ -97,14 +97,14 @@ export default async function GroupInfo({
               )}
             </div>
             <div className="mx-auto text-center w-fit">
-              <p className="text-3xl font-druk-wide-bold break-all">
+              <p className="text-3xl break-all font-druk-wide-bold">
                 {group.name}
               </p>
-              <p className="tetx-2xl break-all">{group.tag}</p>
-              <p className="tetx-xl mt-6 break-all">{group.description}</p>
+              <p className="break-all tetx-2xl">{group.tag}</p>
+              <p className="mt-6 break-all tetx-xl">{group.description}</p>
             </div>
           </div>
-          <div className="flex w-full_ gap-4 items-center w-fit mx-auto">
+          <div className="flex items-center gap-4 mx-auto w-full_ w-fit">
             <p className="font-bold">Members</p>
             <p className="ml-auto">{group.members.length}</p>
           </div>
@@ -120,9 +120,9 @@ export default async function GroupInfo({
             ) : userDoc.groups
                 .map((group) => group.toString())
                 .includes(group.id) ? (
-              <Link href={`${GROUPS}/info/${group.tag}?leave=true`}>
+              <Link href={`${GROUPS}/${group.id}`}>
                 <Button className="rounded-md font-druk-wide-bold" fullWidth>
-                  Leave Group
+                  Enter Chat
                 </Button>
               </Link>
             ) : userDoc.groupsRequested &&

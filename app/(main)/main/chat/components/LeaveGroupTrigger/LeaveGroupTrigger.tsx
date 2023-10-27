@@ -25,9 +25,6 @@ export default function LeaveGroupTrigger({
 
   const { replace } = useRouter();
 
-  const { data } = useSession();
-  const session = data;
-
   const exitGroup = async () => {
     try {
       setLoading(true);
@@ -45,8 +42,8 @@ export default function LeaveGroupTrigger({
         return triggerNotification("Something Went wrong");
       }
       setLoading(false);
-      triggerNotification(data.message);
-      return replace(GROUPS);
+      // return replace(GROUPS);
+      return triggerNotification(data.message);
     } catch (error) {
       console.error({ error });
       setLoading(false);
@@ -55,7 +52,7 @@ export default function LeaveGroupTrigger({
   };
   const cancelExitGroup = () => {
     triggerModal({});
-    replace(returnURL);
+    // replace(returnURL);
   };
 
   useEffect(() => {

@@ -40,6 +40,8 @@ export default function useImageUpload({
 }) {
   const { triggerNotification } = useContext(NotificationContext);
 
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
     console.log({ acceptedFiles });
     setImg(acceptedFiles);
@@ -49,7 +51,7 @@ export default function useImageUpload({
     endpoint,
     {
       onUploadProgress: (e) => {
-        console.log("PROGRESS", e);
+        setUploadProgress(e);
       },
       onClientUploadComplete,
       onUploadError: (e) => {
@@ -81,5 +83,5 @@ export default function useImageUpload({
     console.log({ isUploading });
   }, [isUploading]);
 
-  return { startUpload, getInputProps, getRootProps };
+  return { startUpload, getInputProps, getRootProps, uploadProgress };
 }

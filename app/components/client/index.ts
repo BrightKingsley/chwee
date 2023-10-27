@@ -1,5 +1,6 @@
 export { default as AnimateInOut } from "./AnimateInOut";
 export { default as Button } from "./Button";
+export { default as CircularProgress } from "./CircularProgress";
 export { default as Close } from "./Close";
 export { default as ConnectButton } from "./ConnectButton";
 export { default as ConnectOptions } from "./ConnectOptions";

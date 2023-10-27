@@ -47,8 +47,10 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
     message,
     setLoading,
     setMessage,
+    // setMessages,
     membersModal,
     setMembersModal,
+    getInputProps,
     selectedImages,
     setSelectedImages,
     readURI,
@@ -61,32 +63,6 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
   const [showActionIcons, setShowActionIcons] = useState(true);
   const [toggleFunds, setToggleFunds] = useState(false);
 
-  const { getInputProps, getRootProps, startUpload } = useImageUpload({
-    endpoint: "chatImageUploader",
-    setImg: setSelectedImages,
-    onClientUploadComplete(files) {
-      console.log("FILES: ", files);
-
-      const imageContent = files?.map((file) => file.url);
-
-      console.log("IMAGE_CONTENT", imageContent);
-      setMessage((prev) => ({
-        ...prev,
-        imageContent: imageContent as string[],
-      }));
-      const messageToSend: MessageBody = {
-        ...message,
-        sendDate: new Date(),
-      };
-      sendMessage({
-        message: messageToSend,
-        chatID,
-        roomType,
-        images: imageContent,
-      });
-    },
-  });
-
   const resetFunds = () => {
     setMembersModal((prev) => ({ ...prev, value: "" }));
   };
@@ -96,6 +72,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
       e.preventDefault();
 
       if (
+        selectedImages.length < 1 &&
         !message.textContent &&
         message.imageContent.length < 1 &&
         !(message.transaction && message.transaction.amount)
@@ -112,7 +89,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
         }
       }
 
-      if (selectedImages.length > 0) return startUpload(selectedImages);
+      // if (selectedImages.length > 0) return startUpload(selectedImages);
       const messageToSend: MessageBody = {
         ...message,
         sendDate: new Date(),
@@ -222,7 +199,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
 
         {previewImages.images.length > 0 && previewImages.show && (
           // NOTE Upload Image Data component
-          <UploadImageData startUpload={startUpload} />
+          <UploadImageData handleSend={handleSend} />
         )}
 
         <TransactionForm />

@@ -1,0 +1,27 @@
+.circleSVG {
+  /* position: absolute; */
+  top: 0;
+  left: 0;
+}
+
+.circleSVG2 {
+  /* position: absolute; */
+  top: -5rem;
+  left: -5rem;
+}
+
+.circle {
+  fill: none;
+  /* stroke: url(#GradientColor); */
+  /* stroke-width: 1.25rem;
+  stroke-dasharray: 440;
+  stroke-dashoffset: 440; */
+  animation: animate 1s linear forwards;
+  background: #000;
+}
+
+/* @keyframes animate {
+  100% {
+    stroke-dashoffset: 120;
+  }
+} */

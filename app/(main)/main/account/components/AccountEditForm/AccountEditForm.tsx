@@ -52,7 +52,12 @@ export default function AccountEditForm({ show }: { show: boolean }) {
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    if (!updateUser.username && !updateUser.tag && !updateUser.phone) {
+    if (
+      !updateUser.username &&
+      !updateUser.tag &&
+      !updateUser.phone &&
+      selectedImage.length < 1
+    ) {
       return triggerNotification("Please Input valid details");
     }
     setUpdateUser((prev) => ({ ...prev, loading: true }));
@@ -158,6 +163,7 @@ export default function AccountEditForm({ show }: { show: boolean }) {
                     {...getInputProps()}
                     type="file"
                     id="image"
+                    multiple={false}
                     accept="image/*"
                     hidden
                     onInput={(e: any) => {

@@ -1,14 +1,13 @@
 "use client";
 import Message from "../Message";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { ChatContext } from "@/context";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { pusherClient } from "@/lib/config";
 import { BASE_URL } from "@/constants/routes";
 import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
 import LoadingMessages from "../LoadingMessages";
-import { AnimateInOut } from "@/app/components/client";
+import { AnimateInOut, CircularProgress } from "@/app/components/client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import Image from "next/image";
 import { IconButton, Button } from "@/app/components/mui";
@@ -28,20 +27,25 @@ import ZzzLineIcon from "remixicon-react/ZzzLineIcon";
 export default function Messages({
   chatID,
   roomType,
+  userID,
 }: {
   chatID: string;
   roomType: ClientMessage["roomType"];
+  userID: string;
 }) {
-  const { viewImages, setViewImages } = useContext(ChatContext);
-
-  const [messages, setMessages] = useState<ClientMessage["message"][]>([]);
-  const [loading, setLoading] = useState(false);
+  const {
+    viewImages,
+    setViewImages,
+    messages,
+    setMessages,
+    setMessagesLoading,
+    messagesLoading,
+  } = useContext(ChatContext);
 
   // password: b3xF2yRB | q7b5KYV6 | V6XBvBjX
 
   const { data } = useSession();
-  const session: Session | any = data;
-  const params = useParams();
+  const session = data;
 
   const { refresh } = useRouter();
 
@@ -51,14 +55,21 @@ export default function Messages({
     pusherClient.bind(
       "incoming-message",
       (message: ClientMessage["message"]) => {
-        setMessages((prev) => [...prev, message]);
+        if (
+          message.message.sender === userID &&
+          message.message.type === "conversation"
+        ) {
+          return;
+        } else {
+          setMessages((prev) => [...prev, message]);
+        }
       }
     );
     return () => pusherClient.unsubscribe(chatID);
   }, []);
 
   useEffect(() => {
-    setLoading(true);
+    setMessagesLoading(true);
     (async () => {
       //TODO remove hard-coded password
       const response = await fetch(
@@ -68,39 +79,37 @@ export default function Messages({
         }
       );
 
-      if (!response.ok) return setLoading(false);
+      if (!response.ok) return setMessagesLoading(false);
 
       const data = await response.json();
-      console.log({ data });
-      if (!data) return setLoading(false);
+      if (!data) return setMessagesLoading(false);
 
       const { messages: msgs } = data;
-      console.log("CLIENT MSGS", msgs);
 
       if (!msgs) return;
 
       setMessages(msgs);
-      setLoading(false);
+      setMessagesLoading(false);
     })();
   }, [chatID]);
 
   return (
     <>
       <div className="flex flex-col flex-1 pt-1 mx-2 space-y-2 overflow-y-auto">
-        {loading ? (
+        {messagesLoading ? (
           <LoadingMessages />
         ) : messages.length < 1 || !session || !session.user.id ? (
-          <div className="space-y-3 w-full h-full text-center flex flex-col mx-auto justify-center">
+          <div className="flex flex-col justify-center w-full h-full mx-auto space-y-3 text-center">
             <div className="flex items-center justify-center">
               <p className="font-bold">no messages available</p>
               <ZzzLineIcon className="w-4 h-4 text-brand-lightblue" />
             </div>
-            <div className="space-y-2 w-fit mx-auto">
+            <div className="mx-auto space-y-2 w-fit">
               <small>Try Refreshing the page</small>
               <Button
                 onClick={() => refresh()}
                 variant="outlined"
-                className="flex px-2 py-2 gap-3 mx-auto items-center"
+                className="flex items-center gap-3 px-2 py-2 mx-auto"
               >
                 <p>refresh</p>
                 <RefreshLineIcon className="w-6 h-6" />
@@ -114,7 +123,7 @@ export default function Messages({
               key={i}
               message={message}
               roomType={roomType}
-              userID={session.user.id}
+              userID={session.user.id as string}
             />
           ))
         )}
@@ -186,6 +195,7 @@ export default function Messages({
           </div>
         </div>
       </AnimateInOut>
+      <CircularProgress />
     </>
   );
 }

@@ -1,8 +1,10 @@
 import { deleteUser, getUserByID, getUsers } from "@/lib/db";
 import { stringToObjectId } from "@/lib/utils";
 import { User, UserClass } from "@/models";
+import { getServerSession } from "next-auth";
 import { headers } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 // type SearchProps = {
 //   page: number;
@@ -67,6 +69,7 @@ export async function GET(request: Request) {
   }
 }
 
+/*
 //TODO: remember to disable/ remove this, along with other delete REQUESTS
 export async function DELETE() {
   try {
@@ -82,5 +85,29 @@ export async function DELETE() {
   } catch (error) {
     console.error(error);
     NextResponse.json({ error });
+  }
+}
+*/
+
+// TODO remember to use correct Status Codes
+export async function DELETE(request: NextRequest) {
+  try {
+    const serverSession = await getServerSession(authOptions);
+    if (!serverSession || !serverSession.user || !serverSession.user.id)
+      throw new Error("Invaalid User");
+    const userID = serverSession.user.id;
+
+    // const { userID }: DeleteProps = await request.json();
+    const userDeleted = await deleteUser({ userID });
+
+    if (!userDeleted)
+      return NextResponse.json({ message: "Couldn't delete user document" });
+
+    return NextResponse.json(userDeleted);
+  } catch (error) {
+    console.error({ error });
+    return NextResponse.json(null, {
+      status: 500,
+    });
   }
 }

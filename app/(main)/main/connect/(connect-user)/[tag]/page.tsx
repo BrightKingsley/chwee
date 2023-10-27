@@ -6,6 +6,8 @@ import { ConnectOptions } from "@/app/components/client";
 import Image from "next/image";
 //functions
 import { getUserByTag } from "@/lib/db";
+import Link from "next/link";
+import { CONNECT } from "@/constants/routes";
 
 export default async function UserInfo({
   params,
@@ -30,10 +32,12 @@ export default async function UserInfo({
     <div className="flex flex-col w-full h-screen bg-pattern p-2 pt-20 space-y-6">
       <div className="mx-auto space-y-16 w-fit">
         <div className="relative flex items-center justify-center w-32 h-32 mx-auto">
-          <div className="w-32 h-32 rounded-full overflow-clip">
-            <Image fill src={user.photo} alt={user.username} />
-          </div>
-          <div className="absolute w-60 h-60 bg-red-400_">
+          <Link href={`${CONNECT}/${decodedTag}/display-photo`}>
+            <div className="w-32 h-32 z-10 rounded-full overflow-clip">
+              <Image fill src={user.photo} alt={user.username} />
+            </div>
+          </Link>
+          <div className="absolute w-60 h-60">
             <ConnectOptions userID={user._id.toString()} />
           </div>
         </div>

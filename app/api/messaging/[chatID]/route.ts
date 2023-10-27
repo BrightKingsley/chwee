@@ -189,7 +189,6 @@ export async function POST(
       let chat;
       await connectDB();
       if (roomType === "group") {
-        console.log("ROOM_TYPE", roomType);
         // Find the group by its ID
         group = await Group.findById(parsedChatID);
 
@@ -242,8 +241,6 @@ export async function GET(
 
     const roomType = searchParams.get("roomType") as "group" | "p2p" | null;
 
-    console.log({ roomType });
-
     if (!roomType || !(roomType === "group" || roomType === "p2p"))
       throw new Error("Invalid RoomType");
 
@@ -254,8 +251,6 @@ export async function GET(
 
     if (!parsedUserID || !parsedChatID || !userDoc)
       return NextResponse.json({ error: { message: "Access Denied" } });
-
-    console.log("CHAT_ID", chatID);
 
     if (roomType === "p2p") {
       const chatDoc = await Chat.findById(parsedChatID);
@@ -277,7 +272,6 @@ export async function GET(
 
     const messages = await Promise.all(
       messageResult.messages.map(async (message) => {
-        console.log("MESSAGE_RESULT- message", message);
         const senderUserID = message.sender;
         const senderDoc = await User.findById(senderUserID);
 
@@ -289,11 +283,6 @@ export async function GET(
           photo: senderDoc.photo,
         };
 
-        console.log("COMBINED: ", {
-          message,
-          senderInfo,
-        });
-
         return {
           message,
           senderInfo,
@@ -302,11 +291,6 @@ export async function GET(
     );
 
     if (!messages) throw new Error("Could not get messages for this chat");
-
-    console.log("SERVER_MSGS", { messages });
-
-    console.log("API_messageS", messageResult, messages);
-
     return NextResponse.json({ messages });
   } catch (error) {
     console.error({ error });

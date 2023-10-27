@@ -85,9 +85,9 @@ export default function RootLayout({
       <AuthContextProvider>
         <ThemeContextProvider>
           <NotificationContextProvider>
-            <ModalContextProvider>
-              <ScreenContext>
-                <ChatContextProvider>
+            <ChatContextProvider>
+              <ModalContextProvider>
+                <ScreenContext>
                   <PushNotificationProvider />
                   <main className="w-screen h-screen md:flex bg-pattern">
                     <Navbar />
@@ -99,9 +99,9 @@ export default function RootLayout({
                     </div>
                   </main>
                   <Rat />
-                </ChatContextProvider>
-              </ScreenContext>
-            </ModalContextProvider>
+                </ScreenContext>
+              </ModalContextProvider>
+            </ChatContextProvider>
           </NotificationContextProvider>
         </ThemeContextProvider>
       </AuthContextProvider>

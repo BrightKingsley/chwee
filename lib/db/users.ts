@@ -1,4 +1,12 @@
-import { Chat, Group, GroupClass, User, Wallet } from "@/models";
+import {
+  Chat,
+  Group,
+  GroupClass,
+  Notification,
+  Transaction,
+  User,
+  Wallet,
+} from "@/models";
 import connectDB from "./connect-db";
 import {
   dbToClientUser,
@@ -212,6 +220,9 @@ export async function deleteUser({ userID }: { userID: string }) {
       },
       { $pullAll: { members: [parsedUserID] } }
     );
+    await Wallet.findOneAndDelete({ owner: parsedUserID });
+
+    await Notification.deleteMany({ userID: parsedUserID });
 
     const deletedUser = await User.findByIdAndDelete(user._id);
 
@@ -219,9 +230,9 @@ export async function deleteUser({ userID }: { userID: string }) {
 
     // TODO: remove user from all events and delete all available user events
 
-    return deletedUser;
+    return "success";
   } catch (error) {
-    throw error;
+    return null;
   }
 }
 
