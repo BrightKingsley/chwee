@@ -23,16 +23,16 @@ export default async function Transaction({
 
   if (!transaction)
     return (
-      <div className="flex items-center justify-center text-red-400 w-full h-full gap-3">
+      <div className="flex items-center justify-center w-full h-full gap-3 text-red-400">
         <ErrorWarningLineIcon className="w-8 h-8" />
         <p className="text-xl font-bold">Transaction data not found</p>
-        <div className="space-y-2 w-fit mx-auto">
+        <div className="mx-auto space-y-2 w-fit">
           <small>Try Refreshing the page</small>
           <Link href={`${WALLET}/transaction-history/${params.transactionID}`}>
             <Button
               // onClick={() => refresh()}
               variant="outlined"
-              className="flex px-2 py-2 gap-3 mx-auto items-center"
+              className="flex items-center gap-3 px-2 py-2 mx-auto"
             >
               <p>refresh</p>
               <RefreshLineIcon className="w-6 h-6" />
@@ -76,11 +76,11 @@ export default async function Transaction({
       <div className="shrink-0">
         <Header title="Transaction Details" />
       </div>
-      <div className="px-4 py-3 space-y-4 flex-1 overflow-auto">
+      <div className="flex-1 px-4 py-3 space-y-4 overflow-auto">
         <div className="space-y-4">
-          <div className="space-y-3 py-4 px-2 rounded-md bg-white">
+          <div className="px-2 py-4 space-y-3 bg-white border rounded-md">
             <div className="flex items-center">
-              <span className="inline-block bg-primary/10 text-primary fill-primary rounded-full p-2">
+              <span className="inline-block p-2 rounded-full bg-primary/10 text-primary fill-primary">
                 {/* {transactionIcon} */}
                 {transaction.type === "airtime" ? (
                   <SimCardLineIcon className="w-3 h-3" />
@@ -94,8 +94,8 @@ export default async function Transaction({
                   <BankLineIcon className="w-3 h-3" />
                 )}
               </span>
-              <p className="text-gray-600 ml-2">{transaction.title}</p>
-              <p className="text-gray-800 ml-auto text-2xl whitespace-nowrap">
+              <p className="ml-2 text-gray-600">{transaction.title}</p>
+              <p className="ml-auto text-2xl text-gray-800 whitespace-nowrap">
                 {transaction.type === "deposit" ? "+" : "-"}₦
                 {transaction.amount}
               </p>
@@ -112,26 +112,26 @@ export default async function Transaction({
           <div className="mx-auto py-[2px] bg-body border border-gray-400 flex items-center relative w-fit rounded-full before:absolute before:-translate-x-full before:w-11/12 after:w-11/12 before:bg-gray-400 after:bg-gray-400 before:h-[1px] after:h-[1px] after:absolute after:translate-x-full">
             <small className="px-2">{transaction.date.toDateString()}</small>
           </div>
-          <div className="space-y-3 rounded-md bg-white">
-            <div className="flex justify-between items-center">
+          <div className="p-1 space-y-3 bg-white border rounded-md">
+            <div className="flex items-center justify-between">
               <small className="text-gray-600">Status</small>
-              <small className="text-sm uppercase font-bold">
+              <small className="text-sm font-bold uppercase">
                 {transaction.status === "successful" ? "success" : "fail"}
               </small>
             </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <small className="text-gray-600">Bank name</small>
               <small className="text-sm font-bold">{transaction.status}</small>
             </div>
 
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <small className="text-gray-600">Receiver name</small>
               <small className="text-sm font-bold">
                 {receiverDoc?.username}
               </small>
             </div>
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <small className="text-gray-600">Receiver tag</small>
               <small className="text-sm font-bold">{receiverDoc?.tag}</small>
             </div>

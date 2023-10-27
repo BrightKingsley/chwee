@@ -1,12 +1,14 @@
 "use client";
 
 import { BASE_URL } from "@/constants/routes";
-import { ClientUser, MessageBody } from "@/types/models";
+import { ClientMessage, ClientUser, MessageBody } from "@/types/models";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { createContext, useContext, useState } from "react";
 import { ChatContextType } from "../types";
 import NotificationContext from "../Notification/notificationContext";
+import { useImageUpload } from "@/hooks";
+import { MessageClass } from "@/models/Message";
 
 const ChatContext = createContext<ChatContextType>({
   setToggleTransactionForm: () => {},
@@ -39,6 +41,18 @@ const ChatContext = createContext<ChatContextType>({
     show: false,
     value: "",
   },
+  messages: [
+    {
+      message: {},
+      senderInfo: {},
+    },
+  ],
+  setMessages: () => {},
+  uploadProgress: 0,
+  messagesLoading: false,
+  setMessagesLoading: () => {},
+  getInputProps: () => [] as any,
+  startUpload: async () => await new Promise(() => {}),
   selectedImages: [],
   setMembersModal: () => {},
   loading: false,
@@ -121,6 +135,15 @@ export const ChatContextProvider = ({
     replyTo: replyMessage,
   });
 
+  // Controls Incoming Messages
+  const [messages, setMessages] = useState<
+    {
+      message: MessageBody;
+      senderInfo: { username: string; tag: string; photo: string };
+    }[]
+  >([]);
+  const [messagesLoading, setMessagesLoading] = useState(false);
+
   // Controls Modal toggled to view list of members in group
   const [membersModal, setMembersModal] = useState<{
     loading: boolean;
@@ -135,27 +158,70 @@ export const ChatContextProvider = ({
   });
   ////////////// STATE //////////////////
 
+  const { getInputProps, getRootProps, startUpload, uploadProgress } =
+    useImageUpload({
+      endpoint: "chatImageUploader",
+      setImg: setSelectedImages,
+      onClientUploadComplete(files) {
+        console.log("FILES: ", files);
+
+        const imageContent = files?.map((file) => file.url);
+
+        console.log("IMAGE_CONTENT", imageContent);
+        setMessage((prev) => ({
+          ...prev,
+          imageContent: imageContent as string[],
+        }));
+        const messageToSend: MessageBody = {
+          ...message,
+          sendDate: new Date(),
+        };
+        // sendMessage({
+        //   message: messageToSend,
+        //   chatID,
+        //   roomType,
+        //   images: imageContent,
+        // });
+      },
+    });
+
   ////////////// FUNCTIONS //////////////////
   // NOTE: Send Message
   async function sendMessage({
     message,
-    images = [],
+    // images = [],
     chatID,
     roomType,
   }: {
     message: MessageBody;
     chatID: string;
     roomType: string;
-    images?: MessageBody["imageContent"];
+    // images?: MessageBody["imageContent"];
   }) {
     let messageData = { ...message };
-    if (images.length > 0) {
-      messageData.sender = message.sender;
-      messageData.imageContent = images;
-    }
+    messageData.sender = message.sender;
     resetInput();
+    message.type !== "fund" &&
+      setMessages((prev) => [
+        ...prev,
+        {
+          message: { ...message, imageContent: previewImages.images },
+          senderInfo: {
+            username: session?.user.tag as string,
+            photo: session?.user.image as string,
+            tag: session?.user.tag as string,
+          },
+        },
+      ]);
     try {
       setLoading(true);
+      if (selectedImages.length > 0) {
+        const res = await startUpload(selectedImages);
+        if (!res) return triggerNotification("Image upload failed");
+        const images = res.map((data) => data.url);
+        console.log("IMAGE_RESPONSE", { res });
+        messageData.imageContent = images;
+      }
       console.log("SENDING_MESSAGE ==>", { messageData, message });
       const res = await fetch(`${BASE_URL}/api/messaging/${chatID}`, {
         method: "POST",
@@ -228,6 +294,13 @@ export const ChatContextProvider = ({
         resetInput,
         message,
         setMessage,
+        messages,
+        setMessages,
+        uploadProgress,
+        messagesLoading,
+        setMessagesLoading,
+        getInputProps,
+        startUpload,
         membersModal,
         setMembersModal,
         loading,

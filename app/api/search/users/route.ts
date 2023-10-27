@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
 
     const usersDocs = await User.find({
       username: { $regex: query, $options: "i" },
+      tag: { $regex: query, $options: "i" },
     });
 
     console.log("USERS FROM SEARCH", { usersDocs });

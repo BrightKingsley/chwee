@@ -59,7 +59,7 @@ export default async function ChatPage({
           </Link>,
         ]}
       />
-      <P2pChat params={params} />
+      <P2pChat userID={userID} params={params} />
     </>
   );
 }

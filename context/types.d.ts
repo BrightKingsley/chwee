@@ -1,4 +1,6 @@
 import { ClientUser, MessageBody } from "@/types/models";
+import { DropzoneInputProps } from "@uploadthing/react";
+import { UploadFileResponse } from "uploadthing/client";
 
 // AUTH
 type signUpWithEmailAndPassword = {
@@ -85,6 +87,26 @@ type ChatContextType = {
     members: { tag: string; username: string; photo: string }[];
     value: string;
   };
+  messages: {
+    message: MessageClass;
+    senderInfo: UserClass;
+  }[];
+  uploadProgress: number;
+  messagesLoading: boolean;
+  setMessages: React.Dispatch<
+    React.SetStateAction<
+      {
+        message: MessageClass;
+        senderInfo: UserClass;
+      }[]
+    >
+  >;
+  setMessagesLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  getInputProps: <T extends DropzoneInputProps>(props?: T | undefined) => T;
+  startUpload: (
+    files: File[],
+    input?: undefined
+  ) => Promise<UploadFileResponse[] | undefined>;
   setMembersModal: React.Dispatch<
     React.SetStateAction<{
       loading: boolean;

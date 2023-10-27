@@ -2,8 +2,12 @@
 import { Header } from "@/app/components/client";
 import { UserGroup, ConnectionCard } from "@/app/components/server";
 import { Button, ListItem, Card } from "@/app/components/mui";
-import { AccountEditForm, SignOutButton } from "./components";
-import { EditAccountButton } from "./components/Buttons";
+import {
+  AccountDeleteButton,
+  AccountEditForm,
+  SignOutButton,
+} from "./components";
+import { AccountEditButton } from "./components";
 // nextJS
 import Image from "next/image";
 import Link from "next/link";
@@ -13,7 +17,7 @@ import { use } from "react";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 // routes
-import { CONNECT } from "@/constants/routes";
+import { ACCOUNT, CONNECT } from "@/constants/routes";
 // functions
 import { getUserByID, getGroupByID } from "@/lib/db";
 // icons
@@ -45,6 +49,7 @@ export default async function Account({
 
   return (
     <>
+      <AccountDeleteButton />
       <div className="flex flex-col h-screen bg-pattern">
         <div className="shrink-0">
           <Header title="My Account" />
@@ -53,15 +58,17 @@ export default async function Account({
           <div className="flex-1 h-full px-2 py-4 space-y-6 overflow-y-auto shrink-0">
             <div className="space-y-4">
               <div className="relative mx-auto w-fit">
-                <div className="w-32 h-32 border rounded-full overflow-clip">
-                  {userFromSession.image ? (
-                    <Image src={userFromSession.image} alt="" fill />
-                  ) : (
-                    <UserIcon className="w-full h-full" />
-                  )}
-                </div>
+                <Link href={`${ACCOUNT}/display-photo`}>
+                  <div className="w-32 h-32 border rounded-full overflow-clip">
+                    {userFromSession.image ? (
+                      <Image src={userFromSession.image} alt="" fill />
+                    ) : (
+                      <UserIcon className="w-full h-full" />
+                    )}
+                  </div>
+                </Link>
                 <div className="absolute bottom-0 -right-4">
-                  <EditAccountButton />
+                  <AccountEditButton />
                 </div>
               </div>
               <div className="mx-auto text-center w-fit">

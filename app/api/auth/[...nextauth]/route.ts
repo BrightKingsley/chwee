@@ -124,8 +124,6 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async signIn({ profile, account, user: authUser, credentials, email }) {
       try {
-        console.log("AUTHUSER: ", { authUser, profile, credentials });
-
         if (
           // authUser.id &&
           // authUser.email &&
@@ -137,11 +135,8 @@ export const authOptions: NextAuthOptions = {
           credentials.email &&
           credentials.password
         ) {
-          console.log("REACHED_TRUE");
           return true;
         }
-
-        console.log("ALSO_REACHED!!!");
 
         let googleProfile: GoogleProfile = profile as GoogleProfile;
         let user: UserClass;
@@ -152,8 +147,6 @@ export const authOptions: NextAuthOptions = {
         const userExists = await getUserByEmail({
           email: profile?.email,
         });
-
-        console.log("USER_EXISTS: ", userExists);
 
         user = userExists;
 
@@ -182,7 +175,6 @@ export const authOptions: NextAuthOptions = {
         if (!user) return false;
 
         // const accessToken = signJwtAccessToken({ payload: userWithoutPass });
-        console.log("USER_RETURNED: ", user);
 
         return true;
       } catch (error) {
@@ -214,8 +206,6 @@ export const authOptions: NextAuthOptions = {
       }
     },
     async session({ session, token, user, newSession, trigger }) {
-      console.log("SESSION_DATA: ", { session, token });
-
       if (session.user?.email) {
         try {
           await connectDB();

@@ -76,6 +76,8 @@ export async function DELETE(
   { params: { userID } }: Props
 ) {
   try {
+    const serverSession = await getServerSession(authOptions);
+
     // const { userID }: DeleteProps = await request.json();
     const userDeleted = await deleteUser({ userID });
 
