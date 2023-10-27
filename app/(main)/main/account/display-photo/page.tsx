@@ -10,7 +10,7 @@ export default async function UserDisplayPhoto() {
 
   return (
     <div className="w-screen h-screen relative">
-      <Link href={"./"} className="absolute z-10 top-4 right-4">
+      <Link href={"./"} replace className="absolute z-10 top-4 right-4">
         <IconButton>
           <XMarkIcon className="w-8 h-8" />
         </IconButton>
