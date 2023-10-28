@@ -49,10 +49,12 @@ export default async function Account({
 
   return (
     <>
-      <AccountDeleteButton />
       <div className="flex flex-col h-screen bg-pattern">
         <div className="shrink-0">
-          <Header title="My Account" />
+          <Header
+            title="My Account"
+            trailing={[<AccountDeleteButton key={Math.random()} />]}
+          />
         </div>
         {
           <div className="flex-1 h-full px-2 py-4 space-y-6 overflow-y-auto shrink-0">

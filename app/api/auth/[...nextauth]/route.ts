@@ -156,16 +156,19 @@ export const authOptions: NextAuthOptions = {
             username: profile.name
               .toString()
               .trim()
-              .split("")
-              .reverse()
-              .join()
-              .trim(),
-            photo: googleProfile.picture,
-            tag: `@${profile.name
               .split(" ")[0]
               .split("")
               .reverse()
-              .join()
+              .join("")
+              .trim(),
+            photo: googleProfile.picture,
+            tag: `@${profile.name
+              .toString()
+              .trim()
+              .split(" ")[0]
+              .split("")
+              .reverse()
+              .join("")
               .trim()}${generatePassword(6)}`,
           });
           if (!newUser) return false;

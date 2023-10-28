@@ -77,7 +77,7 @@ export default async function Transaction({
         <Header title="Transaction Details" />
       </div>
       <div className="flex-1 px-4 py-3 space-y-4 overflow-auto">
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-x-clip">
           <div className="px-2 py-4 space-y-3 bg-white border rounded-md">
             <div className="flex items-center">
               <span className="inline-block p-2 rounded-full bg-primary/10 text-primary fill-primary">
@@ -109,7 +109,7 @@ export default async function Transaction({
               <small className="text-gray-600">₦{0}.00</small>
             </div>
           </div>
-          <div className="mx-auto py-[2px] bg-body border border-gray-400 flex items-center relative w-fit rounded-full before:absolute before:-translate-x-full before:w-11/12 after:w-11/12 before:bg-gray-400 after:bg-gray-400 before:h-[1px] after:h-[1px] after:absolute after:translate-x-full">
+          <div className="mx-auto py-[2px] bg-body border border-gray-400 flex items-center relative w-fit rounded-full before:absolute before:-translate-x-full before:w-full after:w-full before:bg-gray-400 after:bg-gray-400 before:h-[1px] after:h-[1px] after:absolute after:translate-x-full">
             <small className="px-2">{transaction.date.toDateString()}</small>
           </div>
           <div className="p-1 space-y-3 bg-white border rounded-md">

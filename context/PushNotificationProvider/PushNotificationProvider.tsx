@@ -12,6 +12,8 @@ export default function PushNotificationProvider() {
   const { data } = useSession();
   const session = data;
 
+  console.log({ session });
+
   useEffect(() => {
     console.log("REGISTER REACCHEED");
 
@@ -93,7 +95,7 @@ export default function PushNotificationProvider() {
           console.error("Service Worker registration failed:", error);
         });
     }
-  }, []);
+  }, [session, session?.user, session?.user.id]);
 
   return <></>;
 }

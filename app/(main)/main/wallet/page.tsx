@@ -121,7 +121,7 @@ export default async function Wallet() {
                 </div>
               </div>
             </div>
-            <div className="space-y-2 flex-1 px-2 h-full w-full shrink-0 overflow-y-auto">
+            <div className="space-y-3 flex-1 px-2 h-full w-full shrink-0 overflow-y-auto bg-transparent">
               {walletData.transactions.map((transaction, i) => (
                 <TransactionTile
                   key={i}

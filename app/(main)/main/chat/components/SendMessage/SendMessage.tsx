@@ -192,7 +192,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
           animate={{ opacity: 1 }}
           out={{ opacity: 0 }}
           show={loading}
-          className="fixed h-[calc(100vh-3.5rem)]_ w-[calc(100vw-3.5rem)]_ w-full bottom-4 bg-white/20 top-14_ right-0 z-50 flex items-center justify-center backdrop-blur_-sm h-fit"
+          className="fixed h-[calc(100vh-3.5rem)]_ w-[calc(100vw-3.5rem)]_ w-fit inset-0 m-auto z-50 h-fit"
         >
           <Spinner className="w-6 h-6" />
         </AnimateInOut>

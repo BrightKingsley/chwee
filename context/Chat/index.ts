@@ -1,2 +1,1 @@
-export { default } from "./chatContext";
-export { ChatContextProvider } from "./chatContext";
+export { default, ChatContextProvider } from "./chatContext";

@@ -52,43 +52,54 @@ export default async function Connect() {
 
   // @ts-ignore
 
-  return unConnectedUsers && unConnectedUsers.length > 0 ? (
-    unConnectedUsers.map((user, i) => (
-      <ListTile
-        key={i}
-        slide
-        trailing={[<ConnectButton key={i} receiverID={user._id.toString()} />]}
-        index={i}
-        className="w-full gap-2 pr-2 bg-white rounded-xl md:col-span-1"
-      >
-        <Link
-          href={`${CONNECT}/${user.tag}`}
-          className="flex items-center flex-1 gap-2 py-3 pl-2 w-full_ "
-        >
-          <div className="flex items-center justify-center w-10 h-10 text-gray-200 rounded-full overflow-clip shrink-0 bg-primary">
-            {user.photo ? (
-              <Image src={user.photo} alt="" fill />
-            ) : (
-              <UserIcon className="w-8 h-8" />
-            )}
+  return (
+    <>
+      <div className="md:max-w-md shrink-0">
+        <SearchBar collection="users" />
+      </div>
+      <div className="px-2 overflow-auto space-y-2 md:grid md:grid-cols-2 md:space-y-0 md:gap-2">
+        {unConnectedUsers && unConnectedUsers.length > 0 ? (
+          unConnectedUsers.map((user, i) => (
+            <ListTile
+              key={i}
+              slide
+              trailing={[
+                <ConnectButton key={i} receiverID={user._id.toString()} />,
+              ]}
+              index={i}
+              className="w-full gap-2 pr-2 bg-white rounded-xl md:col-span-1"
+            >
+              <Link
+                href={`${CONNECT}/${user.tag}`}
+                className="flex items-center flex-1 gap-2 py-3 pl-2 w-full_ "
+              >
+                <div className="flex items-center justify-center w-10 h-10 text-gray-200 rounded-full overflow-clip shrink-0 bg-primary">
+                  {user.photo ? (
+                    <Image src={user.photo} alt="" fill />
+                  ) : (
+                    <UserIcon className="w-8 h-8" />
+                  )}
+                </div>
+                <div className="w-full text-left ">
+                  <p className="font-bold">{user.username}</p>
+                  <p className="text-sm text-gray-600 overflow-ellipsis overflow-hidden max-w-[10rem]">
+                    {user.tag}
+                  </p>
+                </div>
+              </Link>
+            </ListTile>
+          )) // @ts-ignore TODO
+        ) : unConnectedUsers?.error ? (
+          <div className="flex items-center justify-center w-full h-full ">
+            <h1>Error fetching Users</h1>
           </div>
-          <div className="w-full text-left ">
-            <p className="font-bold">{user.username}</p>
-            <p className="text-sm text-gray-600 overflow-ellipsis overflow-hidden max-w-[10rem]">
-              {user.tag}
-            </p>
+        ) : (
+          <div className="flex items-center justify-center w-full h-full">
+            <h1>No unConnectedUsers available</h1>
           </div>
-        </Link>
-      </ListTile>
-    )) // @ts-ignore TODO
-  ) : unConnectedUsers?.error ? (
-    <div className="flex items-center justify-center w-full h-full ">
-      <h1>Error fetching Users</h1>
-    </div>
-  ) : (
-    <div className="flex items-center justify-center w-full h-full">
-      <h1>No unConnectedUsers available</h1>
-    </div>
+        )}
+      </div>
+    </>
   );
 }
 

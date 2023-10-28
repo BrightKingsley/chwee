@@ -1,10 +1,3 @@
-import {
-  Header,
-  Modal,
-  Navbar,
-  Notification,
-  PortalElements,
-} from "@/app/components/client";
 import { AuthContextProvider, ThemeContextProvider } from "@/context";
 import "@/public/css/globals.css";
 import "swiper/css";
@@ -12,15 +5,15 @@ import "swiper/css/scrollbar";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+// import { Poppins } from "next/font/google";
 
-const poppins = Poppins({
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  style: "normal",
-  display: "swap",
-  fallback: ["poppins"],
-  subsets: ["latin-ext", "latin"],
-});
+// const poppins = Poppins({
+//   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+//   style: "normal",
+//   display: "swap",
+//   fallback: ["poppins"],
+//   subsets: ["latin-ext", "latin"],
+// });
 
 const description =
   "Elevate your gaming events with CHWEE - the ultimate platform for organizing online raffle draws and captivating gaming experiences. Say goodbye to logistical nightmares and welcome seamless event management. Engage your community and customers effortlessly with our feature-rich gaming event solution. Enjoy hassle-free raffle logistics and empower your online gaming community with CHWEE's powerful platform.";
@@ -139,8 +132,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={poppins.className}>
-      {/* <html lang="en"> */}
+    // <html lang="en" className={poppins.className}>
+    <html lang="en">
       {/* <link rel="manifest" href="/manifest.webmanifest" /> */}
       <body className="">
         <div id="modal" />
