@@ -5,43 +5,22 @@ import "swiper/css/scrollbar";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import type { Metadata } from "next";
-// import { Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 
-// const poppins = Poppins({
-//   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-//   style: "normal",
-//   display: "swap",
-//   fallback: ["poppins"],
-//   subsets: ["latin-ext", "latin"],
-// });
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  style: "normal",
+  display: "swap",
+  fallback: ["poppins"],
+  subsets: ["latin-ext", "latin"],
+});
 
-const description =
-  "Elevate your gaming events with CHWEE - the ultimate platform for organizing online raffle draws and captivating gaming experiences. Say goodbye to logistical nightmares and welcome seamless event management. Engage your community and customers effortlessly with our feature-rich gaming event solution. Enjoy hassle-free raffle logistics and empower your online gaming community with CHWEE's powerful platform.";
+const description = "Take chat and Transactions to a whole new Level";
 
 const keywords = [
-  "online raffle draw",
-  "gaming event solution",
-  "community gaming",
-  "online gaming event",
-  "hassle-free raffle",
-  "gaming event management",
-  "CHWEE platform",
-  "raffle logistics",
-  "online gaming community",
-  "customer engagement",
-  "seamless event management",
-  "captivating gaming experiences",
-  "gaming event organizers",
-  "powerful gaming platform",
-  "organize raffle draw online",
-  "effortless gaming events",
-  "interactive raffle experience",
-  "enhance customer experience",
-  "digital gaming events",
-  "online event ticketing",
-  "online prize draws",
-  "exciting raffle campaigns",
-  "raffle software solution",
+  "in-chat billing",
+  "send, receive money",
+  "real-time communication",
 ];
 
 export const metadata: Metadata = {
@@ -132,8 +111,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    // <html lang="en" className={poppins.className}>
-    <html lang="en">
+    <html lang="en" className={poppins.className}>
       {/* <link rel="manifest" href="/manifest.webmanifest" /> */}
       <body className="">
         <div id="modal" />
