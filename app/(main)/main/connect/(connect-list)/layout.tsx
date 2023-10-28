@@ -8,22 +8,19 @@ export default function ConnectionsLayout({
 }) {
   return (
     <div className="flex flex-col h-screen overflow-auto bg-primary/10">
-      <div>
+      <div className="shrink-0">
         <Header title="Connect" />
       </div>
-      <SubHeader
-        sublinks={[
-          { label: "my connections", link: `${CONNECT}/my-connections` },
-          { label: "unconnected", link: `${CONNECT}/new` },
-        ]}
-      />
-      <div className="space-y-4">
-        <div className="md:max-w-md">
-          <SearchBar collection="users" />
+      <div className="flex-1 flex flex-col">
+        <div className="shrink-0">
+          <SubHeader
+            sublinks={[
+              { label: "my connections", link: `${CONNECT}/my-connections` },
+              { label: "unconnected", link: `${CONNECT}/new` },
+            ]}
+          />
         </div>
-        <div className="px-2 space-y-2 md:grid md:grid-cols-2 md:space-y-0 md:gap-2">
-          {children}
-        </div>
+        <div className="flex-1 flex flex-col space-y-4">{children}</div>
       </div>
     </div>
   );

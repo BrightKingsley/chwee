@@ -32,6 +32,8 @@ import { decodeTextContent } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { MessageProps } from "../types";
 import { LongPressEventType, useLongPress } from "use-long-press";
+import { MessageClass } from "@/models/Message";
+import { UserClass } from "@/models";
 
 const emotes = ["😂", "💩", "😢", "😭", "💔"];
 
@@ -61,7 +63,7 @@ export default function Message({
     if (uploadProgress >= 100) inTransit = false;
   }, [uploadProgress]);
 
-  const messageData = {
+  const messageData: MessageClass & UserClass = {
     ...messageWithSenderData.senderInfo,
     ...messageWithSenderData.message,
   };
@@ -76,6 +78,7 @@ export default function Message({
   const type = messageData.type;
   const transaction = messageData.transaction;
   const sendDate = messageData.sendDate;
+  const reactions = messageData.reactions;
 
   const msgSendDate = new Date(sendDate);
   const hours = msgSendDate.getHours();
@@ -505,6 +508,18 @@ export default function Message({
             </small>
           </div>
         </div>
+      </div>
+      <div className="absolute bottom-0 right-0 w-fit flex items-center gap-1">
+        {reactions &&
+          reactions.length > 0 &&
+          reactions.map((reaction, i) => (
+            <div key={i} className="relative text-xl">
+              {Object.keys(reaction)[0]}
+              <small className="absolute -bottom-1 -right-1">
+                {Object.values(reaction).length}
+              </small>
+            </div>
+          ))}
       </div>
     </motion.div>
   );

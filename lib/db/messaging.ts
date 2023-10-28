@@ -136,3 +136,12 @@ export async function getMessages({
     return null;
   }
 }
+
+export async function addReaction({}: { messageID: string; reaction: string }) {
+  try {
+    return "success";
+  } catch (error) {
+    console.error({ error });
+    return null;
+  }
+}

@@ -1,14 +1,13 @@
 "use client";
 
 import { BASE_URL } from "@/constants/routes";
-import { ClientMessage, ClientUser, MessageBody } from "@/types/models";
+import { MessageBody } from "@/types/models";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { createContext, useContext, useState } from "react";
 import { ChatContextType } from "../types";
 import NotificationContext from "../Notification/notificationContext";
 import { useImageUpload } from "@/hooks";
-import { MessageClass } from "@/models/Message";
 
 const ChatContext = createContext<ChatContextType>({
   setToggleTransactionForm: () => {},

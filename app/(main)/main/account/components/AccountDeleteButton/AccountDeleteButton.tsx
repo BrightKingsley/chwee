@@ -29,34 +29,36 @@ export default function AccountDeleteButton() {
   };
 
   return (
-    <div className="absolute top-4 right-4 ">
+    <div className="relative">
       <IconButton onClick={() => setShowOptions(true)}>
-        <More2LineIcon />
+        <More2LineIcon className="text-gray-700" />
       </IconButton>
-      <OptionsMenu
-        options={[
-          {
-            label: <p className="text-red-600">Delete Account</p>,
-            onClick: () => {
-              triggerModal({
-                clickToDisable: true,
-                confirm: deleteAccount,
-                cancel: triggerModal,
-                message: (
-                  <p>
-                    Are you sure you want to{" "}
-                    <span className="text-red-400">Delete</span> account. This
-                    action is <span className="text-red-400">permanent</span>
-                  </p>
-                ),
-              });
-              setShowOptions(false);
+      <div className="absolute top-full right-1/2">
+        <OptionsMenu
+          options={[
+            {
+              label: <p className="text-red-600">Delete Account</p>,
+              onClick: () => {
+                triggerModal({
+                  clickToDisable: true,
+                  confirm: deleteAccount,
+                  cancel: triggerModal,
+                  message: (
+                    <p>
+                      Are you sure you want to{" "}
+                      <span className="text-red-400">Delete</span> account. This
+                      action is <span className="text-red-400">permanent</span>
+                    </p>
+                  ),
+                });
+                setShowOptions(false);
+              },
             },
-          },
-        ]}
-        setShow={setShowOptions}
-        show={showOptions}
-      />
+          ]}
+          setShow={setShowOptions}
+          show={showOptions}
+        />
+      </div>
     </div>
   );
 }

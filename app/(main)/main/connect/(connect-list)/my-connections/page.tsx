@@ -1,5 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { ListTile, MessageButton } from "@/app/components/client";
+import { ListTile, MessageButton, SearchBar } from "@/app/components/client";
 import { getChatsByMembersID, getUserByID } from "@/lib/db";
 import { UserIcon } from "@heroicons/react/20/solid";
 import { getServerSession } from "next-auth";
@@ -23,17 +23,26 @@ export default async function MyConnections() {
   if (!user) return <h1>Error fetching Users</h1>;
 
   const connections = user.connections;
-  return connections.length > 0 ? (
-    connections.map(async (connection, i) => (
-      <Connection
-        index={i}
-        userID={serverSession.user.id!}
-        connectionID={connection.toString()}
-        key={i}
-      />
-    ))
-  ) : (
-    <p className="text-center">You have no connections available</p>
+  return (
+    <>
+      <div className="md:max-w-md shrink-0">
+        <SearchBar collection="users" />
+      </div>
+      <div className="px-2 space-y-2 overflow-auto md:grid md:grid-cols-2 md:space-y-0 md:gap-2">
+        {connections.length > 0 ? (
+          connections.map(async (connection, i) => (
+            <Connection
+              index={i}
+              userID={serverSession.user.id!}
+              connectionID={connection.toString()}
+              key={i}
+            />
+          ))
+        ) : (
+          <p className="text-center">You have no connections available</p>
+        )}
+      </div>
+    </>
   );
 }
 

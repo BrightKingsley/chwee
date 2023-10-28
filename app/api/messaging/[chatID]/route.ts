@@ -299,3 +299,5 @@ export async function GET(
     });
   }
 }
+
+export function PATCH(request: NextRequest) {}

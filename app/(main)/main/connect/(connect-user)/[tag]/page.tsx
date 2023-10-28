@@ -5,9 +5,12 @@ import { ConnectOptions } from "@/app/components/client";
 // next
 import Image from "next/image";
 //functions
-import { getUserByTag } from "@/lib/db";
+import { getChat, getUserByTag } from "@/lib/db";
 import Link from "next/link";
 import { CONNECT } from "@/constants/routes";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { Chat } from "@/models";
 
 export default async function UserInfo({
   params,
@@ -15,9 +18,20 @@ export default async function UserInfo({
   params: { tag: string };
 }) {
   // get user data
+
+  const serverSession = await getServerSession(authOptions);
+
+  if (!serverSession || !serverSession.user || !serverSession.user.id)
+    return null;
+
+  const userID = serverSession.user.id;
+
   const decodedTag = decodeURIComponent(params.tag);
 
   const user = await getUserByTag({ tag: decodedTag });
+
+  // const userChat = await Chat.findOne({members});
+  //TODO: Implemenet find chat with user and pass chatID to connect options
 
   // validate user data
   if (!user)

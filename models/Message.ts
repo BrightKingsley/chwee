@@ -59,12 +59,15 @@ class MessageClass {
   @prop({ required: true, enum: ["fund", "notification", "conversation"] })
   public type: "fund" | "notification" | "conversation";
 
+  @prop({ default: [] })
+  public reactions?: {
+    [key: string]: mongoose.Types.ObjectId[];
+  }[];
+
   @prop({ required: true })
   public sendDate: Date;
 
-  id?: string;
-
-  _id?: mongoose.Types.ObjectId | string;
+  id?: mongoose.Types.ObjectId | string;
 }
 
 export { MessageClass };

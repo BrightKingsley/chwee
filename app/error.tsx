@@ -27,7 +27,7 @@ export default function LandingError({ error, reset }: LandingErrorProps) {
           <p>Retry</p>
           <RefreshLineIcon className="w-6 h-6" />
         </Button>
-        {process.env.NODE_ENV === "development" ? (
+        {/* {process.env.NODE_ENV === "development" ? (
           <div>
             <span className="text-red-400">ERROR:</span>
             <div className="space-y-3">
@@ -36,13 +36,20 @@ export default function LandingError({ error, reset }: LandingErrorProps) {
                 <h3 className="font-bold">Cause:</h3>
                 <p>{error.message}</p>
               </div>
-              {/* <div className="border p-2 overflow-auto">
-                <h3 className="font-bold">Stack Trace</h3>
-                <p>{error.stack}</p>
-              </div> */}
+             
             </div>
           </div>
-        ) : null}
+        ) : null} */}
+        <div>
+          <span className="text-red-400">ERROR:</span>
+          <div className="space-y-3">
+            <h2 className="font-bold text-3xl">{error.name}</h2>
+            <div className="border p-2">
+              <h3 className="font-bold">Cause:</h3>
+              <p>{error.message}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
