@@ -26,16 +26,19 @@ import Image from "next/image";
 import { ACCOUNT, BASE_URL, CONNECT } from "@/constants/routes";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
-import { ChatContext, ModalContext, NotificationContext } from "@/context";
+import {
+  ChatContext,
+  ModalContext,
+  NotificationContext,
+  TransactionContext,
+} from "@/context";
 import { textCode } from "@/constants/utils";
-import { decodeTextContent, stringToObjectId } from "@/lib/utils";
-import { useParams } from "next/navigation";
+import { decodeTextContent } from "@/lib/utils";
 import { MessageProps } from "../types";
 import { LongPressEventType, useLongPress } from "use-long-press";
 import { MessageClass } from "@/models/Message";
 import { UserClass } from "@/models";
 import { pusherClient } from "@/lib/config";
-import { ClientMessage } from "@/types/models";
 
 const emotes = ["😂", "💩", "😢", "😭", "💔"];
 
@@ -48,8 +51,6 @@ export default function Message({
 }: MessageProps) {
   const { triggerModal } = useContext(ModalContext);
   const {
-    setToggleTransactionForm,
-    toggleTransactionForm,
     sendMessage,
     setReplyMessage,
     resetInput,
@@ -58,6 +59,7 @@ export default function Message({
     inputRef,
     setMessages,
   } = useContext(ChatContext);
+  useContext(TransactionContext);
   const { triggerNotification } = useContext(NotificationContext);
 
   const [showMore, setShowMore] = useState(false);
@@ -166,13 +168,6 @@ export default function Message({
           if (!messageReactions) message.message.reactions![reaction] = [];
 
           message.message.reactions![reaction].push(sender);
-
-          // message.message.reactions![message.message.reactions!.length][
-          //   `${"okayy"}`
-          // ] &&
-          //   message.message.reactions![message.message.reactions!.length][
-          //     reaction
-          //   ].push(sender);
         }
         return message;
       });
@@ -365,10 +360,11 @@ export default function Message({
                   },
                 },
                 {
-                  label: "start",
+                  label: "delete",
                   onClick: () => {},
                 },
-                { label: "block", onClick: () => {} },
+                { label: "send funds", onClick: () => {} },
+                { label: "request funds", onClick: () => {} },
               ]}
             />
           </div>
@@ -559,8 +555,8 @@ export default function Message({
                     </Link>
                   </p>
                 </div>
-                {textContent?.split(textCode)[1].split(":")[0] ===
-                  session.user.name && (
+                {textContent?.split(textCode)[1].split(":")[1] ===
+                  session.user.tag && (
                   <div className="px-3">
                     <Button
                       onClick={() => {
@@ -601,17 +597,25 @@ export default function Message({
         </div>
       </div>
       <div
-        className={`absolute -bottom-2/3 z-10 h-fit right-0 w-fit rounded-full flex items-center gap-1 py-[2px] px-[3px] bg-white ${
+        className={`absolute -bottom-[1.65rem] h-fit right-0 w-fit rounded-full flex items-center gap-1 py-[2px] px-[3px] bg-white ${
           sender === userID ? "" : "left-0"
         }`}
       >
-        {messageData.reactions &&
-          Object.keys(messageData.reactions).map((reaction, i) => (
-            <div key={i} className="relative text-base">
-              {/* {Object.keys(reaction)[0]} */}
-              {reaction}
-            </div>
-          ))}
+        {messageData.reactions && (
+          <>
+            {Object.keys(messageData.reactions).map((reaction, i) => (
+              <div key={i} className="relative text-base">
+                {/* {Object.keys(reaction)[0]} */}
+                {reaction}
+              </div>
+            ))}
+            {Object.values(messageData.reactions).flat().length > 1 && (
+              <small className="text-gray-500 pr-1">
+                {Object.values(messageData.reactions).flat().length}
+              </small>
+            )}
+          </>
+        )}
       </div>
     </motion.div>
   );

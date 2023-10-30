@@ -9,29 +9,66 @@ import ConnectButton from "../ConnectButton";
 import { motion } from "framer-motion";
 import DisconnectButton from "../DisconnectButton";
 import AnimateInOut from "../AnimateInOut/AnimateInOut";
+import MessageButton from "../MessageButton/MessageButton";
+import TransferButton from "../TransferButton/TransferButton";
 
-const actions = [
-  {
-    component: ConnectButton,
-  },
-  {
-    component: DisconnectButton,
-  },
-
-  {
-    component: DisconnectButton,
-  },
-  {
-    component: DisconnectButton,
-  },
-  //TODO message Button
-  // {
-  //   component: ConnectButton,
-  // },
-];
-
-export default function ConnectOptions({ userID }: { userID: string }) {
+export default function ConnectOptions({
+  chatID,
+  connectID,
+  userID,
+  userTag,
+}: {
+  chatID: string | null;
+  connectID: string;
+  userID: string;
+  userTag: string;
+}) {
   const [open, setOpen] = useState(true);
+
+  const actions = [
+    {
+      component: (
+        <ConnectButton
+          receiverID={userID}
+          variant="filled"
+          className="!text-green-400 !rounded-full !bg-green-400/10 shadow-green-400/20"
+        />
+      ),
+    },
+    {
+      component: (
+        <DisconnectButton
+          receiverID={userID}
+          className="!text-red-400 !rounded-full !bg-red-400/10 shadow-red-400/20"
+          variant="filled"
+        />
+      ),
+    },
+
+    {
+      component: (
+        <MessageButton
+          variant="filled"
+          className="rounded-full bg-primary/10 !text-primary shadow-primary-400/20"
+          chatID={chatID}
+          users={[userID, connectID]}
+        />
+      ),
+    },
+    {
+      component: (
+        <TransferButton
+          receiverTag={userTag}
+          className="!text-brand-darkblue !rounded-full !bg-brand-darkblue/10 shadow-brand-darkblue/20"
+          variant="filled"
+        />
+      ),
+    },
+    //TODO message Button
+    // {
+    //   component: ConnectButton,
+    // },
+  ];
 
   return (
     <div className="relative flex flex-col items-center w-full h-full">
@@ -47,7 +84,7 @@ export default function ConnectOptions({ userID }: { userID: string }) {
           variant="filled"
           color="gray"
           onClick={() => setOpen((prev) => !prev)}
-          className="z-20 text-white bg-gray-600 rounded-full"
+          className="z-20 text-white bg-gray-500 rounded-full"
         >
           {open ? <CloseLineIcon /> : <More2LineIcon />}
         </IconButton>
@@ -72,13 +109,7 @@ export default function ConnectOptions({ userID }: { userID: string }) {
               transition={{ duration: 0.6, delay: (i + 1) * 0.1 }}
               className="absolute top-auto z-10"
             >
-              <div style={{ rotate: `${(i + 1) * 60}deg` }}>
-                {component({
-                  receiverID: userID,
-                  color: "gray",
-                  variant: "circle",
-                })}
-              </div>
+              <div style={{ rotate: `${(i + 1) * 60}deg` }}>{component}</div>
             </AnimateInOut>
           </div>
         </motion.div>

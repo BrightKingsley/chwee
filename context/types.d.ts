@@ -42,16 +42,16 @@ type ChatContextProviderType = {
 };
 
 type ChatContextType = {
-  toggleTransactionForm: {
-    type: "request" | "send";
-    show: boolean;
-  };
-  setToggleTransactionForm: React.Dispatch<
-    React.SetStateAction<{
-      type: "request" | "send";
-      show: boolean;
-    }>
-  >;
+  // toggleTransactionForm: {
+  //   type: "request" | "send";
+  //   show: boolean;
+  // };
+  // setToggleTransactionForm: React.Dispatch<
+  //   React.SetStateAction<{
+  //     type: "request" | "send";
+  //     show: boolean;
+  //   }>
+  // >;
   sendMessage: ({
     message,
     images = [],
@@ -165,6 +165,47 @@ type ModalContextType = {
   actionConfirm: Function;
   actionCancel: Function;
   disableOnClick: boolean;
+};
+
+// TRANSACTION
+type triggerTransactionFormType = {
+  message?: string | React.ReactNode;
+  confirm?: TransactionContextType["transactionFormState"]["actionConfirm"];
+  cancel?: Function;
+  clickToDisable?: boolean;
+  show?: boolean;
+  type?: "request" | "send";
+};
+
+type TransactionContextType = {
+  triggerTransactionForm: ({
+    message,
+    confirm,
+    cancel,
+    clickToDisable,
+  }: triggerTransactionFormType) => void;
+  transactionFormState: {
+    showTransaction: boolean;
+    actionConfirm?: (amount: number) => void;
+    actionCancel: Function;
+    transactionMessage: string | React.ReactNode;
+    disableOnClick: boolean;
+    type: "request" | "send";
+  };
+  transferToChwee: ({
+    finishTransaction,
+    startTransaction,
+    values,
+  }: {
+    startTransaction: (amount: number) => void;
+    finishTransaction: Function;
+    values: {
+      receiverTag: string;
+      amount: number;
+      transferPin: number;
+      accountType: "chwee";
+    };
+  }) => Promise<void>;
 };
 
 // NOTIFICATION

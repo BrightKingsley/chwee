@@ -10,11 +10,11 @@ import NotificationContext from "../Notification/notificationContext";
 import { useImageUpload } from "@/hooks";
 
 const ChatContext = createContext<ChatContextType>({
-  setToggleTransactionForm: () => {},
-  toggleTransactionForm: {
-    type: "send",
-    show: false,
-  },
+  // setToggleTransactionForm: () => {},
+  // toggleTransactionForm: {
+  //   type: "send",
+  //   show: false,
+  // },
   sendMessage: async () => await new Promise(() => {}),
   // selectedImages: [],
   replyMessage: {
@@ -92,7 +92,7 @@ export const ChatContextProvider = ({
     imageContent?: string[];
   }>({ sender: "", textContent: "", imageContent: [] });
 
-  // Transaction Form State: Used to show form to input amount to send or receive
+  ///TODO: remove  // Transaction Form State: Used to show form to input amount to send or receive
   const [toggleTransactionForm, setToggleTransactionForm] = useState<{
     type: "request" | "send";
     show: boolean;
@@ -288,8 +288,8 @@ export const ChatContextProvider = ({
   return (
     <ChatContext.Provider
       value={{
-        setToggleTransactionForm,
-        toggleTransactionForm,
+        // setToggleTransactionForm,
+        // toggleTransactionForm,
         sendMessage,
         selectedImages,
         replyMessage,

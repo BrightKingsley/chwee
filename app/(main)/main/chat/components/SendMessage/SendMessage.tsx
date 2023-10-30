@@ -11,13 +11,21 @@ import {
 } from "@heroicons/react/20/solid";
 
 import { SendMessageType } from "./types";
-import { AnimateInOut, UserListModal } from "@/app/components/client";
-import { ChatContext, NotificationContext } from "@/context";
+import {
+  AnimateInOut,
+  TransactionForm,
+  UserListModal,
+} from "@/app/components/client";
+import {
+  ChatContext,
+  NotificationContext,
+  TransactionContext,
+} from "@/context";
 import { BASE_URL } from "@/constants/routes";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import Image from "next/image";
-import { TransactionForm, UploadImageData } from "..";
+import { UploadImageData } from "..";
 import TextareaAutosize from "react-textarea-autosize";
 import { useImageUpload } from "@/hooks";
 import { Button, Card, IconButton, Spinner } from "@/app/components/mui";
@@ -37,8 +45,9 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
   const session: Session | null = data;
 
   const { triggerNotification } = useContext(NotificationContext);
+  const { triggerTransactionForm, transactionFormState } =
+    useContext(TransactionContext);
   const {
-    setToggleTransactionForm,
     replyMessage,
     setReplyMessage,
     sendMessage,
@@ -168,7 +177,27 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
           amount: 0,
         },
       }));
-      setToggleTransactionForm({ show: true, type: "send" });
+      triggerTransactionForm({
+        show: true,
+        type: "send",
+        confirm: (amount) => {
+          setMessage((prev) => ({
+            ...prev,
+            textContent:
+              transactionFormState.type === "request"
+                ? `Please, I need ₦${amount}`
+                : `I'll send you ₦${amount}`,
+            transaction: {
+              ...prev.transaction,
+              type: transactionFormState.type,
+              amount,
+            },
+            type: "fund",
+          }));
+        },
+        cancel: triggerTransactionForm,
+        message: "",
+      });
     }
   }, [membersModal.value]);
 
@@ -352,11 +381,26 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
               >
                 <Button
                   onClick={() => {
-                    return setToggleTransactionForm((prev) => ({
-                      ...prev,
+                    return triggerTransactionForm({
                       show: true,
                       type: "request",
-                    }));
+                      confirm: (amount) => {
+                        setMessage((prev) => ({
+                          ...prev,
+                          textContent:
+                            transactionFormState.type === "request"
+                              ? `Please, I need ₦${amount}`
+                              : `I'll send you ₦${amount}`,
+                          transaction: {
+                            ...prev.transaction,
+                            type: "request",
+                            amount,
+                          },
+                          type: "fund",
+                        }));
+                      },
+                      cancel: triggerTransactionForm,
+                    });
                   }}
                   variant="filled"
                   color="white"
@@ -374,11 +418,26 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
                 <Button
                   onClick={() => {
                     if (roomType === "p2p")
-                      return setToggleTransactionForm((prev) => ({
-                        ...prev,
+                      return triggerTransactionForm({
                         show: true,
                         type: "send",
-                      }));
+                        confirm: (amount) => {
+                          setMessage((prev) => ({
+                            ...prev,
+                            textContent:
+                              transactionFormState.type === "request"
+                                ? `Please, I need ₦${amount}`
+                                : `I'll send you ₦${amount}`,
+                            transaction: {
+                              ...prev.transaction,
+                              type: "send",
+                              amount,
+                            },
+                            type: "fund",
+                          }));
+                        },
+                        cancel: triggerTransactionForm,
+                      });
                     getMembers();
                   }}
                   variant="filled"

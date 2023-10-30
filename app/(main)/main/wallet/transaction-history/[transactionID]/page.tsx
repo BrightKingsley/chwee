@@ -23,7 +23,7 @@ export default async function Transaction({
 
   if (!transaction)
     return (
-      <div className="flex items-center justify-center w-full h-full gap-3 text-red-400">
+      <div className="flex flex-col items-center justify-center w-full h-full gap-3 text-red-400">
         <ErrorWarningLineIcon className="w-8 h-8" />
         <p className="text-xl font-bold">Transaction data not found</p>
         <div className="mx-auto space-y-2 w-fit">

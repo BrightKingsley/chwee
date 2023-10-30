@@ -10,12 +10,12 @@ import { useContext } from "react";
 
 export default function DisconnectButton({
   receiverID,
-  color,
-  variant,
+  variant = "filled",
+  className,
 }: {
   receiverID: string;
-  variant?: "circle" | "rounded";
-  color?: "primary" | "gray";
+  variant?: "filled" | "outlined" | "gradient" | "text";
+  className?: string;
 }) {
   const { triggerModal } = useContext(ModalContext);
   const { triggerNotification } = useContext(NotificationContext);
@@ -55,11 +55,7 @@ export default function DisconnectButton({
           confirm: () => disconnectUser(),
         })
       }
-      className={`${
-        color === "gray" ? "bg-primary_ bg-gray-600 " : "bg-primary"
-      } ${
-        variant === "circle" ? "rounded-full" : "rounded-md"
-      }  p-2 font-druk-wide-bold text-white hover:border`}
+      className={`p-2 font-druk-wide-bold text-white hover:border ${className}`}
     >
       <UserUnfollowLineIcon className="w-8 h-8" />
     </IconButton>

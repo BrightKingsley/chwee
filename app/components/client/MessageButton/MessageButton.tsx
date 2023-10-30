@@ -13,9 +13,13 @@ import Link from "next/link";
 export default function MessageButton({
   chatID,
   users,
+  className,
+  variant = "text",
 }: {
   chatID: string | null;
   users: [string, string];
+  variant?: "filled" | "outlined" | "gradient" | "text";
+  className?: string;
 }) {
   const { triggerModal } = useContext(ModalContext);
   const { triggerNotification } = useContext(NotificationContext);
@@ -71,8 +75,10 @@ export default function MessageButton({
   return (
     <IconButton
       title="message user"
+      variant={variant}
       aria-label="message user"
       onClick={handleClick}
+      className={className}
     >
       <Message3LineIcon className="w-8 h-8" />
     </IconButton>

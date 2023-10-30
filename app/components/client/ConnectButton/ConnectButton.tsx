@@ -10,12 +10,12 @@ import { useContext } from "react";
 
 export default function ConnectButton({
   receiverID,
-  color,
-  variant,
+  variant = "filled",
+  className,
 }: {
   receiverID: string;
-  variant?: "circle" | "rounded";
-  color?: "primary" | "gray";
+  variant?: "filled" | "outlined" | "gradient" | "text";
+  className?: string;
 }) {
   const { triggerModal } = useContext(ModalContext);
   const { triggerNotification } = useContext(NotificationContext);
@@ -40,7 +40,7 @@ export default function ConnectButton({
   return (
     <IconButton
       title="connect"
-      variant="filled"
+      variant={variant}
       color="gray"
       aria-label="connect with user"
       onClick={() =>
@@ -56,9 +56,7 @@ export default function ConnectButton({
           confirm: () => connectWithUser(),
         })
       }
-      className={`${color === "gray" ? "bg-gray-600" : "bg-primary"} ${
-        variant === "circle" ? "rounded-full" : "rounded-md"
-      }  p-2 font-druk-wide-bold text-white !bg-gray-600 hover:border`}
+      className={`p-2 font-druk-wide-bold text-white hover:border bg-primary ${className}`}
     >
       <UserAddLineIcon className="w-8 h-8" />
     </IconButton>
