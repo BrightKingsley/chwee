@@ -8,7 +8,7 @@ export {
   findUsers,
 } from "./users";
 
-export { sendMessage, getMessages } from "./messaging";
+export { sendMessage, getMessages, addReaction } from "./messaging";
 
 export { createEvent, getEvent, getEvents, deleteEvent } from "./events";
 

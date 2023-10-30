@@ -1,4 +1,4 @@
-import { ClientUser, MessageBody } from "@/types/models";
+import { ClientUser, MessageModelType, MessageModelType } from "@/types/models";
 import { DropzoneInputProps } from "@uploadthing/react";
 import { UploadFileResponse } from "uploadthing/client";
 
@@ -58,10 +58,10 @@ type ChatContextType = {
     chatID,
     roomType,
   }: {
-    message: MessageBody;
+    message: MessageModelType;
     chatID: string;
     roomType: string;
-    images?: MessageBody["imageContent"];
+    images?: MessageModelType["imageContent"];
   }) => Promise<{ message: string }>;
   replyMessage: {
     sender: string;
@@ -79,8 +79,8 @@ type ChatContextType = {
   selectedImages: File[];
   setSelectedImages: React.Dispatch<React.SetStateAction<File[]>>;
   resetInput: Function;
-  message: MessageBody;
-  setMessage: React.Dispatch<React.SetStateAction<MessageBody>>;
+  message: MessageModelType;
+  setMessage: React.Dispatch<React.SetStateAction<MessageModelType>>;
   membersModal: {
     loading: boolean;
     show: boolean;
@@ -96,7 +96,7 @@ type ChatContextType = {
   setMessages: React.Dispatch<
     React.SetStateAction<
       {
-        message: MessageClass;
+        message: MessageModelType;
         senderInfo: UserClass;
       }[]
     >

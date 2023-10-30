@@ -112,6 +112,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={poppins.className}>
+      {/* // <html lang="en"> */}
       {/* <link rel="manifest" href="/manifest.webmanifest" /> */}
       <body className="">
         <div id="modal" />

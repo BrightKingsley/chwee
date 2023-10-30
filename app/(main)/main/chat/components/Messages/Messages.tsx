@@ -69,6 +69,7 @@ export default function Messages({
   }, []);
 
   useEffect(() => {
+    if (messages.length > 0) return;
     setMessagesLoading(true);
     (async () => {
       //TODO remove hard-coded password
@@ -79,7 +80,7 @@ export default function Messages({
         }
       );
 
-      if (!response.ok) return setMessagesLoading(false);
+      // if (!response.ok) return setMessagesLoading(false);
 
       const data = await response.json();
       if (!data) return setMessagesLoading(false);
@@ -91,7 +92,7 @@ export default function Messages({
       setMessages(msgs);
       setMessagesLoading(false);
     })();
-  }, [chatID]);
+  }, [chatID, messages.length]);
 
   return (
     <>

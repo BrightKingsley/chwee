@@ -23,17 +23,19 @@ import {
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ACCOUNT, CONNECT } from "@/constants/routes";
+import { ACCOUNT, BASE_URL, CONNECT } from "@/constants/routes";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
-import { ChatContext, ModalContext } from "@/context";
+import { ChatContext, ModalContext, NotificationContext } from "@/context";
 import { textCode } from "@/constants/utils";
-import { decodeTextContent } from "@/lib/utils";
+import { decodeTextContent, stringToObjectId } from "@/lib/utils";
 import { useParams } from "next/navigation";
 import { MessageProps } from "../types";
 import { LongPressEventType, useLongPress } from "use-long-press";
 import { MessageClass } from "@/models/Message";
 import { UserClass } from "@/models";
+import { pusherClient } from "@/lib/config";
+import { ClientMessage } from "@/types/models";
 
 const emotes = ["😂", "💩", "😢", "😭", "💔"];
 
@@ -54,7 +56,9 @@ export default function Message({
     setViewImages,
     uploadProgress,
     inputRef,
+    setMessages,
   } = useContext(ChatContext);
+  const { triggerNotification } = useContext(NotificationContext);
 
   const [showMore, setShowMore] = useState(false);
 
@@ -70,7 +74,7 @@ export default function Message({
 
   const textContent = messageData.textContent;
   const imageContent: string[] | undefined = messageData.imageContent;
-  const sender = messageData.sender;
+  const sender = messageData.sender.toString();
   const username = messageData.username;
   const photo = messageData.photo;
   const tag = messageData.tag;
@@ -78,15 +82,16 @@ export default function Message({
   const type = messageData.type;
   const transaction = messageData.transaction;
   const sendDate = messageData.sendDate;
-  const reactions = messageData.reactions;
+  const messageID = messageData.id.toString();
+  // const reactions = messageData.reactions;
 
   const msgSendDate = new Date(sendDate);
   const hours = msgSendDate.getHours();
   const minutes = msgSendDate.getMinutes();
-  const ampm = hours >= 12 ? "pm" : "am";
+  const AmPm = hours >= 12 ? "pm" : "am";
   const formattedTime = `${hours % 12 || 12}:${minutes
     .toString()
-    .padStart(2, "0")}${ampm}`;
+    .padStart(2, "0")}${AmPm}`;
 
   const { data } = useSession();
   const session: Session | null = data;
@@ -111,6 +116,83 @@ export default function Message({
   useEffect(() => {
     messageRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [sender]);
+
+  useEffect(() => {
+    if (!messageID) return;
+    pusherClient.subscribe(messageID);
+    pusherClient.bind(
+      "add-reaction",
+      ({
+        reaction,
+        sender,
+        messageID,
+      }: {
+        reaction: string;
+        sender: string;
+        messageID: string;
+      }) => {
+        if (sender === userID) {
+          return;
+        } else {
+          addReaction({ messageID, reaction, sender });
+        }
+      }
+    );
+    return () => pusherClient.unsubscribe(chatID);
+  }, []);
+
+  function addReaction({
+    messageID,
+    reaction,
+    sender,
+  }: {
+    messageID: string;
+    reaction: string;
+    sender: string;
+  }) {
+    setMessages((prevMessages) => {
+      // Use map to create a new array with the updated message
+      return prevMessages.map((message) => {
+        if (message.message.id === messageID) {
+          // Check if reaction already exists
+          // const hasReaction = message.message.reactions?.some(
+          //   (react) => reaction in react
+          // );
+
+          // If reaction doesn't exist, add it
+
+          let messageReactions = message.message.reactions![reaction];
+
+          if (!messageReactions) message.message.reactions![reaction] = [];
+
+          message.message.reactions![reaction].push(sender);
+
+          // message.message.reactions![message.message.reactions!.length][
+          //   `${"okayy"}`
+          // ] &&
+          //   message.message.reactions![message.message.reactions!.length][
+          //     reaction
+          //   ].push(sender);
+        }
+        return message;
+      });
+    });
+  }
+
+  async function handleAddReaction(reaction: string) {
+    addReaction({ messageID, reaction, sender });
+    try {
+      const response = await fetch(`${BASE_URL}/api/messaging/${chatID}`, {
+        method: "PATCH",
+        body: JSON.stringify({ messageID, reaction }),
+      });
+      const data = await response.json();
+      console.log("REACTION", { data });
+    } catch (error) {
+      console.error({ error });
+      triggerNotification("Couldn't add reaction");
+    }
+  }
 
   if (!session || !session.user || !session.user.id) return null;
 
@@ -169,7 +251,11 @@ export default function Message({
           : "rounded-r-xl"
       } w-fit rounded-b-[0.2rem] ${
         imageContent && imageContent.length > 0 && !textContent && "!rounded-xl"
-      } `}
+      } ${
+        messageData.reactions &&
+        Object.keys(messageData.reactions).length > 0 &&
+        "!mb-6"
+      }`}
     >
       <AnimateInOut
         show={showMore}
@@ -189,7 +275,10 @@ export default function Message({
             onClick={() => setShowMore(false)}
             className="cursor-pointer"
           >
-            <div className="p-1 transition-all duration-200 rounded-full active:scale-[10] active:rotate-12 hover:scale-150 active:z-20 text-2xl">
+            <div
+              onClick={() => handleAddReaction(emote)}
+              className="p-1 transition-all duration-200 rounded-full active:scale-[10] active:rotate-12 hover:scale-150 active:z-20 text-2xl"
+            >
               {emote}
             </div>
           </motion.div>
@@ -398,8 +487,10 @@ export default function Message({
                                   type: "send",
                                   amount: transaction.amount,
                                   receiver: textContent
-                                    ?.split(textCode)[1]
-                                    .split(":")[1],
+                                    ? textContent
+                                        .split(textCode)[1]
+                                        .split(":")[1]
+                                    : "",
                                 },
                                 sender: session.user.name as string,
                                 replyTo: {
@@ -509,15 +600,16 @@ export default function Message({
           </div>
         </div>
       </div>
-      <div className="absolute bottom-0 right-0 w-fit flex items-center gap-1">
-        {reactions &&
-          reactions.length > 0 &&
-          reactions.map((reaction, i) => (
-            <div key={i} className="relative text-xl">
-              {Object.keys(reaction)[0]}
-              <small className="absolute -bottom-1 -right-1">
-                {Object.values(reaction).length}
-              </small>
+      <div
+        className={`absolute -bottom-2/3 z-10 h-fit right-0 w-fit rounded-full flex items-center gap-1 py-[2px] px-[3px] bg-white ${
+          sender === userID ? "" : "left-0"
+        }`}
+      >
+        {messageData.reactions &&
+          Object.keys(messageData.reactions).map((reaction, i) => (
+            <div key={i} className="relative text-base">
+              {/* {Object.keys(reaction)[0]} */}
+              {reaction}
             </div>
           ))}
       </div>

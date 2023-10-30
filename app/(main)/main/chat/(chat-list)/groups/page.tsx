@@ -34,7 +34,7 @@ export default async function Groups({
 
   const groups: ClientGroup[] | null = await getGroups({});
 
-  if (!groups) return null;
+  if (!groups) return <p>user has no available groups</p>;
   serverSession.user.id!;
   return (
     <div className="space-y-2">
@@ -42,7 +42,7 @@ export default async function Groups({
         groups.map((group, i) => {
           return (
             <ListTile key={group._id.toString()} index={i}>
-              <div className="flex items-center w-full gap-2 p-2 rounded-md border backdrop-blur-sm">
+              <div className="flex items-center w-full gap-2 p-2 border rounded-md backdrop-blur-sm">
                 {searchParams &&
                   searchParams.join === "true" &&
                   searchParams.groupTag === group.tag && (

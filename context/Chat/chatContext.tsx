@@ -1,7 +1,7 @@
 "use client";
 
 import { BASE_URL } from "@/constants/routes";
-import { MessageBody } from "@/types/models";
+import { MessageModelType } from "@/types/models";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { createContext, useContext, useState } from "react";
@@ -124,7 +124,7 @@ export const ChatContextProvider = ({
   const [loading, setLoading] = useState(false);
 
   // Message Data
-  const [message, setMessage] = useState<MessageBody>({
+  const [message, setMessage] = useState<MessageModelType>({
     textContent: "",
     imageContent: [],
     sendDate: new Date(),
@@ -137,7 +137,7 @@ export const ChatContextProvider = ({
   // Controls Incoming Messages
   const [messages, setMessages] = useState<
     {
-      message: MessageBody;
+      message: MessageModelType;
       senderInfo: { username: string; tag: string; photo: string };
     }[]
   >([]);
@@ -171,7 +171,7 @@ export const ChatContextProvider = ({
           ...prev,
           imageContent: imageContent as string[],
         }));
-        const messageToSend: MessageBody = {
+        const messageToSend: MessageModelType = {
           ...message,
           sendDate: new Date(),
         };
@@ -192,10 +192,10 @@ export const ChatContextProvider = ({
     chatID,
     roomType,
   }: {
-    message: MessageBody;
+    message: MessageModelType;
     chatID: string;
     roomType: string;
-    // images?: MessageBody["imageContent"];
+    // images?: MessageModelType["imageContent"];
   }) {
     let messageData = { ...message };
     messageData.sender = message.sender;
@@ -204,7 +204,12 @@ export const ChatContextProvider = ({
       setMessages((prev) => [
         ...prev,
         {
-          message: { ...message, imageContent: previewImages.images },
+          message: {
+            ...message,
+            imageContent: previewImages.images,
+            id: "",
+            reactions: {},
+          },
           senderInfo: {
             username: session?.user.tag as string,
             photo: session?.user.image as string,
