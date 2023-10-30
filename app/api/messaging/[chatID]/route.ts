@@ -7,6 +7,7 @@ import {
   getUserByID,
   getChat,
   transferToChweeWallet,
+  addReaction,
 } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { MessageClass } from "@/models/Message";
@@ -271,7 +272,7 @@ export async function GET(
     if (!messageResult) throw new Error("Conversation not found");
 
     const messages = await Promise.all(
-      messageResult.messages.map(async (message) => {
+      Object.values(messageResult.messages).map(async (message) => {
         const senderUserID = message.sender;
         const senderDoc = await User.findById(senderUserID);
 
@@ -300,4 +301,29 @@ export async function GET(
   }
 }
 
-export function PATCH(request: NextRequest) {}
+export async function PATCH(
+  request: NextRequest,
+  { params: { chatID } }: PostProps
+) {
+  try {
+    const serverSession = await getServerSession(authOptions);
+    if (!serverSession || !serverSession.user || !serverSession.user.id)
+      throw new Error("Unauthenticated User!");
+    const senderID = serverSession.user.id;
+
+    const { messageID, reaction }: { messageID: string; reaction: string } =
+      await request.json();
+    if (
+      !messageID ||
+      !reaction ||
+      typeof messageID !== "string" ||
+      typeof reaction !== "string"
+    )
+      throw new Error("Invalid Data");
+    const result = await addReaction({ chatID, messageID, reaction, senderID });
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error({ error });
+    return NextResponse.json(null);
+  }
+}

@@ -20,7 +20,7 @@ export default function LandingNav() {
         init={{ scale: 0 }}
         out={{ scale: 0 }}
         animate={{ scale: 1 }}
-        show={!inView}
+        show={!inView && !open}
         className="fixed top-3 right-3 w-fit h-fit z-[100] rounded-full overflow-clip"
       >
         <div className="relative bg-white before:absolute before:top-0 before:left-0 before:z-[101] before:w-full before:h-full before:bg-primary/10  w-full h-full">
@@ -35,16 +35,16 @@ export default function LandingNav() {
           >
             {/* <Bars3Icon className="w-8 h-8 fill-primary" /> */}
             {open ? (
-              <XMarkIcon className="text-primary fill-primary w-8 h-8" />
+              <XMarkIcon className="w-8 h-8 text-primary fill-primary" />
             ) : (
-              <MenuLineIcon className="text-primary fill-primary w-8 h-8" />
+              <MenuLineIcon className="w-8 h-8 text-primary fill-primary" />
             )}
           </IconButton>
         </div>
       </AnimateInOut>
       <div
         ref={ref}
-        className="flex relative w-fit items-center justify-center"
+        className="relative flex items-center justify-center w-fit"
       >
         <IconButton
           title="toggle menu"
@@ -62,81 +62,105 @@ export default function LandingNav() {
             <MenuLineIcon />
           )}
         </IconButton>
-        {!inView && (
-          <div
-            className={`flex items-center transition-all bg-white duration-200 gap-3 fixed ${
-              open
-                ? "rounded-none h-screen w-screen z-[99] top-0 right-0"
-                : "rounded-full w-0 h-0"
+        <div
+          className={`flex items-center transition-all bg-white duration-200 gap-3 fixed ${
+            open
+              ? "rounded-none h-screen w-screen z-[99] top-0 right-0"
+              : "rounded-full w-0 h-0"
+          }`}
+        >
+          <ul
+            className={` transition-all duration-200 text-3xl font-bold leading-loose text-center ${
+              open ? "block m-auto w-fit" : "hidden"
             }`}
           >
-            <ul
-              className={` transition-all duration-200 text-3xl font-bold leading-loose text-center ${
-                open ? "block m-auto w-fit" : "hidden"
-              }`}
+            <AnimateInOut
+              init={{ scale: 0 }}
+              out={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              show={open}
+              className="fixed top-3 right-3 w-fit h-fit z-[100] rounded-full overflow-clip"
             >
-              <Link href="#hero">
-                <li
+              <div className="relative bg-white before:absolute before:top-0 before:left-0 before:z-[101] before:w-full before:h-full before:bg-primary/10  w-full h-full">
+                <IconButton
+                  title="toggle menu"
+                  aria-label="toggle menu"
+                  variant="text"
                   onClick={() => {
-                    setOpen(false);
+                    setOpen((prev) => !prev);
                   }}
-                  className="hover:text-primary transition-all duration-150 hover:shadow-md cursor-pointer active:scale-105 px-2"
+                  className={`flex items-center justify-center rounded-full text-primary fill-primary z-[102]`}
                 >
-                  Home
-                </li>
-              </Link>
-              <Link href="#what-is-chwee">
-                <li
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                  className="hover:text-primary transition-all duration-150 hover:shadow-md cursor-pointer active:scale-105 px-2"
-                >
-                  What is Chwee?
-                </li>
-              </Link>
-              <Link href="#features">
-                <li
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                  className="hover:text-primary transition-all duration-150 hover:shadow-md cursor-pointer active:scale-105 px-2"
-                >
-                  Features
-                </li>
-              </Link>
-              <Link href="#testimonials">
-                <li
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                  className="hover:text-primary transition-all duration-150 hover:shadow-md cursor-pointer active:scale-105 px-2"
-                >
-                  Testimonials
-                </li>
-              </Link>
-            </ul>
-          </div>
-        )}{" "}
+                  {/* <Bars3Icon className="w-8 h-8 fill-primary" /> */}
+                  {open ? (
+                    <XMarkIcon className="w-8 h-8 text-primary fill-primary" />
+                  ) : (
+                    <MenuLineIcon className="w-8 h-8 text-primary fill-primary" />
+                  )}
+                </IconButton>
+              </div>
+            </AnimateInOut>
+            <Link href="#hero">
+              <li
+                onClick={() => {
+                  setOpen(false);
+                }}
+                className="px-2 transition-all duration-150 cursor-pointer hover:text-primary hover:shadow-md active:scale-105"
+              >
+                Home
+              </li>
+            </Link>
+            <Link href="#what-is-chwee">
+              <li
+                onClick={() => {
+                  setOpen(false);
+                }}
+                className="px-2 transition-all duration-150 cursor-pointer hover:text-primary hover:shadow-md active:scale-105"
+              >
+                What is Chwee?
+              </li>
+            </Link>
+            <Link href="#features">
+              <li
+                onClick={() => {
+                  setOpen(false);
+                }}
+                className="px-2 transition-all duration-150 cursor-pointer hover:text-primary hover:shadow-md active:scale-105"
+              >
+                Features
+              </li>
+            </Link>
+            <Link href="#testimonials">
+              <li
+                onClick={() => {
+                  setOpen(false);
+                }}
+                className="px-2 transition-all duration-150 cursor-pointer hover:text-primary hover:shadow-md active:scale-105"
+              >
+                Testimonials
+              </li>
+            </Link>
+          </ul>
+        </div>
         {/* </AnimateInOut> */}
         <ul className="items-center hidden gap-3 md:flex">
           <Link href="#hero">
-            <li className="hover:text-primary transition-all duration-150 cursor-pointer active:scale-105 px-2">
+            <li className="px-2 transition-all duration-150 cursor-pointer hover:text-primary active:scale-105">
               Home
             </li>
           </Link>
           <Link href="#what-is-chwee">
-            <li className="hover:text-primary transition-all duration-150 cursor-pointer active:scale-105 px-2">
+            <li className="px-2 transition-all duration-150 cursor-pointer hover:text-primary active:scale-105">
               What is Chwee?
             </li>
           </Link>
           <Link href="#features">
-            <li className="hover:text-primary transition-all duration-150 cursor-pointer active:scale-105 px-2">
+            <li className="px-2 transition-all duration-150 cursor-pointer hover:text-primary active:scale-105">
               Features
             </li>
           </Link>
           <Link href="#testimonials">
-            <li className="hover:text-primary transition-all duration-150 cursor-pointer active:scale-105 px-2">
+            <li className="px-2 transition-all duration-150 cursor-pointer hover:text-primary active:scale-105">
               Testimonials
             </li>
           </Link>

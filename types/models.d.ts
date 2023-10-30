@@ -32,7 +32,7 @@ interface ClientChat {
 interface ClientMessage {
   userID: string;
   message: {
-    message: MessageClass;
+    message: MessageModelType;
     senderInfo: UserClass;
   };
   // message: MessageClass & UserClass;
@@ -66,21 +66,44 @@ interface CLientTransaction {
   _id: string | mongoose.Types.ObjectId | string;
 }
 
-type MessageBody = {
-  textContent: string;
-  sendDate: Date;
-  sender: string | undefined;
-  // imageContent: (Blob | Uint8Array | ArrayBuffer)[];
+// type MessageBody = {
+//   textContent?: string;
+//   sendDate: Date;
+//   sender: string | undefined;
+//   // imageContent: (Blob | Uint8Array | ArrayBuffer)[];
+//   type: MessageClass["type"];
+//   imageContent?: (string | StaticImport)[];
+//   replyTo?: {
+//     sender?: string | mongoose.Types.ObjectId;
+//     textContent?: string;
+//     imageContent?: string[];
+//   };
+//   transaction?: {
+//     type: "send" | "request";
+//     amount?: number;
+//     receiver?: string;
+//   };
+// };
+
+interface MessageModelType {
+  sender?: mongoose.Types.ObjectId | string;
+  imageContent?: string[];
+  textContent?: string;
+  // type: "fund" | "notification" | "conversation";
   type: MessageClass["type"];
-  imageContent: (string | StaticImport)[];
+  reactions?: {
+    [key: string]: (string | mongoose.Types.ObjectId)[];
+  };
+  sendDate: Date;
+  id?: mongoose.Types.ObjectId | string;
   replyTo?: {
     sender?: string;
     textContent?: string;
     imageContent?: string[];
   };
   transaction?: {
-    type: "send" | "request";
-    amount?: number;
     receiver?: string;
+    amount?: number;
+    type: "send" | "request";
   };
-};
+}

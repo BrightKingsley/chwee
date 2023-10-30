@@ -5,7 +5,7 @@ import { Button } from "@/app/components/mui";
 import { Overlay } from "@/app/components/client";
 import { ChatContext } from "@/context";
 import { formatToNumberWithDecimal } from "@/lib/utils";
-import { MessageBody } from "@/types/models";
+import { MessageModelType } from "@/types/models";
 import { Input } from "@material-tailwind/react";
 import { useContext, useState } from "react";
 

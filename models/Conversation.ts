@@ -25,11 +25,10 @@ import { MessageClass } from "./Message";
   },
 })
 class ConversationClass {
-  @prop({ required: true, type: ()=>[MessageClass], default: [] })
-  public messages: MessageClass[];
+  @prop({ required: true, default: {} })
+  public messages: { [key: string]: MessageClass };
 
-
-  @prop({required:true})
+  @prop({ required: true })
   public chatID: mongoose.Types.ObjectId;
 
   _id: mongoose.Types.ObjectId | string;

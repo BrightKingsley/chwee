@@ -21,7 +21,7 @@ import { TransactionForm, UploadImageData } from "..";
 import TextareaAutosize from "react-textarea-autosize";
 import { useImageUpload } from "@/hooks";
 import { Button, Card, IconButton, Spinner } from "@/app/components/mui";
-import { ClientUser, MessageBody } from "@/types/models";
+import { ClientUser, MessageModelType } from "@/types/models";
 import ExchangeDollarLineIcon from "remixicon-react/ExchangeDollarLineIcon";
 import HandCoinLineIcon from "remixicon-react/HandCoinLineIcon";
 import CoinsLineIcon from "remixicon-react/CoinsLineIcon";
@@ -74,6 +74,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
       if (
         selectedImages.length < 1 &&
         !message.textContent &&
+        message.imageContent &&
         message.imageContent.length < 1 &&
         !(message.transaction && message.transaction.amount)
       )
@@ -90,7 +91,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
       }
 
       // if (selectedImages.length > 0) return startUpload(selectedImages);
-      const messageToSend: MessageBody = {
+      const messageToSend: MessageModelType = {
         ...message,
         sendDate: new Date(),
       };
@@ -164,6 +165,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
           ...prev.transaction,
           receiver: membersModal.value,
           type: "send",
+          amount: 0,
         },
       }));
       setToggleTransactionForm({ show: true, type: "send" });
