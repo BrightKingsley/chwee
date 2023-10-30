@@ -13,6 +13,7 @@ import {
   PushNotificationProvider,
   ScreenContext,
   ThemeContextProvider,
+  TransactionContextProvider,
 } from "@/context";
 import "@/public/css/globals.css";
 import "swiper/css";
@@ -33,26 +34,29 @@ export default function RootLayout({
     <>
       <div id="modal" />
       <div id="notification" />
+      <div id="transaction-form" />
       <AuthContextProvider>
         <ThemeContextProvider>
           <NotificationContextProvider>
-            <ChatContextProvider>
-              <ModalContextProvider>
-                <ScreenContext>
-                  <PushNotificationProvider />
-                  <main className="w-screen h-screen md:flex bg-pattern">
-                    <Navbar />
-                    <div className="w-screen md:w-[calc(100vw-3.5rem)]">
-                      {children}
-                    </div>
-                    <div className="fixed bottom-0 left-0">
-                      <PortalElements />
-                    </div>
-                  </main>
-                  <Rat />
-                </ScreenContext>
-              </ModalContextProvider>
-            </ChatContextProvider>
+            <TransactionContextProvider>
+              <ChatContextProvider>
+                <ModalContextProvider>
+                  <ScreenContext>
+                    <PushNotificationProvider />
+                    <main className="w-screen h-screen md:flex bg-pattern">
+                      <Navbar />
+                      <div className="w-screen md:w-[calc(100vw-3.5rem)]">
+                        {children}
+                      </div>
+                      <div className="fixed bottom-0 left-0">
+                        <PortalElements />
+                      </div>
+                    </main>
+                    <Rat />
+                  </ScreenContext>
+                </ModalContextProvider>
+              </ChatContextProvider>
+            </TransactionContextProvider>
           </NotificationContextProvider>
         </ThemeContextProvider>
       </AuthContextProvider>

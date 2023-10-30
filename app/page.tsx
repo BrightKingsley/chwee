@@ -95,8 +95,8 @@ export default function Landing() {
       <section className="py-16 md:flex mx-14" id="hero">
         <div className="md:flex-[2] text-center md:text-left space-y-10">
           <h1 className="text-5xl font-extrabold text-gray-800">
-            <span className="text-primary">Connect</span> with your circle in a
-            fun way!
+            <span className="text-primary">Connect</span> and transact in a fun
+            and <span className="text-primary">dynamic</span> way!
           </h1>
 
           <p>

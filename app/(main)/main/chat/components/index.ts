@@ -6,6 +6,5 @@ export { default as LeaveGroupTrigger } from "./LeaveGroupTrigger";
 export { default as LoadingMessages } from "./LoadingMessages";
 export { default as Message } from "./Message";
 export { default as Messages } from "./Messages";
-export { default as TransactionForm } from "./TransactionForm";
 export { default as SendMessage } from "./SendMessage";
 export { default as UploadImageData } from "./UploadImageData";

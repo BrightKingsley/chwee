@@ -11,6 +11,7 @@ import { CONNECT } from "@/constants/routes";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { Chat } from "@/models";
+import { stringToObjectId } from "@/lib/utils";
 
 export default async function UserInfo({
   params,
@@ -27,32 +28,46 @@ export default async function UserInfo({
   const userID = serverSession.user.id;
 
   const decodedTag = decodeURIComponent(params.tag);
-
   const user = await getUserByTag({ tag: decodedTag });
 
-  // const userChat = await Chat.findOne({members});
-  //TODO: Implemenet find chat with user and pass chatID to connect options
-
-  // validate user data
   if (!user)
     return (
-      <div className="flex items-center bg-pattern justify-center w-screen h-screen">
+      <div className="flex items-center justify-center w-screen h-screen bg-pattern">
         <h1>User Unavailable</h1>
       </div>
     );
+
+  const parsedUserID = stringToObjectId(userID);
+  const parsedConnectID = stringToObjectId(user?._id);
+
+  //TODO: Implemenet find chat with user and pass chatID to connect options
+  const userChat = await Chat.findOne({
+    $and: [
+      { members: { $in: [parsedUserID] } },
+      { members: { $in: [parsedConnectID] } },
+    ],
+  });
+
+  // validate user data
+
   const userConnections = user.connections.slice(0, 5);
 
   return (
-    <div className="flex flex-col w-full h-screen bg-pattern p-2 pt-20 space-y-6">
+    <div className="flex flex-col w-full h-screen p-2 pt-20 space-y-6 bg-pattern">
       <div className="mx-auto space-y-16 w-fit">
         <div className="relative flex items-center justify-center w-32 h-32 mx-auto">
           <Link href={`${CONNECT}/${decodedTag}/display-photo`}>
-            <div className="w-32 h-32 z-10 rounded-full overflow-clip">
+            <div className="z-10 w-32 h-32 rounded-full overflow-clip">
               <Image fill src={user.photo} alt={user.username} />
             </div>
           </Link>
           <div className="absolute w-60 h-60">
-            <ConnectOptions userID={user._id.toString()} />
+            <ConnectOptions
+              userTag={decodedTag}
+              chatID={userChat ? (userChat._id as string) : null}
+              connectID={user._id}
+              userID={user._id.toString()}
+            />
           </div>
         </div>
         <div className="text-center ">

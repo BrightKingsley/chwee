@@ -1,10 +1,11 @@
-import { Modal, Notification } from "..";
+import { Modal, Notification, TransactionForm } from "..";
 
 const PortalElements = () => {
   return (
     <>
       <Modal />
       <Notification />
+      <TransactionForm />
     </>
   );
 };

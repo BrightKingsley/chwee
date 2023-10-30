@@ -9,7 +9,7 @@ import {
 } from "@/app/components/client";
 import { Button, IconButton, Spinner } from "@/app/components/mui";
 import { BASE_URL } from "@/constants/routes";
-import { NotificationContext } from "@/context";
+import { NotificationContext, TransactionContext } from "@/context";
 import { ClientUser } from "@/types/models";
 import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -28,6 +28,7 @@ import {
 
 export default function TranferToChwee() {
   const { triggerNotification } = useContext(NotificationContext);
+  const { transferToChwee } = useContext(TransactionContext);
 
   const [showEntries, setShowEntries] = useState<{
     receiverTag: boolean;
@@ -97,31 +98,23 @@ export default function TranferToChwee() {
 
     setValues((prev) => ({ ...prev, transferPin: pin }));
 
-    transfer();
+    transferToChwee({ finishTransaction, startTransaction, values });
   };
 
-  async function transfer() {
-    try {
-      setShowEntries((prev) => ({ ...prev, loading: true }));
-
-      if (values.amount < 100) {
-        setShowEntries((prev) => ({ ...prev, loading: false }));
-        return triggerNotification("invalid amount");
-      }
-
-      const res = await fetch(`${BASE_URL}/api/transactions/transfer`, {
-        method: "POST",
-        body: JSON.stringify(values),
-      });
-      const result = await res.json();
-      triggerNotification(result.message || result.error.message);
-
-      console.log({ result });
-
+  function startTransaction(amount: number) {
+    setShowEntries((prev) => ({ ...prev, loading: true }));
+    if (amount < 100) {
       setShowEntries((prev) => ({ ...prev, loading: false }));
-    } catch (error) {
-      console.error(error);
+      return triggerNotification("invalid amount");
     }
+  }
+
+  function finishTransaction(result: any) {
+    triggerNotification(result.message || result.error.message);
+
+    console.log({ result });
+
+    setShowEntries((prev) => ({ ...prev, loading: false }));
   }
 
   return (

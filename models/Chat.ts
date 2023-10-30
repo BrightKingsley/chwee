@@ -53,9 +53,6 @@ class ChatClass {
   })
   public members: mongoose.Types.ObjectId[];
 
-  // @prop({ required: true, ref: () => ConversationClass })
-  // conversation: mongoose.Types.ObjectId;
-
   id: string;
 
   _id: mongoose.Types.ObjectId | string;
