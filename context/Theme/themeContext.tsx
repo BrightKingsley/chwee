@@ -26,7 +26,7 @@ export function ThemeContextProvider({
   } = {
     button: {
       defaultProps: {
-        color: "deep-orange",
+        color: "purple",
         ripple: true,
         variant: "gradient",
         className: "!font-poppins",
@@ -34,7 +34,7 @@ export function ThemeContextProvider({
       styles: {
         variants: {
           filled: {
-            "deep-orange": {
+            purple: {
               backgroud: "bg-primary",
               color: "text-white",
               shadow: "shadow-md shadow-primary/10",
