@@ -12,7 +12,8 @@ module.exports = withMT({
     extend: {
       fontFamily: ["Poppins"],
       colors: {
-        primary: "#f4511e",
+        // primary: "#f4511e",
+        primary: "#9c27b0",
         // primary: "#ff7043",
         // primary: "#ff501b",
         // primary: "#fb923c",
