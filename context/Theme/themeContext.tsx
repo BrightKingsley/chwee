@@ -35,7 +35,7 @@ export function ThemeContextProvider({
         variants: {
           filled: {
             purple: {
-              backgroud: "bg-primary",
+              background: "bg-primary",
               color: "text-white",
               shadow: "shadow-md shadow-primary/10",
               hover: "hover:shadow-lg hover:primary/20",
@@ -53,28 +53,44 @@ export function ThemeContextProvider({
         ripple: true,
         variant: "text",
         className: "flex items-center justify-center",
-        color: "deep-orange",
+        color: "purple",
         //TODO size, fullwidth
+      },
+      styles: {
+        variants: {
+          filled: {
+            purple: {
+              background: "bg-primary",
+              color: "text-white",
+              shadow: "shadow-md shadow-primary/10",
+              hover: "hover:shadow-lg hover:primary/20",
+              focus: "focus:opacity-[0.85] focus:shadow-none",
+              active: "active:opacity-[0.85] active:shadow-none",
+            },
+          },
+          gradient: {},
+          outlined: {},
+        },
       },
     },
 
     input: {
-      defaultProps: { variant: "outlined", color: "deep-orange" },
+      defaultProps: { variant: "outlined", color: "purple" },
     },
 
     switch: {
       defaultProps: {
-        color: "deep-orange",
+        color: "purple",
       },
     },
 
     spinner: {
       defaultProps: {
-        color: "deep-orange",
+        color: "purple",
       },
     },
     textarea: {
-      defaultProps: { variant: "outlined", color: "deep-orange" },
+      defaultProps: { variant: "outlined", color: "purple" },
     },
   };
 
