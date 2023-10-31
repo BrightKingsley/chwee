@@ -13,7 +13,7 @@ module.exports = withMT({
       fontFamily: ["Poppins"],
       colors: {
         // primary: "#f4511e",
-        primary: "#9c27b0",
+        primary: "#ab47bc",
         // primary: "#ff7043",
         // primary: "#ff501b",
         // primary: "#fb923c",
@@ -30,8 +30,10 @@ module.exports = withMT({
         "druk-wide-bold": ["druk-wide-bold", "sans-serif"],
       },
       backgroundImage: {
+        // "gradient-primary":
+        //   "linear-gradient(185.44deg, #f4511e 13.21%,  #ff7043 95.65%)",
         "gradient-primary":
-          "linear-gradient(185.44deg, #f4511e 13.21%,  #ff7043 95.65%)",
+          "linear-gradient(185.44deg, #ab47bc 13.21%,  #ba68c8 95.65%)",
       },
     },
   },

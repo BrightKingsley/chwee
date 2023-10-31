@@ -63,7 +63,7 @@ export default async function Wallet() {
                   <div className="flex flex-col items-center justify-center gap-1">
                     <Link
                       href={`${WALLET}/add-money`}
-                      className="flex items-center justify-center w-12 h-12 p-1 text-3xl transition-transform duration-150 bg-white rounded-2xl text-primary active:scale-75 active:bg-primary/50 active:text-white hover:text-white hover:outline hover:outline-white hover:outline-offset-1 hover:outline-1 hover:scale-110 hover:bg-white/30 "
+                      className="flex items-center justify-center w-12 h-12 p-1 text-3xl transition-transform duration-150 bg-white rounded-2xl text-primary active:scale-75 active:bg-primary/50 active:text-white hover:text-white hover:outline hover:outline-white hover:outline-offset-1 hover:outline-1 hover:scale-110 hover:bg-white/30"
                     >
                       <PlusIcon className="w-6 h-6" />
                     </Link>
@@ -72,7 +72,7 @@ export default async function Wallet() {
                   <div className="flex flex-col items-center justify-center gap-1">
                     <Link
                       href={`${WALLET}/transfer`}
-                      className="flex items-center justify-center w-12 h-12 p-1 text-3xl transition-transform duration-150 bg-white rounded-2xl text-primary active:scale-75 active:bg-primary/50 active:text-white hover:text-white hover:outline hover:outline-white hover:outline-offset-1 hover:outline-1 hover:scale-110 hover:bg-white/30 "
+                      className="flex items-center justify-center w-12 h-12 p-1 text-3xl transition-transform duration-150 bg-white rounded-2xl text-primary active:scale-75 active:bg-primary/50 active:text-white hover:text-white hover:outline hover:outline-white hover:outline-offset-1 hover:outline-1 hover:scale-110 hover:bg-white/30"
                     >
                       <ExchangeDollarLineIcon className="w-6 h-6 rotate-90" />
                     </Link>
