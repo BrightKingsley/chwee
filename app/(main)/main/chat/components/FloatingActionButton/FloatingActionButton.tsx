@@ -42,7 +42,7 @@ export default function FloatingActionButton({
               show={expandButton}
             >
               <Link href={`${GROUPS}/create`}>
-                <Button className="!px-2" variant="gradient" fullWidth>
+                <Button className="!px-2" variant="filled" fullWidth>
                   {"New Group"}
                 </Button>
               </Link>
@@ -59,7 +59,7 @@ export default function FloatingActionButton({
             show={expandButton}
           >
             <Link href={groups ? `${GROUPS}/discover` : `${CONNECT}`}>
-              <Button className="!px-2" variant="gradient" fullWidth>
+              <Button className="!px-2" variant="filled" fullWidth>
                 {groups ? "Discover" : "Connect"}
               </Button>
             </Link>
@@ -67,7 +67,7 @@ export default function FloatingActionButton({
         </motion.div>
       </motion.div>
       <IconButton
-        variant="gradient"
+        variant="filled"
         onClick={() => setExpandButton((prev) => !prev)}
         className="p-1 transition-all duration-200 bg-gradient-primary rounded-xl"
       >

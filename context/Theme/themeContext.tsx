@@ -26,7 +26,8 @@ export function ThemeContextProvider({
   } = {
     button: {
       defaultProps: {
-        color: "purple",
+        // @ts-ignore
+        color: "indigo",
         ripple: true,
         variant: "gradient",
         className: "!font-poppins",
@@ -34,7 +35,7 @@ export function ThemeContextProvider({
       styles: {
         variants: {
           filled: {
-            purple: {
+            indigo: {
               background: "bg-primary",
               color: "text-white",
               shadow: "shadow-md shadow-primary/10",
@@ -43,8 +44,17 @@ export function ThemeContextProvider({
               active: "active:opacity-[0.85] active:shadow-none",
             },
           },
+          outlined: {
+            indigo: {
+              background: "outline-primary",
+              color: "text-primary",
+              shadow: "shadow-none",
+              hover: "",
+              focus: "",
+              active: "",
+            },
+          },
           gradient: {},
-          outlined: {},
         },
       },
     },
@@ -53,13 +63,14 @@ export function ThemeContextProvider({
         ripple: true,
         variant: "text",
         className: "flex items-center justify-center",
-        color: "purple",
+        // @ts-ignore
+        color: "indigo",
         //TODO size, fullwidth
       },
       styles: {
         variants: {
           filled: {
-            purple: {
+            indigo: {
               background: "bg-primary",
               color: "text-white",
               shadow: "shadow-md shadow-primary/10",
@@ -75,22 +86,26 @@ export function ThemeContextProvider({
     },
 
     input: {
-      defaultProps: { variant: "outlined", color: "purple" },
+      // @ts-ignore
+      defaultProps: { variant: "outlined", color: "indigo" },
     },
 
     switch: {
       defaultProps: {
-        color: "purple",
+        // @ts-ignore
+        color: "indigo",
       },
     },
 
     spinner: {
       defaultProps: {
-        color: "purple",
+        // @ts-ignore
+        color: "indigo",
       },
     },
     textarea: {
-      defaultProps: { variant: "outlined", color: "purple" },
+      // @ts-ignore
+      defaultProps: { variant: "outlined", color: "indigo" },
     },
   };
 

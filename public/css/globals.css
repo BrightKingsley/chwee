@@ -21,7 +21,7 @@
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
-  -webkit-touch-callout: rgba(var(--primary) / 0.2);
+  /* -webkit-touch-callout: rgba(var(--primary) / 0.2); */
   -webkit-user-drag: none;
   -webkit-user-drag: none;
   -khtml-user-select: none;
@@ -131,9 +131,9 @@ input[type="number"]::-webkit-outer-spin-button {
     --body: #fff;
   }
 
-  .bg-primary {
+  /* .bg-primary {
     background-color: var(--primary);
-  }
+  } */
 }
 
 @layer base {
@@ -173,62 +173,62 @@ input[type="number"]::-webkit-outer-spin-button {
   img {
     @apply object-cover w-full h-full;
   }
-}
 
-.row-span-8 {
-  grid-row: span 8 / span 8;
-}
+  .row-span-8 {
+    grid-row: span 8 / span 8;
+  }
 
-.row-span-11 {
-  grid-row: span 11 / span 11;
-}
+  .row-span-11 {
+    grid-row: span 11 / span 11;
+  }
 
-._main_ {
-  width: calc(100vw - 3.5rem);
-}
+  ._main_ {
+    width: calc(100vw - 3.5rem);
+  }
 
-.inset-notification {
-  /* inset: 0; */
-}
+  .inset-notification {
+    /* inset: 0; */
+  }
 
-.active {
-  /* background-color: green; */
-}
+  .active {
+    /* background-color: green; */
+  }
 
-._main-nav_::before {
-  content: "";
-  @apply absolute border-primary border-4 h-[90%] -translate-x-2 rounded-full transition-all duration-300;
-}
+  ._main-nav_::before {
+    content: "";
+    @apply absolute border-primary border-4 h-[90%] -translate-x-2 rounded-full transition-all duration-300;
+  }
 
-._replied-text_ {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-  /* background-color: #9c27b0; */
-}
+  ._replied-text_ {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    /* background-color: #9c27b0; */
+  }
 
-.sub-nav::after {
-  content: "";
-  @apply w-0 absolute inset-0 bg-primary h-[4px] top-full mx-auto rounded-full transition-all duration-500;
-}
+  .sub-nav::after {
+    content: "";
+    @apply w-0 absolute inset-0 bg-primary h-[4px] top-full mx-auto rounded-full transition-all duration-500;
+  }
 
-.active::after {
-  content: "";
-  @apply absolute inset-0 bg-primary h-[4px] w-1/2 top-full mx-auto rounded-full transition-all duration-500;
-}
+  .active::after {
+    content: "";
+    @apply absolute inset-0 bg-primary h-[4px] w-1/2 top-full mx-auto rounded-full transition-all duration-500;
+  }
 
-button:focus,
-a:focus {
-  @apply outline-primary outline-offset-2;
-}
+  button:focus,
+  a:focus {
+    @apply outline-primary outline-offset-2;
+  }
 
-button:active {
-  @apply scale-95;
-}
+  button:active {
+    @apply scale-95;
+  }
 
-.animate-loader {
-  animation: loader-gradient 1s ease-in-out alternate infinite;
+  .animate-loader {
+    animation: loader-gradient 1s ease-in-out alternate infinite;
+  }
 }
 
 @keyframes loader-gradient {
