@@ -133,6 +133,7 @@ export default function Message({
         sender: string;
         messageID: string;
       }) => {
+        console.log(sender, userID, sender === userID);
         if (sender === userID) {
           return;
         } else {
@@ -610,7 +611,7 @@ export default function Message({
               </div>
             ))}
             {Object.values(messageData.reactions).flat().length > 1 && (
-              <small className="text-gray-500 pr-1">
+              <small className="pr-1 text-gray-500">
                 {Object.values(messageData.reactions).flat().length}
               </small>
             )}
