@@ -362,10 +362,16 @@ export default function Message({
                 },
                 {
                   label: "delete",
-                  onClick: () => {},
+                  onClick: () => triggerNotification("Coming soon..."),
                 },
-                { label: "send funds", onClick: () => {} },
-                { label: "request funds", onClick: () => {} },
+                {
+                  label: "send funds",
+                  onClick: () => triggerNotification("Coming soon..."),
+                },
+                {
+                  label: "request funds",
+                  onClick: () => triggerNotification("Coming soon..."),
+                },
               ]}
             />
           </div>
@@ -434,7 +440,7 @@ export default function Message({
                     <Link
                       href={
                         textContent?.split(textCode)[1].split(":")[1] ===
-                        session.user.name
+                        session.user.tag
                           ? ACCOUNT
                           : `${CONNECT}/${
                               textContent?.split(textCode)[1].split(":")[1]
@@ -442,8 +448,8 @@ export default function Message({
                       }
                       className="font-bold underline underline-offset-2"
                     >
-                      {textContent?.split(textCode)[1].split(":")[0] ===
-                      session.user.name
+                      {textContent?.split(textCode)[1].split(":")[1] ===
+                      session.user.tag
                         ? "You"
                         : textContent?.split(textCode)[1].split(":")[1]}
                     </Link>{" "}
@@ -462,8 +468,8 @@ export default function Message({
                     </Link> */}
                   </p>
                 </div>
-                {textContent?.split(textCode)[1].split(":")[0] !==
-                  session.user.name && (
+                {textContent?.split(textCode)[1].split(":")[1] !==
+                  session.user.tag && (
                   <div className="px-3">
                     <Button
                       onClick={() => {

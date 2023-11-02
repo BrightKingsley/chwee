@@ -25,7 +25,7 @@ export default function Onboarding() {
     <div className="relative w-screen h-screen overflow-clip">
       <div className="absolute w-64 h-64 rounded-full -top-20 -right-20 bg-pattern bg-brand-lightblue" />
 
-      <div className="rounded-full absolute -bottom-1/2 -left-1/2 bg-pattern w-[40rem] h-[40rem] bg-brand-yellow" />
+      <div className="rounded-full absolute -bottom-1/2 -left-[20rem] bg-pattern w-[40rem] h-[40rem] md:w-[50rem] md:h-[50rem] bg-brand-yellow" />
 
       <Swiper
         autoplay={{
@@ -40,22 +40,22 @@ export default function Onboarding() {
         className="w-full h-full"
       >
         <SwiperSlide className="flex items-center justify-center">
-          <div className="h-80 w-80_">
+          <div className="w-[26rem] md:w-[32rem]">
             <Image
               priority
               width={100}
-              height={80}
+              height={100}
               src="/images/onboarding/finance.svg"
               alt=""
             />
           </div>
         </SwiperSlide>
         <SwiperSlide className="flex items-center justify-center">
-          <div className="h-60 w-60">
+          <div className="w-[22rem] md:w-[32rem]">
             <Image
               priority
-              width={80}
-              height={80}
+              width={100}
+              height={100}
               src="/images/onboarding/chat.svg"
               alt=""
             />

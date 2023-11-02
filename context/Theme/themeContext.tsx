@@ -27,7 +27,7 @@ export function ThemeContextProvider({
     button: {
       defaultProps: {
         // @ts-ignore
-        color: "indigo",
+        color: "deep-orange",
         ripple: true,
         variant: "gradient",
         className: "!font-poppins",
@@ -35,7 +35,7 @@ export function ThemeContextProvider({
       styles: {
         variants: {
           filled: {
-            indigo: {
+            "deep-orange": {
               background: "bg-primary",
               color: "text-white",
               shadow: "shadow-md shadow-primary/10",
@@ -45,7 +45,7 @@ export function ThemeContextProvider({
             },
           },
           outlined: {
-            indigo: {
+            "deep-orange": {
               background: "outline-primary",
               color: "text-primary",
               shadow: "shadow-none",
@@ -64,13 +64,13 @@ export function ThemeContextProvider({
         variant: "text",
         className: "flex items-center justify-center",
         // @ts-ignore
-        color: "indigo",
+        color: "deep-orange",
         //TODO size, fullwidth
       },
       styles: {
         variants: {
           filled: {
-            indigo: {
+            "deep-orange": {
               background: "bg-primary",
               color: "text-white",
               shadow: "shadow-md shadow-primary/10",
@@ -87,25 +87,25 @@ export function ThemeContextProvider({
 
     input: {
       // @ts-ignore
-      defaultProps: { variant: "outlined", color: "indigo" },
+      defaultProps: { variant: "outlined", color: "deep-orange" },
     },
 
     switch: {
       defaultProps: {
         // @ts-ignore
-        color: "indigo",
+        color: "deep-orange",
       },
     },
 
     spinner: {
       defaultProps: {
         // @ts-ignore
-        color: "indigo",
+        color: "deep-orange",
       },
     },
     textarea: {
       // @ts-ignore
-      defaultProps: { variant: "outlined", color: "indigo" },
+      defaultProps: { variant: "outlined", color: "deep-orange" },
     },
   };
 
