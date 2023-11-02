@@ -38,7 +38,7 @@ import NotificationLineIcon from "remixicon-react/NotificationLineIcon";
 import LinksLineIcon from "remixicon-react/LinksLineIcon";
 import UserLineIcon from "remixicon-react/UserLineIcon";
 import CloseLineIconIcon from "remixicon-react/CloseLineIcon";
-// import MenuLineIconIcon from "remixicon-react/MenuLineIcon";
+import Calendar2LineIcon from "remixicon-react/Calendar2LineIcon";
 
 import NavLink from "../NavLink";
 import { AnimateInOut, Overlay } from "..";
@@ -69,11 +69,11 @@ const navLinks = [
     icon: <NotificationLineIcon className={iconClassNames} />,
     name: "notifications",
   },
-  // {
-  //   link: `${EVENTS}/my-events`,
-  //   icon: <DateRangeLineIconIcon className={iconClassNames} />,
-  //   name: "events",
-  // },
+  {
+    link: EVENTS,
+    icon: <Calendar2LineIcon className={iconClassNames} />,
+    name: "events",
+  },
   {
     link: `${CONNECT}/my-connections`,
     icon: <LinksLineIcon className={iconClassNames} />,

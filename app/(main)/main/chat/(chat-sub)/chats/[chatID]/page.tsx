@@ -21,7 +21,12 @@ export default async function ChatPage({
 
   const userID = serverSession.user.id;
 
-  const chatDoc = await Chat.findById(params.chatID);
+  let chatDoc;
+  try {
+    chatDoc = await Chat.findById(params.chatID);
+  } catch (error) {
+    return null;
+  }
 
   const chatConnectionID = chatDoc?.members.filter(
     (member) => member.toString() != userID
@@ -53,7 +58,7 @@ export default async function ChatPage({
               src={connectionDoc.photo}
               width={150}
               height={150}
-              className="rounded-full w-8 h-8 bg-primary"
+              className="w-8 h-8 rounded-full bg-primary"
               alt="group photo"
             />
           </Link>,

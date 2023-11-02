@@ -1,11 +1,13 @@
 "use client";
 import { IconButton } from "@/app/components/mui";
+import { BASE_URL, WALLET } from "@/constants/routes";
 import {
   ModalContext,
   NotificationContext,
   TransactionContext,
 } from "@/context";
 import { CurrencyDollarIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
 import { useContext, useState } from "react";
 import ExchangeDollarLineIcon from "remixicon-react/ExchangeDollarLineIcon";
 
@@ -34,7 +36,17 @@ export default function TransferButton({
   }
 
   function finishTransaction(result: any) {
-    triggerNotification(result.message || result.error.message);
+    const resultMesssge = (result.message || result.error.message) as string;
+
+    const displayMessage = resultMesssge
+      .toLocaleLowerCase()
+      .includes("insufficient") ? (
+      <Link href={`${WALLET}/add-money`}>{resultMesssge} click to fund</Link>
+    ) : (
+      resultMesssge
+    );
+
+    triggerNotification(displayMessage);
 
     console.log({ result });
 
@@ -53,7 +65,7 @@ export default function TransferButton({
           message: (
             <p>
               Transfer N{amount}.00 to{" "}
-              <span className="text-primary font-bold">{receiverTag}?</span>
+              <span className="font-bold text-primary">{receiverTag}?</span>
             </p>
           ),
           confirm: () => {

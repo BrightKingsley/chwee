@@ -3,10 +3,12 @@
 import { BASE_URL } from "@/constants/routes";
 import { ModalContext, NotificationContext } from "@/context";
 import UserUnfollowLineIcon from "remixicon-react/UserUnfollowLineIcon";
+import DeleteBinLineIcon from "remixicon-react/DeleteBin2LineIcon";
 import { IconButton } from "@/app/components/mui";
 import { Session } from "inspector";
 import { useSession } from "next-auth/react";
 import { useContext } from "react";
+import { TrashIcon } from "@heroicons/react/20/solid";
 
 export default function DisconnectButton({
   receiverID,
@@ -57,7 +59,7 @@ export default function DisconnectButton({
       }
       className={`p-2 font-druk-wide-bold text-white hover:border ${className}`}
     >
-      <UserUnfollowLineIcon className="w-8 h-8" />
+      <DeleteBinLineIcon className="w-8 h-8" />
     </IconButton>
   );
 }

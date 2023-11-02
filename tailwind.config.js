@@ -12,24 +12,24 @@ module.exports = withMT({
     extend: {
       fontFamily: ["Poppins"],
       colors: {
-        sky: {
-          50: "#f0f9ff",
-          100: "#e0f2fe",
-          200: "#bae6fd",
-          300: "#7dd3fc",
-          400: "#38bdf8",
-          500: "#0ea5e9",
-          600: "#0284c7",
-          700: "#0369a1",
-          800: "#075985",
-          900: "#0c4a6e",
-        },
-        // primary: "#f4511e",
+        // sky: {
+        //   50: "#f0f9ff",
+        //   100: "#e0f2fe",
+        //   200: "#bae6fd",
+        //   300: "#7dd3fc",
+        //   400: "#38bdf8",
+        //   500: "#0ea5e9",
+        //   600: "#0284c7",
+        //   700: "#0369a1",
+        //   800: "#075985",
+        //   900: "#0c4a6e",
+        // },
+        primary: "#f4511e",
         // primary: "#ff7043",
         // primary: "#ff501b",
         // primary: "#fb923c",
         // primary: "#ab47bc",
-        primary: "#6300ff",
+        // primary: "#6300ff",
         // primary: {
         //   50: "#f3f0ff",
         //   100: "#eae4ff",
@@ -56,10 +56,10 @@ module.exports = withMT({
         "druk-wide-bold": ["druk-wide-bold", "sans-serif"],
       },
       backgroundImage: {
-        // "gradient-primary":
-        //   "linear-gradient(185.44deg, #f4511e 13.21%,  #ff7043 95.65%)",
         "gradient-primary":
-          "linear-gradient(185.44deg, #6300ff 13.21%,  #6300ff 95.65%)",
+          "linear-gradient(185.44deg, #f4511e 13.21%,  #ff7043 95.65%)",
+        // "gradient-primary":
+        //   "linear-gradient(185.44deg, #6300ff 13.21%,  #6300ff 95.65%)",
       },
     },
   },

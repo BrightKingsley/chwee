@@ -94,9 +94,15 @@ export default function Landing() {
       </header>
       <section className="py-16 md:flex mx-14" id="hero">
         <div className="md:flex-[2] text-center md:text-left space-y-10">
-          <h1 className="text-5xl font-extrabold text-gray-800">
+          {/* <h1 className="text-5xl font-extrabold text-gray-800">
             <span className="text-primary">Connect</span> and transact in a fun
             and <span className="text-primary">dynamic</span> way!
+          </h1> */}
+          <h1 className="text-5xl font-extrabold leading-snug text-gray-800">
+            <span className="text-primary">Connect</span> and transact with a
+            twist of <span className="text-primary">pizzazz</span>
+            {/* and a
+            sprinkle of delight */}
           </h1>
 
           <p>
@@ -104,12 +110,12 @@ export default function Landing() {
             plentiful features
           </p>
 
-          <div className="flex items-center gap-1_ mx-auto md:mx-0 w-fit">
+          <div className="flex items-center mx-auto gap-1_ md:mx-0 w-fit">
             <Link
               href={CHATS}
               // className={`hover:scale-110 active:scale-75 active:opacity-60 transition-all duration-150 ${buttonStyles}`}
             >
-              <Button className="">Get Started!</Button>
+              <Button className="animate-bounce">Get Started!</Button>
             </Link>
             <div className="flex items-center -space-x-2 text-primary">
               {/* <IconButton aria-label="get for desktop" title="get for desktop">
@@ -212,7 +218,7 @@ export default function Landing() {
         </div>
       </section>
       <section className="px-4 md:px-8">
-        <div className="flex justify-between py-12 overflow-x-auto text-4xl gap-3 font-extrabold text-gray-400 md:px-24 md:py-16">
+        <div className="flex justify-between gap-3 py-12 overflow-x-auto text-4xl font-extrabold text-gray-400 md:px-24 md:py-16">
           <p>CHWEE</p>
           <p>CHWEE</p>
           <p>CHWEE</p>
@@ -226,21 +232,27 @@ export default function Landing() {
         <div className="flex flex-col flex-1 space-y-6 justify-stretch rounded-2xl">
           <div className="rounded-2xl bg-primary overflow-clip pl-8 pt-12 h-[46rem] relative">
             <h3 className="ml-8 font-bold text-white md:ml-10">Features</h3>
-            <div className="absolute z-10 mt-6 md:w-96 -right-14">
-              <Image
-                width={400}
-                height={600}
-                src="/images/apartment-listing-mobile.png"
-                alt=""
-              />
-            </div>
-            <div className="absolute w-64 top-56">
-              <Image
-                width={400}
-                height={600}
-                src="/images/apartment-listing-mobile.png"
-                alt=""
-              />
+            <div className="absolute z-10 w-[90%] h-full mt-6 md:w-96 -right-20 md:-right-14">
+              <div className="relative w-full h-full">
+                <div className="absolute z-10 w-full h-full rounded-md overflow-clip border-primary">
+                  <Image
+                    width={720}
+                    height={1280}
+                    src="/images/landing/mobile-3.png"
+                    alt=""
+                    className="!object-contain"
+                  />
+                </div>
+                <div className="absolute rounded-md overflow-clip w-[90%] top-56 -left-3/4">
+                  <Image
+                    width={720}
+                    height={1280}
+                    src="/images/landing/mobile-1.png"
+                    alt=""
+                    className="!object-contain"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <div className="px-8 bg-white rounded-2xl py-7 md:py-14 md:px-16 space-y-14">
@@ -249,7 +261,7 @@ export default function Landing() {
                 <Image
                   width={80}
                   height={80}
-                  src="/images/user.jpg"
+                  src="/images/landing/user-1.jpg"
                   alt="preview"
                   className="w-16 h-16 rounded-full"
                 />
@@ -268,7 +280,7 @@ export default function Landing() {
                 <Image
                   width={80}
                   height={80}
-                  src="/images/user.jpg"
+                  src="/images/landing/user-2.jpg"
                   alt="preview"
                   className="w-12 h-12 rounded-full"
                 />
@@ -332,24 +344,49 @@ export default function Landing() {
               File sharing with no compression to keep the quality🖼️
             </p>
           </div>
-          <div className="px-12 py-12 space-y-8 bg-white md:px-20 rounded-2xl flex-1">
-            <div className="relative w-fit mx-auto flex items-center -space-x-5">
-              <div className="border shrink-0 rounded-full border-primary w-14 h-14 overflow-clip z-40">
-                <Image width={80} height={80} src="/images/user.jpg" alt="" />
+          <div className="flex-1 px-12 py-12 space-y-8 bg-white md:px-20 rounded-2xl">
+            <div className="relative flex items-center mx-auto -space-x-5 w-fit">
+              <div className="z-40 border rounded-full shrink-0 w-14 h-14 overflow-clip">
+                <Image
+                  width={80}
+                  height={80}
+                  src="/images/landing/user-3.jpg"
+                  alt=""
+                />
               </div>
-              <div className="border shrink-0 rounded-full border-primary w-14 h-14 overflow-clip z-30">
-                <Image width={80} height={80} src="/images/user.jpg" alt="" />
+              <div className="z-30 border rounded-full shrink-0 w-14 h-14 overflow-clip">
+                <Image
+                  width={80}
+                  height={80}
+                  src="/images/landing/user-4.jpg"
+                  alt=""
+                />
               </div>
-              <div className="border shrink-0 rounded-full border-primary w-14 h-14 overflow-clip z-20">
-                <Image width={80} height={80} src="/images/user.jpg" alt="" />
+              <div className="z-20 border rounded-full shrink-0 w-14 h-14 overflow-clip">
+                <Image
+                  width={80}
+                  height={80}
+                  src="/images/landing/user-5.jpg"
+                  alt=""
+                />
               </div>
-              <div className="border shrink-0 rounded-full border-primary w-14 h-14 overflow-clip z-10">
-                <Image width={80} height={80} src="/images/user.jpg" alt="" />
+              <div className="z-10 border rounded-full shrink-0 w-14 h-14 overflow-clip">
+                <Image
+                  width={80}
+                  height={80}
+                  src="/images/landing/user-1.jpg"
+                  alt=""
+                />
               </div>
-              <div className="border shrink-0 rounded-full border-primary w-14 h-14 overflow-clip">
-                <Image width={80} height={80} src="/images/user.jpg" alt="" />
+              <div className="border rounded-full shrink-0 w-14 h-14 overflow-clip">
+                <Image
+                  width={80}
+                  height={80}
+                  src="/images/landing/user-2.jpg"
+                  alt=""
+                />
               </div>
-              {/* <div className="z-10 shrink-0 flex items-center justify-center text-sm font-bold text-white rounded-full w-14 h-14 bg-primary">
+              {/* <div className="z-10 flex items-center justify-center text-sm font-bold text-white rounded-full shrink-0 w-14 h-14 bg-primary">
                   99+
                 </div> */}
             </div>
@@ -377,17 +414,32 @@ export default function Landing() {
                 Now is the time for those who say
               </h2>
             </div>
-            <div className="relative flex items-center ml-auto bg-white rounded-full w-fit h-fit p-2 -space-x-5 shadow-lg">
-              <div className="border shrink-0 rounded-full border-primary w-14 h-14 overflow-clip z-20">
-                <Image width={80} height={80} src="/images/user.jpg" alt="" />
+            <div className="relative flex items-center p-2 ml-auto -space-x-5 bg-white rounded-full shadow-lg w-fit h-fit">
+              <div className="z-20 border rounded-full shrink-0 w-14 h-14 overflow-clip">
+                <Image
+                  width={80}
+                  height={80}
+                  src="/images/landing/user-3.jpg"
+                  alt=""
+                />
               </div>
-              <div className="border shrink-0 rounded-full border-primary w-14 h-14 overflow-clip z-10">
-                <Image width={80} height={80} src="/images/user.jpg" alt="" />
+              <div className="z-10 border rounded-full shrink-0 w-14 h-14 overflow-clip">
+                <Image
+                  width={80}
+                  height={80}
+                  src="/images/landing/user-1.jpg"
+                  alt=""
+                />
               </div>
-              <div className="border shrink-0 rounded-full border-primary w-14 h-14 overflow-clip">
-                <Image width={80} height={80} src="/images/user.jpg" alt="" />
+              <div className="border rounded-full shrink-0 w-14 h-14 overflow-clip">
+                <Image
+                  width={80}
+                  height={80}
+                  src="/images/landing/user-2.jpg"
+                  alt=""
+                />
               </div>
-              <div className="z-10 shrink-0 flex items-center justify-center text-sm font-bold text-white rounded-full w-14 h-14 bg-primary">
+              <div className="z-10 flex items-center justify-center text-sm font-bold text-white rounded-full shrink-0 w-14 h-14 bg-primary">
                 99+
               </div>
             </div>
@@ -435,7 +487,7 @@ export default function Landing() {
       </section>
 
       <section className="px-4 md:px-8 md:h-screen_">
-        <div className="flex flex-col-reverse bg-white md:flex-row md:px-8 md:py-20 rounded-xl py-12">
+        <div className="flex flex-col-reverse py-12 bg-white md:flex-row md:px-8 md:py-20 rounded-xl">
           {/* <div className="relative flex-1 -top-5">
             <div className="absolute">
               <Image width={100} height={100} src="/images/apartment-listing-mobile.png" alt="" />
