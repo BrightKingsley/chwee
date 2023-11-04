@@ -38,7 +38,7 @@ export default function ChatLayout({
         />
       </div>
       <FloatingActionButton pathname={pathname ? pathname : ""} />
-      <div className="flex-1 mx-2 space-y-2 overflow-auto">{children}</div>
+      <div className="flex-1 py-1 mx-2 space-y-2 overflow-auto">{children}</div>
     </div>
   );
 }
