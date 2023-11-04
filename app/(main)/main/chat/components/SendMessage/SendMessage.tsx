@@ -386,11 +386,11 @@ export default function SendMessage({ roomType }: SendMessageProps) {
                     return triggerTransactionForm({
                       show: true,
                       type: "request",
-                      confirm: (amount) => {
+                      confirm: (amount, type) => {
                         setMessage((prev) => ({
                           ...prev,
                           textContent:
-                            transactionFormState.type === "request"
+                            type === "request"
                               ? `Please, I need ₦${amount}`
                               : `I'll send you ₦${amount}`,
                           transaction: {
@@ -423,11 +423,11 @@ export default function SendMessage({ roomType }: SendMessageProps) {
                       return triggerTransactionForm({
                         show: true,
                         type: "send",
-                        confirm: (amount) => {
+                        confirm: (amount, type) => {
                           setMessage((prev) => ({
                             ...prev,
                             textContent:
-                              transactionFormState.type === "request"
+                              type === "request"
                                 ? `Please, I need ₦${amount}`
                                 : `I'll send you ₦${amount}`,
                             transaction: {
