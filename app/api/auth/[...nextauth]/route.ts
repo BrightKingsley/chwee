@@ -3,6 +3,7 @@ import GoogleProvider, { GoogleProfile } from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import {
   addMemberToGroupByID,
+  findGroupByTagAndAddMember,
   connectDB,
   createUser,
   createWallet,
@@ -173,6 +174,10 @@ export const authOptions: NextAuthOptions = {
           });
           if (!newUser) return false;
           user = newUser;
+          findGroupByTagAndAddMember({
+            tag: "@GeneralChat",
+            userID: user._id.toString(),
+          });
         }
 
         if (!user) return false;

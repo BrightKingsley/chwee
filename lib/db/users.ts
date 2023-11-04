@@ -17,7 +17,7 @@ import {
 } from "../utils";
 import { UserClass } from "@/models/User";
 import bcrypt from "bcrypt";
-import { addMemberToGroupByTag, createWallet } from ".";
+import { findGroupByTagAndAddMember, createWallet } from ".";
 import mongoose from "mongoose";
 import { ClientUser } from "@/types/models";
 
@@ -63,7 +63,7 @@ export async function createUser({
 
       const newUserWallet = await createWallet({ ownerID: user._id });
 
-      const group: any = addMemberToGroupByTag({
+      const group: any = findGroupByTagAndAddMember({
         tag: "general_chat",
         userID: user.id,
       });
@@ -80,7 +80,7 @@ export async function createUser({
 
     const newUserWallet = await createWallet({ ownerID: user._id });
 
-    const group = addMemberToGroupByTag({
+    const group = findGroupByTagAndAddMember({
       tag: "generalChat",
       // Check this "toString". Is it needed?
       userID: user._id.toString(),
