@@ -79,7 +79,12 @@ export default function Landing() {
       <header className="flex w-full px-4 md:px-12">
         <div className="flex items-center h-16 gap-1">
           <div className="w-8 h-8">
-            <Image src="/favicon/logo.png" alt="logo" width={5} height={5} />
+            <Image
+              src="/favicon/logo.png"
+              alt="logo"
+              width={720}
+              height={720}
+            />
           </div>
           <p className="font-extrabold text-primary">Chweee</p>
         </div>
@@ -236,8 +241,8 @@ export default function Landing() {
               <div className="relative w-full h-full">
                 <div className="absolute z-10 w-full h-full rounded-md overflow-clip border-primary">
                   <Image
-                    width={720}
-                    height={1280}
+                    width={1080}
+                    height={1080}
                     src="/images/landing/mobile-3.png"
                     alt=""
                     className="!object-contain"
@@ -245,8 +250,8 @@ export default function Landing() {
                 </div>
                 <div className="absolute rounded-md overflow-clip w-[90%] top-56 -left-3/4">
                   <Image
-                    width={720}
-                    height={1280}
+                    width={1080}
+                    height={1080}
                     src="/images/landing/mobile-1.png"
                     alt=""
                     className="!object-contain"
@@ -323,7 +328,7 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="px-12 pt-4 pb-12 space-y-10 bg-white rounded-2xl md:px-14 shrink-0">
+          <div className="px-6 pt-4 pb-12 space-y-10 bg-white rounded-2xl md:px-14 shrink-0">
             <div className="relative h-96">
               <div className="border absolute h-[85%] left-10 z-20 rounded-lg image_here overflow-clip shadow-xl shadow-gray-400/20">
                 <Image
