@@ -5,8 +5,6 @@ import { Button } from "@/app/components/mui";
 import { Overlay } from "@/app/components/client";
 import { ChatContext, TransactionContext } from "@/context";
 import { formatToNumberWithDecimal } from "@/lib/utils";
-import { MessageModelType } from "@/types/models";
-import { Input } from "@material-tailwind/react";
 import { useContext, useEffect, useState } from "react";
 
 export default function TransactionForm() {
@@ -33,7 +31,7 @@ export default function TransactionForm() {
     //   type: "fund",
     // }));
     transactionFormState.actionConfirm &&
-      transactionFormState.actionConfirm(amount);
+      transactionFormState.actionConfirm(amount, transactionFormState.type);
     setAmount(0.0);
     setInput("");
   };

@@ -18,7 +18,8 @@ export default function GroupChat({
   return (
     <main className="flex flex-col w-full h-[calc(100vh-3.5rem)] bg-primary/10">
       <Messages userID={userID} chatID={params.groupID} roomType="group" />
-      <SendMessage chatID={params.groupID} roomType="group" />
+      {/* <SendMessage chatID={params.groupID} roomType="group" /> */}
+      <SendMessage roomType="group" />
     </main>
   );
 }

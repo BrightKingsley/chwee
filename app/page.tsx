@@ -67,7 +67,7 @@ const WhyUsItem = ({
   <div className="flex gap-6 text-gray-800">
     {icon}
     <div>
-      <p className="text-4xl font-extrabold">{mainText}</p>
+      <p className="text-3xl font-extrabold sm:text-4xl">{mainText}</p>
       <p className="text-sm">{subText}</p>
     </div>
   </div>
@@ -406,7 +406,7 @@ export default function Landing() {
         <FeaturesSlide />
       </section>
       <section className="px-4 md:px-8" id="testimonials">
-        <div className="px-4 py-6 space-y-12 bg-white md:py-10 rounded-xl md:px-14">
+        <div className="px-4 py-6 space-y-6 bg-white sm:space-y-12 md:py-10 rounded-xl md:px-14">
           <div className="md:flex">
             <div className="space-y-6">
               <h3 className="text-xl font-extrabold">Testimonials</h3>
@@ -414,7 +414,7 @@ export default function Landing() {
                 Now is the time for those who say
               </h2>
             </div>
-            <div className="relative flex items-center p-2 ml-auto -space-x-5 bg-white rounded-full shadow-lg w-fit h-fit">
+            <div className="relative flex items-center p-2 mt-3 ml-auto -space-x-5 bg-white rounded-full shadow-lg sm:mt-0 w-fit h-fit">
               <div className="z-20 border rounded-full shrink-0 w-14 h-14 overflow-clip">
                 <Image
                   width={80}
@@ -500,7 +500,7 @@ export default function Landing() {
             </div>
           </div> */}
           <div className="flex-1 space-y-6">
-            <h2 className="max-w-lg text-4xl font-extrabold leading-snug text-center md:text-left md:max-w-none md:leading-loose">
+            <h2 className="max-w-lg text-4xl font-extrabold leading-snug text-center md:max-w-none md:leading-loose">
               Abundant features are waiting for you, what are you waiting for?
             </h2>
             <div className="flex items-center gap-3 mx-auto md:mx-0_ w-fit">

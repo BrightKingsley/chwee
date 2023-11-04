@@ -93,15 +93,16 @@ export async function createGroup({
       chatID: groupDoc._id,
     });
 
-    const group = {
-      owner: groupDoc.owner,
-      name: groupDoc.name,
-      description: groupDoc.description,
-      password: genPass,
-      members: groupDoc.members,
-      photo: groupDoc.photo,
-      tag: groupDoc.tag,
-    };
+    // const group = {
+    //   owner: groupDoc.owner,
+    //   name: groupDoc.name,
+    //   description: groupDoc.description,
+    //   password: genPass,
+    //   members: groupDoc.members,
+    //   photo: groupDoc.photo,
+    //   tag: groupDoc.tag,
+    // };
+    const group = dbToClientGroup(groupDoc);
 
     // Check if the conversation was created successfully
     if (!conversation.id) throw new Error("Couldn't Create Group Conversation");

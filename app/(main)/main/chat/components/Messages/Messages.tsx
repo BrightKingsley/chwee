@@ -1,6 +1,6 @@
 "use client";
 import Message from "../Message";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ChatContext } from "@/context";
 import { useRouter } from "next/navigation";
 import { pusherClient } from "@/lib/config";
@@ -14,12 +14,7 @@ import { IconButton, Button } from "@/app/components/mui";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { ClientMessage } from "@/types/models";
 
-import {
-  EffectCreative,
-  Navigation,
-  Pagination,
-  Scrollbar,
-} from "swiper/modules";
+import { EffectCreative, Navigation, Pagination } from "swiper/modules";
 
 import RefreshLineIcon from "remixicon-react/RefreshLineIcon";
 import ZzzLineIcon from "remixicon-react/ZzzLineIcon";
@@ -40,6 +35,7 @@ export default function Messages({
     setMessages,
     setMessagesLoading,
     messagesLoading,
+    setChatID,
   } = useContext(ChatContext);
 
   // password: b3xF2yRB | q7b5KYV6 | V6XBvBjX
@@ -69,7 +65,7 @@ export default function Messages({
   }, []);
 
   useEffect(() => {
-    if (messages.length > 0) return;
+    // if (messages.length > 0) return;
     setMessagesLoading(true);
     (async () => {
       //TODO remove hard-coded password
@@ -93,6 +89,10 @@ export default function Messages({
       setMessagesLoading(false);
     })();
   }, [chatID, messages.length]);
+
+  useEffect(() => {
+    setChatID(chatID);
+  }, [chatID]);
 
   return (
     <>
@@ -120,7 +120,7 @@ export default function Messages({
         ) : (
           messages.map((message, i) => (
             <Message
-              chatID={chatID}
+              // chatID={chatID}
               key={i}
               message={message}
               roomType={roomType}

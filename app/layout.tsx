@@ -49,12 +49,6 @@ export const metadata: Metadata = {
     {
       rel: "icon",
       type: "image/png",
-      sizes: "256x256",
-      url: "/favicon/favicon-256x256.png",
-    },
-    {
-      rel: "icon",
-      type: "image/png",
       sizes: "384x384",
       url: "/favicon/favicon-384x384.png",
     },

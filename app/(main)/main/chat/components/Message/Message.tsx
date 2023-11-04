@@ -43,7 +43,7 @@ import { pusherClient } from "@/lib/config";
 const emotes = ["😂", "💩", "😢", "😭", "💔"];
 
 export default function Message({
-  chatID,
+  // chatID,
   userID, //TODO typecheck
   message: messageWithSenderData,
   roomType,
@@ -51,6 +51,7 @@ export default function Message({
 }: MessageProps) {
   const { triggerModal } = useContext(ModalContext);
   const {
+    chatID,
     sendMessage,
     setReplyMessage,
     resetInput,
@@ -168,7 +169,11 @@ export default function Message({
 
           if (!messageReactions) message.message.reactions![reaction] = [];
 
-          message.message.reactions![reaction].push(sender);
+          !message.message.reactions![reaction].includes(sender)
+            ? message.message.reactions![reaction].push(sender)
+            : delete message.message.reactions![reaction][
+                message.message.reactions![reaction].indexOf(sender)
+              ];
         }
         return message;
       });

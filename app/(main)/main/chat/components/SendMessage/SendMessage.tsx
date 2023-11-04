@@ -10,7 +10,7 @@ import {
   XMarkIcon,
 } from "@heroicons/react/20/solid";
 
-import { SendMessageType } from "./types";
+import { SendMessageProps } from "./types";
 import {
   AnimateInOut,
   TransactionForm,
@@ -40,7 +40,8 @@ import { useRouter } from "next/navigation";
 //   HandCoinOutlined,
 // } from "@/app/components/Icons";
 
-export default function SendMessage({ chatID, roomType }: SendMessageType) {
+// export default function SendMessage({ chatID, roomType }: SendMessageProps) {
+export default function SendMessage({ roomType }: SendMessageProps) {
   const { data } = useSession();
   const session: Session | null = data;
 
@@ -48,6 +49,7 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
   const { triggerTransactionForm, transactionFormState } =
     useContext(TransactionContext);
   const {
+    chatID,
     replyMessage,
     setReplyMessage,
     sendMessage,
@@ -180,16 +182,16 @@ export default function SendMessage({ chatID, roomType }: SendMessageType) {
       triggerTransactionForm({
         show: true,
         type: "send",
-        confirm: (amount) => {
+        confirm: (amount, type) => {
           setMessage((prev) => ({
             ...prev,
             textContent:
-              transactionFormState.type === "request"
+              type === "request"
                 ? `Please, I need ₦${amount}`
                 : `I'll send you ₦${amount}`,
             transaction: {
               ...prev.transaction,
-              type: transactionFormState.type,
+              type,
               amount,
             },
             type: "fund",
