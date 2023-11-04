@@ -498,7 +498,7 @@ export async function getGroups({ filter }: { filter?: GroupFilter }) {
  */
 
 // TODO Check if this function is really needed
-export async function addMemberToGroupByTag({
+export async function findGroupByTagAndAddMember({
   tag,
   userID,
 }: {

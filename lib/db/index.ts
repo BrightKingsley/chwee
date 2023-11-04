@@ -16,7 +16,7 @@ export { createConversation } from "./conversations";
 
 export {
   addMemberToGroupByID,
-  addMemberToGroupByTag,
+  findGroupByTagAndAddMember,
   createGroup,
   exitGroup,
   deleteAllGroups,
