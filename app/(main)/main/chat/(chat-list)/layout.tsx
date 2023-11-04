@@ -13,7 +13,7 @@ export default function ChatLayout({
   const pathname = usePathname();
 
   return (
-    <div className="relative flex flex-col w-full h-full">
+    <div className="relative flex flex-col w-full h-screen">
       <div className="shrink-0">
         <Header imgShown={false} title="Chat" />
         <SubHeader
