@@ -52,6 +52,8 @@ type ChatContextType = {
   //     show: boolean;
   //   }>
   // >;
+  chatID: string;
+  setChatID: React.Dispatch<React.SetStateAction<string>>;
   sendMessage: ({
     message,
     images = [],
@@ -186,7 +188,7 @@ type TransactionContextType = {
   }: triggerTransactionFormType) => void;
   transactionFormState: {
     showTransaction: boolean;
-    actionConfirm?: (amount: number) => void;
+    actionConfirm?: (amount: number, type: "send" | "request") => void;
     actionCancel: Function;
     transactionMessage: string | React.ReactNode;
     disableOnClick: boolean;

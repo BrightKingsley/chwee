@@ -13,31 +13,32 @@ export default function ChatLayout({
   const pathname = usePathname();
 
   return (
-    <div className="relative w-full h-full">
-      <Header imgShown={false} title="Chat" />
-
-      <SubHeader
-        sublinks={[
-          {
-            label: formatLink({
-              at: `${CHAT}/`,
-              get: "last",
-              string: CHATS,
-            }),
-            link: CHATS,
-          },
-          {
-            label: formatLink({
-              at: `${CHAT}/`,
-              get: "last",
-              string: GROUPS,
-            }),
-            link: GROUPS,
-          },
-        ]}
-      />
+    <div className="relative flex flex-col w-full h-full">
+      <div className="shrink-0">
+        <Header imgShown={false} title="Chat" />
+        <SubHeader
+          sublinks={[
+            {
+              label: formatLink({
+                at: `${CHAT}/`,
+                get: "last",
+                string: CHATS,
+              }),
+              link: CHATS,
+            },
+            {
+              label: formatLink({
+                at: `${CHAT}/`,
+                get: "last",
+                string: GROUPS,
+              }),
+              link: GROUPS,
+            },
+          ]}
+        />
+      </div>
       <FloatingActionButton pathname={pathname ? pathname : ""} />
-      <div className="mx-2">{children}</div>
+      <div className="flex-1 mx-2 space-y-2 overflow-auto">{children}</div>
     </div>
   );
 }

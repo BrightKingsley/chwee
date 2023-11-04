@@ -1,6 +1,6 @@
 import nft from "@/assets/images/nft.jpg";
 
-import { UserIcon } from "@heroicons/react/20/solid";
+import { UserIcon, XMarkIcon } from "@heroicons/react/20/solid";
 
 import {
   Header,
@@ -57,7 +57,7 @@ export default async function Connect() {
       <div className="md:max-w-md shrink-0">
         <SearchBar collection="users" />
       </div>
-      <div className="px-2 overflow-auto space-y-2 md:grid md:grid-cols-2 md:space-y-0 md:gap-2">
+      <div className="px-2 space-y-2 overflow-auto md:grid md:grid-cols-2 md:space-y-0 md:gap-2">
         {unConnectedUsers && unConnectedUsers.length > 0 ? (
           unConnectedUsers.map((user, i) => (
             <ListTile
@@ -94,8 +94,9 @@ export default async function Connect() {
             <h1>Error fetching Users</h1>
           </div>
         ) : (
-          <div className="flex items-center justify-center w-full h-full">
-            <h1>No unConnectedUsers available</h1>
+          <div className="flex items-center justify-center w-full h-full pt-40">
+            <p>No unConnectedUsers available</p>
+            <XMarkIcon className="w-6 h-6 fill-red-400" />
           </div>
         )}
       </div>

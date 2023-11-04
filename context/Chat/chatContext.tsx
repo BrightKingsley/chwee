@@ -4,17 +4,14 @@ import { BASE_URL } from "@/constants/routes";
 import { MessageModelType } from "@/types/models";
 import { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { ChatContextType } from "../types";
 import NotificationContext from "../Notification/notificationContext";
 import { useImageUpload } from "@/hooks";
 
 const ChatContext = createContext<ChatContextType>({
-  // setToggleTransactionForm: () => {},
-  // toggleTransactionForm: {
-  //   type: "send",
-  //   show: false,
-  // },
+  chatID: "",
+  setChatID: () => {},
   sendMessage: async () => await new Promise(() => {}),
   // selectedImages: [],
   replyMessage: {
@@ -81,6 +78,8 @@ export const ChatContextProvider = ({
   ////////////// AUTH //////////////////
 
   ////////////// STATE //////////////////
+  const [chatID, setChatID] = useState("");
+
   // This is useful for autofocus
   const [inputRef, setInputRef] =
     useState<React.MutableRefObject<HTMLInputElement>>();
@@ -283,13 +282,47 @@ export const ChatContextProvider = ({
       }
     });
   };
+
+  const hardReset = () => {
+    setLoading(false);
+    setMembersModal({ loading: false, members: [], show: false, value: "" });
+    setMessagesLoading(false);
+    setPreviewImages({ images: [], show: false });
+    setReplyMessage({ sender: "", imageContent: [], textContent: "" });
+    setSelectedImages([]);
+    setInputRef(undefined);
+    setMessage({
+      sendDate: new Date(),
+      type: "conversation",
+      id: "",
+      imageContent: [],
+      reactions: {},
+      replyTo: undefined,
+      sender: "",
+      textContent: "",
+      transaction: undefined,
+    });
+    setMessages([]);
+    setToggleTransactionForm({ show: false, type: "send" });
+    setViewImages({ clickedImage: 0, images: [] });
+    resetInput();
+  };
   ////////////// FUNCTIONS //////////////////
+
+  ////////////// EFFECTS //////////////////
+  useEffect(() => {
+    console.log("HARD_RESETTING");
+    hardReset();
+  }, [chatID]);
+  ////////////// EFFECTS //////////////////
 
   return (
     <ChatContext.Provider
       value={{
         // setToggleTransactionForm,
         // toggleTransactionForm,
+        chatID,
+        setChatID,
         sendMessage,
         selectedImages,
         replyMessage,

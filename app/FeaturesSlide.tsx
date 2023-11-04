@@ -136,7 +136,7 @@ function FeatureCard({
         init={{ height: "100%", opacity: 1 }}
         out={{ height: 0, opacity: 0 }}
         // transition={{ duration: 0.5 }}
-        className="mx-auto w-full h-full flex items-center justify-center_"
+        className="flex items-center w-full h-full mx-auto justify-center_"
       >
         {icon}
       </AnimateInOut>
@@ -153,13 +153,13 @@ function FeatureCard({
         }
       >
         <AccordionHeader
-          className="active:transform-none text-2xl"
+          className="text-2xl active:transform-none"
           onClick={() => setOpen((prev) => !prev)}
         >
           {title}
         </AccordionHeader>
         <AccordionBody>
-          <div className="overflow-auto w-full h-full">
+          <div className="w-full h-full overflow-auto">
             <p className="text-lg">{text}</p>
           </div>
         </AccordionBody>
@@ -170,7 +170,7 @@ function FeatureCard({
 
 function ConnectAnonymouslyIcon() {
   return (
-    <div className="p-4 rounded-full bg-primary/10 relative flex items-center justify-center">
+    <div className="relative flex items-center justify-center p-4 rounded-full bg-primary/10">
       <SpyLineIcon className="w-24 h-24 text-primary" />
       <div className="absolute translate-x-4">
         <div className="relative w-full h-full">
@@ -183,12 +183,12 @@ function ConnectAnonymouslyIcon() {
 
 function FundWalletIcon() {
   return (
-    <div className="p-4 rounded-full bg-primary/10 relative flex items-center justify-center">
+    <div className="relative flex items-center justify-center p-4 rounded-full bg-primary/10">
       <WalletLineIcon className="w-24 h-24 text-primary" />
       <div className="absolute translate-x-4">
         <div className="relative w-full h-full">
-          <CurrencyLineIcon className="top-0 left-0 absolute w-16 h-16 rotate-45_ text-white" />
-          <CurrencyFillIcon className="top-0 left-0 absolute w-16 h-16 rotate-45_ text-primary" />
+          <CurrencyLineIcon className="absolute top-0 left-0 w-16 h-16 text-white rotate-45_" />
+          <CurrencyFillIcon className="absolute top-0 left-0 w-16 h-16 rotate-45_ text-primary" />
         </div>
       </div>
     </div>
@@ -197,7 +197,7 @@ function FundWalletIcon() {
 
 function WithdrawToBankAccountIcon() {
   return (
-    <div className="p-4 rounded-full bg-primary/10 relative flex items-center justify-center">
+    <div className="relative flex items-center justify-center p-4 rounded-full bg-primary/10">
       <BankLineIcon className="w-24 h-24 text-primary" />
       <div className="absolute translate-x-4">
         <div className="relative w-full h-full">
@@ -210,7 +210,7 @@ function WithdrawToBankAccountIcon() {
 
 function DataPurchaseIcon() {
   return (
-    <div className="p-4 rounded-full bg-primary/10 relative flex items-center justify-center">
+    <div className="relative flex items-center justify-center p-4 rounded-full bg-primary/10">
       <WifiLineIcon className="w-24 h-24 text-primary" />
       <div className="absolute translate-x-4">
         <div className="relative w-full h-full">
@@ -223,12 +223,12 @@ function DataPurchaseIcon() {
 
 function AirtimeSubscriptionIcon() {
   return (
-    <div className="p-4 rounded-full bg-primary/10 relative flex items-center justify-center">
+    <div className="relative flex items-center justify-center p-4 rounded-full bg-primary/10">
       <SimCard2LineIcon className="w-24 h-24 text-primary" />
       <div className="absolute translate-x-4">
         <div className="relative w-full h-full">
-          <SimCard2LineIcon className="top-0 left-0 absolute w-16 h-16 rotate-45_ text-white" />
-          <SimCard2FillIcon className="top-0 left-0 absolute w-16 h-16 rotate-45_ text-primary" />
+          <SimCard2LineIcon className="absolute top-0 left-0 w-16 h-16 text-white rotate-45_" />
+          <SimCard2FillIcon className="absolute top-0 left-0 w-16 h-16 rotate-45_ text-primary" />
         </div>
       </div>
     </div>
@@ -237,7 +237,7 @@ function AirtimeSubscriptionIcon() {
 
 function GamesAndEventsIcon() {
   return (
-    // <div className="p-4 rounded-full bg-primary/10 relative flex items-center justify-center">
+    // <div className="relative flex items-center justify-center p-4 rounded-full bg-primary/10">
     //   <CalendarEventLineIcon className="w-24 h-24 text-primary" />
     //   <div className="absolute translate-x-4">
     //     <div className="relative w-full h-full">
@@ -245,12 +245,12 @@ function GamesAndEventsIcon() {
     //     </div>
     //   </div>
     // </div>
-    <div className="p-4 rounded-full bg-primary/10 relative flex items-center justify-center">
+    <div className="relative flex items-center justify-center p-4 rounded-full bg-primary/10">
       <CalendarEventLineIcon className="w-24 h-24 text-primary" />
       <div className="absolute translate-x-4">
         <div className="relative w-full h-full">
-          <GamepadLineIcon className="top-0 left-0 absolute w-16 h-16 rotate-45_ text-white" />
-          <GamepadFillIcon className="top-0 left-0 absolute w-16 h-16 rotate-45_ text-primary" />
+          <GamepadLineIcon className="absolute top-0 left-0 w-16 h-16 text-white rotate-45_" />
+          <GamepadFillIcon className="absolute top-0 left-0 w-16 h-16 rotate-45_ text-primary" />
         </div>
       </div>
     </div>
@@ -259,7 +259,7 @@ function GamesAndEventsIcon() {
 
 function TransactSeamlesslyIcon() {
   return (
-    // <div className="p-4 rounded-full bg-primary/10 relative flex items-center justify-center">
+    // <div className="relative flex items-center justify-center p-4 rounded-full bg-primary/10">
     //   <ExchangeDollarLineIcon className="w-24 h-24 text-primary" />
     //   <div className="absolute translate-x-4">
     //     <div className="relative w-full h-full">
@@ -267,12 +267,12 @@ function TransactSeamlesslyIcon() {
     //     </div>
     //   </div>
     // </div>
-    <div className="p-4 rounded-full bg-primary/10 relative flex items-center justify-center">
+    <div className="relative flex items-center justify-center p-4 rounded-full bg-primary/10">
       <ExchangeDollarLineIcon className="w-24 h-24 text-primary" />
       <div className="absolute translate-x-4">
         <div className="relative w-full h-full">
-          <Message3LineIcon className="top-0 left-0 absolute w-16 h-16 rotate-45_ text-white" />
-          <Message3FillIcon className="top-0 left-0 absolute w-16 h-16 rotate-45_ text-primary" />
+          <Message3LineIcon className="absolute top-0 left-0 w-16 h-16 text-white rotate-45_" />
+          <Message3FillIcon className="absolute top-0 left-0 w-16 h-16 rotate-45_ text-primary" />
         </div>
       </div>
     </div>

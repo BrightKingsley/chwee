@@ -1,7 +1,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { ListTile, MessageButton, SearchBar } from "@/app/components/client";
 import { getChatsByMembersID, getUserByID } from "@/lib/db";
-import { UserIcon } from "@heroicons/react/20/solid";
+import { UserIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { getServerSession } from "next-auth";
 import { ConnectButton } from "@/app/components/client";
 import Link from "next/link";
@@ -39,7 +39,10 @@ export default async function MyConnections() {
             />
           ))
         ) : (
-          <p className="text-center">You have no connections available</p>
+          <div className="flex items-center justify-center w-full h-full pt-40">
+            <p>You have no connections available</p>
+            <XMarkIcon className="w-6 h-6 fill-red-400" />
+          </div>
         )}
       </div>
     </>
