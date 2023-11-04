@@ -88,7 +88,7 @@ export default function Messages({
       setMessages(msgs);
       setMessagesLoading(false);
     })();
-  }, [chatID, messages.length]);
+  }, [chatID]);
 
   useEffect(() => {
     setChatID(chatID);
