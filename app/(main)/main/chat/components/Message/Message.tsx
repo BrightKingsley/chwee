@@ -169,11 +169,11 @@ export default function Message({
 
           if (!messageReactions) message.message.reactions![reaction] = [];
 
-          !message.message.reactions![reaction].includes(sender)
-            ? message.message.reactions![reaction].push(sender)
-            : delete message.message.reactions![reaction][
-                message.message.reactions![reaction].indexOf(sender)
-              ];
+          // !message.message.reactions![reaction].includes(sender)
+          //   ? message.message.reactions![reaction].push(sender)
+          //   : delete message.message.reactions![reaction][
+          //       message.message.reactions![reaction].indexOf(sender)
+          //     ];
         }
         return message;
       });
@@ -613,7 +613,7 @@ export default function Message({
           sender === userID ? "" : "left-0"
         }`}
       >
-        {messageData.reactions && (
+        {messageData.reactions && messageData.reactions.length && (
           <>
             {Object.keys(messageData.reactions).map((reaction, i) => (
               <div key={i} className="relative text-base">
