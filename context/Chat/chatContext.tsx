@@ -283,6 +283,7 @@ export const ChatContextProvider = ({
     });
   };
 
+  /*
   const hardReset = () => {
     setLoading(false);
     setMembersModal({ loading: false, members: [], show: false, value: "" });
@@ -315,7 +316,7 @@ export const ChatContextProvider = ({
     hardReset();
   }, [chatID]);
   ////////////// EFFECTS //////////////////
-
+*/
   return (
     <ChatContext.Provider
       value={{
