@@ -33,7 +33,7 @@ import {
   TransactionContext,
 } from "@/context";
 import { textCode } from "@/constants/utils";
-import { decodeTextContent } from "@/lib/utils";
+import { decodeTextContent, isEmptyObject } from "@/lib/utils";
 import { MessageProps } from "../types";
 import { LongPressEventType, useLongPress } from "use-long-press";
 import { MessageClass } from "@/models/Message";
@@ -613,7 +613,7 @@ export default function Message({
           sender === userID ? "" : "left-0"
         }`}
       >
-        {messageData.reactions && messageData.reactions.length && (
+        {messageData.reactions && !isEmptyObject(messageData.reactions) && (
           <>
             {Object.keys(messageData.reactions).map((reaction, i) => (
               <div key={i} className="relative text-base">
