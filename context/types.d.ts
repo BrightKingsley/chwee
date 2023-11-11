@@ -52,6 +52,7 @@ type ChatContextType = {
   //     show: boolean;
   //   }>
   // >;
+  hardReset: Function;
   chatID: string;
   setChatID: React.Dispatch<React.SetStateAction<string>>;
   sendMessage: ({

@@ -8,6 +8,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { ChatContextType } from "../types";
 import NotificationContext from "../Notification/notificationContext";
 import { useImageUpload } from "@/hooks";
+import { useRouter } from "next/navigation";
 
 const ChatContext = createContext<ChatContextType>({
   chatID: "",
@@ -63,6 +64,7 @@ const ChatContext = createContext<ChatContextType>({
   setViewImages: () => {},
   inputRef: () => {},
   setInputRef: () => {},
+  hardReset: () => {},
 });
 
 export const ChatContextProvider = ({
@@ -71,6 +73,8 @@ export const ChatContextProvider = ({
   children: React.ReactNode;
 }) => {
   const { triggerNotification } = useContext(NotificationContext);
+
+  const router = useRouter();
 
   ////////////// AUTH //////////////////
   const { data } = useSession();
@@ -283,7 +287,6 @@ export const ChatContextProvider = ({
     });
   };
 
-  /*
   const hardReset = () => {
     setLoading(false);
     setMembersModal({ loading: false, members: [], show: false, value: "" });
@@ -308,15 +311,12 @@ export const ChatContextProvider = ({
     setViewImages({ clickedImage: 0, images: [] });
     resetInput();
   };
+
   ////////////// FUNCTIONS //////////////////
 
   ////////////// EFFECTS //////////////////
-  useEffect(() => {
-    console.log("HARD_RESETTING");
-    hardReset();
-  }, [chatID]);
+
   ////////////// EFFECTS //////////////////
-*/
   return (
     <ChatContext.Provider
       value={{
@@ -350,6 +350,7 @@ export const ChatContextProvider = ({
         viewImages,
         inputRef,
         setInputRef,
+        hardReset,
       }}
     >
       {children}

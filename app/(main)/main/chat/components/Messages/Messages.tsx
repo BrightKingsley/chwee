@@ -29,6 +29,7 @@ export default function Messages({
   userID: string;
 }) {
   const {
+    hardReset,
     viewImages,
     setViewImages,
     messages,
@@ -65,10 +66,10 @@ export default function Messages({
   }, []);
 
   useEffect(() => {
-    // if (messages.length > 0) return;
+    if (messages.length > 0) return;
     setMessagesLoading(true);
     (async () => {
-      //TODO remove hard-coded password
+      //TODO: Remove hard-coded password
       const response = await fetch(
         `${BASE_URL}/api/messaging/${chatID}?roomType=${roomType}&password=V6XBvBjX`,
         {
@@ -89,6 +90,30 @@ export default function Messages({
       setMessagesLoading(false);
     })();
   }, [chatID, messages.length]);
+
+  useEffect(() => {
+    // router.events
+    if (
+      window &&
+      typeof window === "object" &&
+      typeof window.document === "object"
+    ) {
+      window.addEventListener("beforeunload", (e) => {
+        // e.preventDefault();
+        // console.log("ABOUT TO LEAVE");
+        // return (e.returnValue = "Exit window?");
+        hardReset();
+      });
+    }
+
+    return () => {
+      window.removeEventListener("beforeunload", (e) => {
+        // e.preventDefault();
+        // return (e.returnValue = "Exit window?");
+        hardReset();
+      });
+    };
+  }, []);
 
   // useEffect(() => {
   //   setChatID(chatID);
