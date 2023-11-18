@@ -203,7 +203,7 @@ export default function CreateGroup() {
             className="w-full p-1 text-gray-700 resize-none bg-primary/10"
           />
         </div>
-        <div className="flex items-center justify-between">
+        {/* <div className="flex items-center justify-between">
           <p>Locked</p>
           <Switch
             checked={groupData.locked}
@@ -236,7 +236,7 @@ export default function CreateGroup() {
             Note: if you set the locked switch to true, without providing a
             password, one will be automatically generated
           </small>
-        )}
+        )} */}
 
         <div className="rounded-md overflow-clip">
           <Button type="submit" fullWidth>

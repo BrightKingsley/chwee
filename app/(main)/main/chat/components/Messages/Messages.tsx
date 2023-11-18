@@ -92,32 +92,15 @@ export default function Messages({
   }, [chatID, messages.length]);
 
   useEffect(() => {
-    // router.events
-    if (
-      window &&
-      typeof window === "object" &&
-      typeof window.document === "object"
-    ) {
-      window.addEventListener("beforeunload", (e) => {
-        // e.preventDefault();
-        // console.log("ABOUT TO LEAVE");
-        // return (e.returnValue = "Exit window?");
-        hardReset();
-      });
-    }
-
     return () => {
-      window.removeEventListener("beforeunload", (e) => {
-        // e.preventDefault();
-        // return (e.returnValue = "Exit window?");
-        hardReset();
-      });
+      console.log("RETURN EXIT CLEANUP");
+      hardReset();
     };
   }, []);
 
-  // useEffect(() => {
-  //   setChatID(chatID);
-  // }, [chatID]);
+  useEffect(() => {
+    setChatID(chatID);
+  }, [chatID]);
 
   return (
     <>

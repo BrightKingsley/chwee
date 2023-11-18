@@ -165,9 +165,13 @@ export default function Message({
 
           // If reaction doesn't exist, add it
 
-          let messageReactions = message.message.reactions![reaction];
+          // let messageReactions =
+          //   message.message.reactions![`${sender.toString()}`];
 
-          if (!messageReactions) message.message.reactions![reaction] = [];
+          // if (!messageReactions)
+          //   message.message.reactions![`${sender.toString()}`] = [];
+
+          message.message.reactions![`${sender.toString()}`] = reaction;
 
           // !message.message.reactions![reaction].includes(sender)
           //   ? message.message.reactions![reaction].push(sender)
@@ -615,13 +619,13 @@ export default function Message({
       >
         {messageData.reactions && !isEmptyObject(messageData.reactions) && (
           <>
-            {Object.keys(messageData.reactions).map((reaction, i) => (
+            {Object.values(messageData.reactions).map((reaction, i) => (
               <div key={i} className="relative text-base">
                 {/* {Object.keys(reaction)[0]} */}
                 {reaction}
               </div>
             ))}
-            {Object.values(messageData.reactions).flat().length > 1 && (
+            {Object.keys(messageData.reactions).length > 1 && (
               <small className="pr-1 text-gray-500">
                 {Object.values(messageData.reactions).flat().length}
               </small>

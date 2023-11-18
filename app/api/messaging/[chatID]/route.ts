@@ -35,6 +35,7 @@ export async function POST(
   request: NextRequest,
   { params: { chatID } }: PostProps
 ) {
+  console.log("REACHED");
   try {
     const serverSession = await getServerSession(authOptions);
     if (!serverSession || !serverSession.user || !serverSession.user.id)
@@ -326,4 +327,8 @@ export async function PATCH(
     console.error({ error });
     return NextResponse.json(null);
   }
+}
+
+export async function PUT() {
+  return NextResponse.json("happy");
 }

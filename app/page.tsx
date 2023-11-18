@@ -97,43 +97,45 @@ export default function Landing() {
           <LandingNav />
         </div>
       </header>
-      <section className="py-16 md:flex mx-14" id="hero">
-        <div className="md:flex-[2] text-center md:text-left space-y-10">
-          {/* <h1 className="text-5xl font-extrabold text-gray-800">
+      <section className="mx-14_" id="hero">
+        <div className="md:flex w-[80%] mx-auto">
+          <div className="md:flex-[2] text-center md:text-left space-y-10">
+            {/* <h1 className="text-5xl font-extrabold text-gray-800">
             <span className="text-primary">Connect</span> and transact in a fun
             and <span className="text-primary">dynamic</span> way!
           </h1> */}
-          <h1 className="text-5xl font-extrabold leading-snug text-gray-800">
-            <span className="text-primary">Connect</span> and transact with a
-            twist of <span className="text-primary">pizzazz</span>
-            {/* and a
+            <h1 className="text-5xl font-extrabold leading-snug text-gray-800">
+              <span className="text-primary">Connect</span> and transact with a
+              twist of <span className="text-primary">pizzazz</span>
+              {/* and a
             sprinkle of delight */}
-          </h1>
+            </h1>
 
-          <p>
-            Chwee makes user interaction a lot more fun. Stay connected with
-            plentiful features
-          </p>
+            <p>
+              Chwee makes user interaction a lot more fun. Stay connected with
+              plentiful features
+            </p>
 
-          <div className="flex items-center mx-auto gap-1_ md:mx-0 w-fit">
-            <Link
-              href={CHATS}
-              // className={`hover:scale-110 active:scale-75 active:opacity-60 transition-all duration-150 ${buttonStyles}`}
-            >
-              <Button className="animate-bounce">Get Started!</Button>
-            </Link>
-            <div className="flex items-center -space-x-2 text-primary">
-              {/* <IconButton aria-label="get for desktop" title="get for desktop">
+            <div className="flex items-center mx-auto gap-1_ md:mx-0 w-fit">
+              <Link
+                href={CHATS}
+                // className={`hover:scale-110 active:scale-75 active:opacity-60 transition-all duration-150 ${buttonStyles}`}
+              >
+                <Button className="animate-bounce">Get Started!</Button>
+              </Link>
+              <div className="flex items-center -space-x-2 text-primary">
+                {/* <IconButton aria-label="get for desktop" title="get for desktop">
                 <ComputerDesktopIcon className="w-6 h-6" />
               </IconButton> */}
-              <IconButton aria-label="get for mobile" title="get for mobile">
-                <DevicePhoneMobileIcon className="w-6 h-6" />
-              </IconButton>
+                <IconButton aria-label="get for mobile" title="get for mobile">
+                  <DevicePhoneMobileIcon className="w-6 h-6" />
+                </IconButton>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="md:flex-[3] flex items-center justify-center">
-          <p>Image goes here</p>
+          <div className="hidden md:flex-[3] md:flex items-center justify-center">
+            <p>Image goes here</p>
+          </div>
         </div>
       </section>
       <section className="w-full px-4 md:px-8">
@@ -235,26 +237,28 @@ export default function Landing() {
         id="features"
       >
         <div className="flex flex-col flex-1 space-y-6 justify-stretch rounded-2xl">
-          <div className="rounded-2xl bg-primary overflow-clip pl-8 pt-12 h-[46rem] relative">
-            <h3 className="ml-8 font-bold text-white md:ml-10">Features</h3>
-            <div className="absolute z-10 w-[90%] h-full mt-6 md:w-96 -right-20 md:-right-14">
-              <div className="relative w-full h-full">
-                <div className="absolute z-10 w-full h-full rounded-md overflow-clip border-primary">
-                  <Image
-                    width={1080}
-                    height={1080}
-                    src="/images/landing/mobile-3.png"
-                    alt=""
-                    className="!object-contain"
-                  />
-                </div>
-                <div className="absolute rounded-md overflow-clip w-[90%] top-56 -left-3/4">
+          <div className="rounded-2xl flex flex-col justify-between items-end  bg-primary overflow-clip pl-8 pt-12 h-[46rem] relative">
+            <h3 className="w-full ml-8 font-bold text-white md:ml-10">
+              Features
+            </h3>
+            <div className="z-10 mt-6 h-fit w-fit md:w-fit">
+              <div className="relative flex items-end justify-start w-full h-full -space-x-14">
+                <div className="rounded-md shrink-[4] overflow-clip">
                   <Image
                     width={1080}
                     height={1080}
                     src="/images/landing/mobile-1.png"
                     alt=""
                     className="!object-contain"
+                  />
+                </div>
+                <div className="z-10 scale-110 rounded-md overflow-clip border-primary">
+                  <Image
+                    width={1080}
+                    height={1080}
+                    src="/images/landing/mobile-3.png"
+                    alt=""
+                    className="!object-contain bg-pink-500"
                   />
                 </div>
               </div>

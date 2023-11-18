@@ -60,7 +60,7 @@ class MessageClass {
   public type: "fund" | "notification" | "conversation";
 
   @prop({ default: {} })
-  public reactions?: { [key: string]: mongoose.Types.ObjectId[] };
+  public reactions?: { [key: string]: string };
 
   @prop({ required: true })
   public sendDate: Date;

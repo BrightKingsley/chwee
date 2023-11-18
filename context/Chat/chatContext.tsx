@@ -249,6 +249,7 @@ export const ChatContextProvider = ({
       return result;
     } catch (error) {
       console.error({ error });
+      setLoading(false);
       return "an unexpected error occured";
     }
   }

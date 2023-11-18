@@ -92,7 +92,7 @@ interface MessageModelType {
   // type: "fund" | "notification" | "conversation";
   type: MessageClass["type"];
   reactions?: {
-    [key: string]: (string | mongoose.Types.ObjectId)[];
+    [key: string]: string;
   };
   sendDate: Date;
   id?: mongoose.Types.ObjectId | string;
