@@ -200,17 +200,26 @@ export async function addReaction({
     );
 
     const newReaction: any = {};
-    newReaction[reaction] = [];
+    newReaction[`${senderID.toString()}`] = reaction;
 
     console.log("NEW_REACTION: ", newReaction);
 
-    newReaction[reaction] = [...newReaction[reaction], parsedSenderID];
+    // newReaction[reaction] = [...newReaction[reaction], parsedSenderID];
 
     conversationToUpdate.messages[messageID].reactions = {
       ...conversationToUpdate.messages[messageID].reactions,
       ...newReaction,
     };
 
+    // if (
+    //   conversationToUpdate.messages[messageID].reactions !== undefined &&
+    //   conversationToUpdate.messages[messageID]
+    // ) {
+    //   // @ts-ignore
+    //   conversationToUpdate.messages[messageID].reactions[
+    //     `${senderID.toString()}`
+    //   ] = reaction;
+    // }
     await conversationToUpdate.markModified("messages");
     await conversationToUpdate.save();
 

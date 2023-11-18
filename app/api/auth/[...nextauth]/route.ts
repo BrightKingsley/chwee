@@ -19,11 +19,10 @@ import { signJwtAccessToken } from "@/lib/jwt";
 import { BASE_URL } from "@/constants/routes";
 import { Jwt, JwtPayload } from "jsonwebtoken";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-// import { clientPromise } from "@/lib/config";
+import { signIn } from "next-auth/react";
 
 export const authOptions: NextAuthOptions = {
   debug: true,
-  // adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID as string,
@@ -31,107 +30,16 @@ export const authOptions: NextAuthOptions = {
       httpOptions: {
         timeout: 400000,
       },
-      // authorization: {
-      //   url: "https://chwee.vercel.app",
-      // },
     }),
-    // CredentialsProvider({
-    //   name: "Credentials",
-    //   credentials: {
-    //     email: {
-    //       label: "email:",
-    //       type: "email",
-    //       placeholder: "your email",
-    //     },
-    //     password: {
-    //       label: "Pasword",
-    //       type: "password",
-    //       placeholder: "Input a paword",
-    //     },
-    //   },
-    //   // TODO
-    //   // @ts-ignore
-    //   async authorize(credentials, req) {
-    //     // retrieve user data to verify with credentials
-    //     // Docs: https://next-auth.js.org/configuration/providers/credentials
-
-    //     // retrieve user data to verify with credentials
-    //     // Docs: https://next-auth.js.org/configuration/providers/credentials
-
-    //     try {
-    //       if (!credentials || !(credentials.email && credentials?.password))
-    //         return null;
-
-    //       await connectDB();
-    //       const user = (await User.findOne({
-    //         email: credentials.email,
-    //       })) as UserClass | null;
-
-    //       if (user) {
-    //         const passwordsMatch = await bcrypt.compare(
-    //           credentials.password,
-    //           user.password as string
-    //         );
-
-    //         if (credentials.email === user.email && passwordsMatch) {
-    //           console.log("uSer should be logged in now", {
-    //             name: user.username,
-    //             email: user.email,
-    //             id: user._id,
-    //             image: user.photo || null,
-    //           });
-    //           return {
-    //             name: user.username,
-    //             email: user.email,
-    //             id: user.id,
-    //             image: user.photo || null,
-    //           };
-    //         }
-    //       } else {
-    //         const generatedUsername = credentials?.email
-    //           .split("@")[0]
-    //           .toString()
-    //           .trim();
-    //         const newUser = await createUser({
-    //           email: credentials.email.toString().trim(),
-    //           username: generatedUsername,
-    //           password: credentials.password,
-    //           tag: `@${generatedUsername}${generatePassword(6)}`,
-    //         });
-
-    //         if (!newUser) return null;
-
-    //         return {
-    //           name: newUser.username,
-    //           email: newUser.email,
-    //           id: newUser.id,
-    //           image: newUser.photo || "",
-    //         };
-    //       }
-    //     } catch (error) {
-    //       console.error(error);
-    //       return null;
-    //     }
-    //   },
-    // }),
   ],
   pages: {
     signIn: "/onboarding",
     signOut: "/onboarding",
   },
-  // jwt: {
-  //   secret: process.env.NEXTAUTH_SECRET,
-  // },
   callbacks: {
     async signIn({ profile, account, user: authUser, credentials, email }) {
       try {
         if (
-          // authUser.id &&
-          // authUser.email &&
-          // authUser.name &&
-          // account?.providerAccountId &&
-          // account.type === "credentials" &&
-          // account.provider === "credentials" &&
           credentials?.csrfToken &&
           credentials.email &&
           credentials.password
@@ -190,6 +98,7 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
     },
+
     async jwt({ token, user, account, profile, session, trigger }) {
       if (!token || !token.email || !token.id) return token;
 
@@ -251,9 +160,6 @@ export const authOptions: NextAuthOptions = {
 
       return session;
     },
-    // async redirect({ url, baseUrl }) {
-    //  return baseUrl;
-    // },
   },
 
   events: {
@@ -270,46 +176,3 @@ export const authOptions: NextAuthOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
-
-/*
- ====JWT_LOGS==== {
-  token: {
-    name: 'Bright Kingsley',
-    email: 'briggskvngzz@gmail.com',
-    picture: 'https://lh3.googleusercontent.com/a/ACg8ocK3vaDtlz1-pjVYVpFHq_bzsfPh24hA5uXyCMHCMJma6is=s96-c',
-    sub: '115155470008843609530',
-    iat: 1695176133,
-    exp: 1695262533,
-    jti: 'bb1feacd-a5e5-427b-adc5-1735f2c5ddd2'
-  }
-} { user: undefined } { account: undefined } { profile: undefined } { session: undefined } { trigger: undefined }
-====SESSION_LOGS=== {
-  session: {
-    user: {
-      name: 'Bright Kingsley',
-      email: 'briggskvngzz@gmail.com',
-      image: 'https://lh3.googleusercontent.com/a/ACg8ocK3vaDtlz1-pjVYVpFHq_bzsfPh24hA5uXyCMHCMJma6is=s96-c'
-    },
-    expires: '2023-09-21T02:17:12.422Z'
-  }
-} {
-  token: {
-    name: 'Bright Kingsley',
-    email: 'briggskvngzz@gmail.com',
-    picture: 'https://lh3.googleusercontent.com/a/ACg8ocK3vaDtlz1-pjVYVpFHq_bzsfPh24hA5uXyCMHCMJma6is=s96-c',
-    sub: '115155470008843609530',
-    iat: 1695176133,
-    exp: 1695262533,
-    jti: 'bb1feacd-a5e5-427b-adc5-1735f2c5ddd2'
-  }
-} { user: undefined } { newSession: undefined } { trigger: undefined }
-CHATS_SERVER_SESSION {
-  user: {
-    name: 'Bright Kingsley',
-    email: 'briggskvngzz@gmail.com',
-    image: 'https://lh3.googleusercontent.com/a/ACg8ocK3vaDtlz1-pjVYVpFHq_bzsfPh24hA5uXyCMHCMJma6is=s96-c'
-  }
-}
-
-
- */
