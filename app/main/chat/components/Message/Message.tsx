@@ -576,7 +576,7 @@ export default function Message({
                       className="font-bold text-white"
                     >
                       {textContent?.split(textCode)[1].split(":")[1] ===
-                      session.user.name
+                      session.user.tag
                         ? "You"
                         : textContent?.split(textCode)[1].split(":")[1]}
                     </Link>
