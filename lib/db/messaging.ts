@@ -177,13 +177,13 @@ export async function addReaction({
       await pusherServer.trigger(messageID, "add-reaction", {
         messageID,
         reaction,
-        senderID,
+        sender: senderID,
       });
     } else {
       pusherServer.trigger(messageID, "add-reaction", {
         messageID,
         reaction,
-        senderID,
+        sender: senderID,
       });
     }
     if (
