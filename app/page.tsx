@@ -17,6 +17,9 @@ import Image from "next/image";
 import Link from "next/link";
 import FeaturesSlide from "./FeaturesSlide";
 import LandingNav from "./LandingNav";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
 const buttonStyles = "bg-primary rounded-full px-3 py-2 text-white font-bold";
 const featureCards = [1, 1, 1, 1, 1, 1];
@@ -73,7 +76,12 @@ const WhyUsItem = ({
   </div>
 );
 
-export default function Landing() {
+export default async function Landing() {
+  const serverSession = await getServerSession(authOptions);
+
+  if (serverSession && serverSession.user && serverSession.user.id)
+    return redirect("/main/chat");
+
   return (
     <main className="w-screen space-y-6 bg-emerald-700 bg-primary/10">
       <header className="flex w-full px-4 md:px-12">
