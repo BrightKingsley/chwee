@@ -18,7 +18,7 @@ export default function MyListTile({
       animate={{ x: slide ? 0 : undefined }}
       transition={{
         delay: slide ? index / 10 : undefined,
-        duration: slide ? (index + 2.3) / 10 : undefined,
+        duration: slide ? (index + 2.1) / 10 : undefined,
       }}
       className={`cursor-pointer active:scale-90 flex items-center w-full rounded-lg ${className}`}
     >

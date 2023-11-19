@@ -89,7 +89,7 @@ export default async function GroupInfo({
       <div className="flex flex-col h-screen pt-14">
         <div className="flex-1 h-full px-2 py-4 space-y-6 overflow-y-auto shrink-0">
           <div className="space-y-4">
-            <div className="w-32 h-32 mx-auto border rounded-full overflow-clip">
+            <div className="w-32 h-32 mx-auto border rounded-full overflow-clip bg-primary">
               {group.photo ? (
                 <Image src={group.photo} alt="" fill />
               ) : (
