@@ -170,8 +170,11 @@ export default function Message({
 
           // if (!messageReactions)
           //   message.message.reactions![`${sender.toString()}`] = [];
-
-          message.message.reactions![`${sender.toString()}`] = reaction;
+          if (message.message.reactions![`${sender.toString()}`] === reaction) {
+            delete message.message.reactions![`${sender.toString()}`];
+          } else {
+            message.message.reactions![`${sender.toString()}`] = reaction;
+          }
 
           // !message.message.reactions![reaction].includes(sender)
           //   ? message.message.reactions![reaction].push(sender)
@@ -281,13 +284,13 @@ export default function Message({
             initial={{ scale: 0, translateY: 5 }}
             animate={{ scale: 1, translateY: 0 }}
             transition={{ delay: i / 10 }}
-            onClick={() => setShowMore(false)}
+            onClick={() => {
+              handleAddReaction(emote);
+              setShowMore(false);
+            }}
             className="cursor-pointer"
           >
-            <div
-              onClick={() => handleAddReaction(emote)}
-              className="p-1 transition-all duration-200 rounded-full active:scale-[10] active:rotate-12 hover:scale-150 active:z-20 text-2xl"
-            >
+            <div className="p-1 transition-all duration-200 rounded-full active:scale-[10] active:rotate-12 hover:scale-150 active:z-20 text-2xl">
               {emote}
             </div>
           </motion.div>

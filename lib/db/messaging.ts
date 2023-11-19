@@ -200,7 +200,18 @@ export async function addReaction({
     );
 
     const newReaction: any = {};
-    newReaction[`${senderID.toString()}`] = reaction;
+    if (
+      conversationToUpdate.messages[messageID].reactions![
+        `${senderID.toString()}`
+      ] === reaction
+    ) {
+      delete conversationToUpdate.messages[messageID].reactions![
+        `${senderID.toString()}`
+      ];
+    } else {
+      newReaction[`${senderID.toString()}`] = reaction;
+    }
+    // newReaction[`${senderID.toString()}`] = reaction;
 
     console.log("NEW_REACTION: ", newReaction);
 
