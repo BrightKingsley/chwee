@@ -40,7 +40,7 @@ import { MessageClass } from "@/models/Message";
 import { UserClass } from "@/models";
 import { pusherClient } from "@/lib/config";
 
-const emotes = ["😂", "💩", "😢", "😭", "💔"];
+const emotes = ["👍️", "❤️", "😂", "😢", "😡"];
 
 export default function Message({
   // chatID,
