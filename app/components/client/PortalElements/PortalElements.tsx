@@ -1,3 +1,4 @@
+import { PushNotificationProvider } from "@/context";
 import { Modal, Notification, TransactionForm } from "..";
 
 const PortalElements = () => {
@@ -6,6 +7,7 @@ const PortalElements = () => {
       <Modal />
       <Notification />
       <TransactionForm />
+      <PushNotificationProvider />
     </>
   );
 };

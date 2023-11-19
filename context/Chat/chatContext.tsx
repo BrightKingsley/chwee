@@ -210,7 +210,7 @@ export const ChatContextProvider = ({
           message: {
             ...message,
             imageContent: previewImages.images,
-            id: "",
+            id: (session?.user.id as string) || "",
             reactions: {},
           },
           senderInfo: {

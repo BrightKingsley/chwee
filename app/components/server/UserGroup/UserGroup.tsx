@@ -25,7 +25,7 @@ export default function UserGroup({ groupID }: { groupID: string }) {
     >
       <Card className="border-[1px] w-full">
         <ListItem className="flex items-center w-full gap-2">
-          <div className="w-16 h-16 rounded-full shrink-0 overflow-clip">
+          <div className="w-16 h-16 rounded-full bg-primary shrink-0 overflow-clip">
             <Image src={group.photo} alt={group.name} fill />
           </div>
           <div className="flex-1 flex flex-col w-[calc(100%-4rem)] px-1">

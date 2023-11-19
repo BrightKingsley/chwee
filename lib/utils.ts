@@ -254,21 +254,30 @@ export function findMostFrequentInObject(arr: any[], property: string): any {
   return mostFrequentId;
 }
 
-function isEmpty(obj: { [key: string]: any }) {
-  for (const prop in obj) {
-    if (Object.hasOwn(obj, prop)) return false;
+// function isEmpty(obj: { [key: string]: any }) {
+//   for (const prop in obj) {
+//     if (Object.hasOwn(obj, prop)) return false;
+//   }
+//   return true;
+// }
+
+// export function isEmptyObject(value: any) {
+//   if (value === null) return false;
+
+//   if (typeof value !== "object") return false;
+
+//   const proto = Object.getPrototypeOf(value);
+
+//   if (proto! == null && proto !== Object.prototype) return false;
+
+//   return isEmpty(value);
+// }
+
+export function isEmpty(obj: Record<string, any>): boolean {
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      return false;
+    }
   }
   return true;
-}
-
-export function isEmptyObject(value: any) {
-  if (value === null) return false;
-
-  if (typeof value !== "object") return false;
-
-  const proto = Object.getPrototypeOf(value);
-
-  if (proto! == null && proto !== Object.prototype) return false;
-
-  return isEmpty(value);
 }
