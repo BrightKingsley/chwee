@@ -33,7 +33,7 @@ import {
   TransactionContext,
 } from "@/context";
 import { textCode } from "@/constants/utils";
-import { decodeTextContent, isEmptyObject } from "@/lib/utils";
+import { decodeTextContent, isEmpty } from "@/lib/utils";
 import { MessageProps } from "../types";
 import { LongPressEventType, useLongPress } from "use-long-press";
 import { MessageClass } from "@/models/Message";
@@ -185,7 +185,11 @@ export default function Message({
   }
 
   async function handleAddReaction(reaction: string) {
-    addReaction({ messageID, reaction, sender });
+    addReaction({
+      messageID,
+      reaction,
+      sender: (session?.user.id as string) || "",
+    });
     try {
       const response = await fetch(`${BASE_URL}/api/messaging/${chatID}`, {
         method: "PATCH",
@@ -334,7 +338,7 @@ export default function Message({
               : "text-start text-brand-darkblue_ text-brand-yellow  ml-12_"
           }
         >
-          {username}
+          {tag}
         </small>
       )}
       <div className="relative flex flex-col">
@@ -504,7 +508,7 @@ export default function Message({
                                         .split(":")[1]
                                     : "",
                                 },
-                                sender: session.user.name as string,
+                                sender: session.user.id as string,
                                 replyTo: {
                                   sender:
                                     textContent
@@ -548,7 +552,14 @@ export default function Message({
                 <div className="">
                   <p>
                     <Link
-                      href={`${CONNECT}/${tag}`}
+                      href={
+                        textContent?.split(textCode)[1].split(":")[1] ===
+                        session.user.tag
+                          ? ACCOUNT
+                          : `${CONNECT}/${
+                              textContent?.split(textCode)[1].split(":")[1]
+                            }`
+                      }
                       className="font-bold underline underline-offset-2"
                     >
                       {username === session.user.name ? "You" : tag}
@@ -582,14 +593,16 @@ export default function Message({
                             sendDate: new Date(),
                             textContent: "Thank You!😭",
                             imageContent: [],
-                            sender: session.user.name as string,
+                            sender: session.user.id as string,
                             replyTo: {
                               sender:
                                 textContent?.split(textCode)[1].split(":")[0] ||
                                 "",
-                              textContent: `${tag} sent ${
+                              textContent: `${tag} sent ₦${
+                                transaction?.amount
+                              } to ${
                                 textContent?.split(textCode)[1].split(":")[1]
-                              } ₦${transaction?.amount}`,
+                              }`,
                             },
                           },
                           chatID,
@@ -617,7 +630,8 @@ export default function Message({
           sender === userID ? "" : "left-0"
         }`}
       >
-        {messageData.reactions && !isEmptyObject(messageData.reactions) && (
+        {/* {messageData.reactions && !isEmptyObject(messageData.reactions) && ( */}
+        {messageData.reactions && !isEmpty(messageData.reactions) && (
           <>
             {Object.values(messageData.reactions).map((reaction, i) => (
               <div key={i} className="relative text-base">

@@ -228,6 +228,7 @@ export async function POST(
   }
 }
 
+const MAX_MESSAGES = 14;
 export async function GET(
   request: NextRequest,
   { params: { chatID } }: GetProps
@@ -272,7 +273,7 @@ export async function GET(
     const messageResult = await Conversation.findOne({ chatID });
     if (!messageResult) throw new Error("Conversation not found");
 
-    const messages = await Promise.all(
+    /*  const messages = await Promise.all(
       Object.values(messageResult.messages).map(async (message) => {
         const senderUserID = message.sender;
         const senderDoc = await User.findById(senderUserID);
@@ -291,6 +292,37 @@ export async function GET(
         };
       })
     );
+    */
+
+    // To implement some form of pagination to fetch only the first {MAX_MESSAGES} number of messages, get the sender info of each message and return an array of messages alongside the sender info
+    // let messages = [];
+    let messages = await getMaxMessages(messageResult.messages);
+
+    console.log({ length: messages.length, messages });
+
+    // Get a list of sender IDs equal in length to the number of retrieved messages. This is done this way, and not put in a loop as written ealier in the code commented-out above to prevent multiple queries to the database
+    /*
+    console.log("ALREADY GETTING UIDs");
+    const senderUserIDs = messagesArray.map((message) => message.sender);
+    console.log({ senderUserIDs });
+
+    const senderDocs = await User.find({ _id: { $in: senderUserIDs } });
+    console.log({ length: senderDocs.length, senderDocs });
+    */
+
+    // Here, the gotten sender docs are put togetjer in an object with their respective message document
+    /* messages = messagesArray.map((message, i) => {
+      console.log("SENDER_DOC", senderDocs[i], senderDocs[i].username);
+      return {
+        message,
+        senderInfo: {
+          username: senderDocs[i].username,
+          tag: senderDocs[i].tag,
+          photo: senderDocs[i].photo,
+        },
+      };
+    });
+    */
 
     if (!messages) throw new Error("Could not get messages for this chat");
     return NextResponse.json({ messages });
@@ -331,4 +363,43 @@ export async function PATCH(
 
 export async function PUT() {
   return NextResponse.json("happy");
+}
+
+async function getMaxMessages(obj: { [key: string]: any }) {
+  let array = [];
+  let count = 0;
+  let queryCount = 0;
+  const cachedUsers: { [key: string]: any } = {};
+
+  for (const key in obj) {
+    if (count >= MAX_MESSAGES) {
+      break;
+    }
+
+    const message = obj[key];
+
+    const senderUserID = message.sender;
+
+    let senderDoc;
+    if (cachedUsers[senderUserID]) {
+      senderDoc = cachedUsers[senderUserID];
+    } else {
+      senderDoc = await User.findById(senderUserID);
+      cachedUsers[senderUserID] = senderDoc;
+      queryCount++;
+    }
+
+    if (!senderDoc) throw new Error("Couldn't retrieve sender document");
+
+    const senderInfo = {
+      username: senderDoc.username,
+      tag: senderDoc.tag,
+      photo: senderDoc.photo,
+    };
+
+    array.push({ message, senderInfo });
+    count++;
+  }
+  console.log({ queryCount });
+  return array;
 }

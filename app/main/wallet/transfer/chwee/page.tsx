@@ -8,7 +8,7 @@ import {
   UserListModal,
 } from "@/app/components/client";
 import { Button, IconButton, Spinner } from "@/app/components/mui";
-import { BASE_URL } from "@/constants/routes";
+import { BASE_URL, WALLET } from "@/constants/routes";
 import { NotificationContext, TransactionContext } from "@/context";
 import { ClientUser } from "@/types/models";
 import Image from "next/image";
@@ -25,6 +25,7 @@ import {
   formatToNumberWithDecimal,
   lettersAndNumbersOnly,
 } from "@/lib/utils";
+import Link from "next/link";
 
 export default function TranferToChwee() {
   const { triggerNotification } = useContext(NotificationContext);
@@ -110,7 +111,17 @@ export default function TranferToChwee() {
   }
 
   function finishTransaction(result: any) {
-    triggerNotification(result.message || result.error.message);
+    const resultMesssge = (result.message || result.error.message) as string;
+
+    const displayMessage = resultMesssge
+      .toLocaleLowerCase()
+      .includes("insufficient") ? (
+      <Link href={`${WALLET}/add-money`}>{resultMesssge} click to fund</Link>
+    ) : (
+      resultMesssge
+    );
+
+    triggerNotification(displayMessage);
 
     console.log({ result });
 

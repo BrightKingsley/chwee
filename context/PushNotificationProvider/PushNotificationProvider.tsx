@@ -15,7 +15,7 @@ export default function PushNotificationProvider() {
   console.log({ session });
 
   useEffect(() => {
-    console.log("REGISTER REACCHEED");
+    console.log("REGISTER REACCHEED", { session });
 
     if (window && "serviceWorker" in navigator) {
       navigator.serviceWorker
@@ -29,6 +29,15 @@ export default function PushNotificationProvider() {
         .then(() => {
           window.navigator.serviceWorker.ready.then(
             (serviceWorkerRegistration) => {
+              if (
+                Notification.permission !== "granted" ||
+                !session ||
+                !session.user ||
+                !session.user.id
+              ) {
+                return;
+              }
+
               const beamsClient = new PusherPushNotifications.Client({
                 instanceId: process.env
                   .NEXT_PUBLIC_PUSHER_INSTANCE_ID as string,
