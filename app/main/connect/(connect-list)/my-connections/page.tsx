@@ -78,6 +78,7 @@ function Connection({
   return (
     <ListTile
       key={index}
+      slide
       trailing={[
         <MessageButton
           key={user._id.toString()}
