@@ -565,7 +565,7 @@ export default function Message({
                       }
                       className="font-bold underline underline-offset-2"
                     >
-                      {username === session.user.name ? "You" : tag}
+                      {tag === session.user.tag ? "You" : tag}
                     </Link>{" "}
                     sent{" "}
                     <span className="text-sm font-bold font-druk-wide-bold">
@@ -573,9 +573,14 @@ export default function Message({
                     </span>{" "}
                     to{" "}
                     <Link
-                      href={`${CONNECT}/${
-                        textContent?.split(textCode)[1].split(":")[1]
-                      }`}
+                      href={
+                        textContent?.split(textCode)[1].split(":")[1] ===
+                        session.user.tag
+                          ? ACCOUNT
+                          : `${CONNECT}/${
+                              textContent?.split(textCode)[1].split(":")[1]
+                            }`
+                      }
                       className="font-bold text-white"
                     >
                       {textContent?.split(textCode)[1].split(":")[1] ===
