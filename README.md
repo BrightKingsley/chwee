@@ -1,4 +1,4 @@
-# Chwee ([Visit](https://chwee.vercel.app)) - Technical Documentation
+# [Chwee](https://chwee.vercel.app) - Technical Documentation
 
 ## Overview
 
