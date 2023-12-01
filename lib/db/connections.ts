@@ -101,6 +101,7 @@ export async function deleteUserConnection({
       {
         $pull: {
           connections: parsedConnectionID,
+          // @ts-ignor
           chats: chatDoc?._id,
         },
       },
@@ -111,6 +112,7 @@ export async function deleteUserConnection({
       {
         _id: parsedConnectionID,
         connections: parsedUserID,
+        // @ts-ignore
         chats: chatDoc?._id,
       },
       {
