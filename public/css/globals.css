@@ -47,12 +47,6 @@ input[type="number"]::-webkit-outer-spin-button {
   }
 }
 
-*::-webkit-scrollbar {
-  width: 0.3rem;
-  margin-right: 1rem;
-  /* display: none; */
-}
-
 .test {
   background-color: #eeeeee;
   background-color: #ffba1f;
@@ -82,6 +76,12 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .swiper-pagination-bullet-active {
   background-color: #f4511e !important;
+}
+
+*::-webkit-scrollbar {
+  width: 0.3rem;
+  margin-right: 1rem;
+  /* display: none; */
 }
 
 *::-webkit-scrollbar-thumb {

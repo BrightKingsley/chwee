@@ -142,7 +142,14 @@ export default async function Landing() {
             </div>
           </div>
           <div className="hidden md:flex-[3] md:flex items-center justify-center">
-            <p>Image goes here</p>
+            {/* <p>Image goes here</p> */}
+            <Image
+              priority
+              width={100}
+              height={100}
+              src="/images/onboarding/chat.svg"
+              alt=""
+            />
           </div>
         </div>
       </section>
@@ -346,7 +353,7 @@ export default async function Landing() {
                 <Image
                   width={860}
                   height={860}
-                  src="/images/apartment-listing.png"
+                  src="/images/landing/text-files.svg"
                   alt=""
                 />
               </div>
