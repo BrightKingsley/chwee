@@ -84,7 +84,7 @@ export async function deleteUserConnection({
     }).exec();
 
     const conversationDoc = await Conversation.findOneAndDelete({
-      chatID: chatDoc?._id,
+      chatID: chatDoc?.id,
     });
 
     console.log({
