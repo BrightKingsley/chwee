@@ -147,8 +147,9 @@ export default async function Landing() {
               priority
               width={100}
               height={100}
-              src="/images/onboarding/chat.svg"
+              src="/images/landing/hero-2.svg"
               alt=""
+              className="w-[80%]"
             />
           </div>
         </div>
