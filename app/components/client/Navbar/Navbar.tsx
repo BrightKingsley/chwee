@@ -46,6 +46,7 @@ import { AnimateInOut, Overlay } from "..";
 import { usePathname } from "next/navigation";
 import Media from "react-media";
 import { Button, IconButton } from "@material-tailwind/react";
+import Link from "next/link";
 
 const iconClassNames = "w-6 h-6";
 
@@ -55,11 +56,11 @@ const navLinks = [
   //   icon: <DashboardLineIconIcon className={iconClassNames} />,
   //   name: "dashboard",
   // },
-  {
-    link: `/`,
-    icon: <Home2LineIcon className={iconClassNames} />,
-    name: "home",
-  },
+  // {
+  //   link: `/`,
+  //   icon: <Home2LineIcon className={iconClassNames} />,
+  //   name: "home",
+  // },
   {
     link: `${CHAT}/chats`,
     icon: <Message3LineIcon className={iconClassNames} />,
@@ -151,6 +152,17 @@ export default function Navbar() {
                 >
                   <CloseLineIconIcon className="w-8 h-8 text-gray-600 fill-gray-600" />
                 </IconButton>
+                <Link href="/">
+                  <IconButton
+                    title="close nav"
+                    aria-label="close nav"
+                    onClick={() => setShowMenu((prev) => !prev)}
+                    className="last:ml-[2px] h-full flex items-center group-active:scale-75 justify-center w-full bg-body transition-all duration-100 !text-gray-600 group-hover:!fill-white group-hover:!text-white group-focus:!fill-white group-focus:!text-white focus:!fill-white focus:!text-white  group-hover:bg-gradient-primary
+                              group-active:bg-gradient-primary group-focus:bg-gradient-primary focus:bg-gradient-primary  rounded-md z-10"
+                  >
+                    <Home2LineIcon className={iconClassNames} />
+                  </IconButton>
+                </Link>
                 {navLinks.map(({ icon, link, name }) => (
                   <div key={Math.random()}>
                     <NavLink href={link} className="nav">
