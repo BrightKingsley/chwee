@@ -77,10 +77,10 @@ const WhyUsItem = ({
 );
 
 export default async function Landing() {
-  const serverSession = await getServerSession(authOptions);
+  // const serverSession = await getServerSession(authOptions);
 
-  if (serverSession && serverSession.user && serverSession.user.id)
-    return redirect("/main/chat");
+  // if (serverSession && serverSession.user && serverSession.user.id)
+  //   return redirect("/main/chat");
 
   return (
     <main className="w-screen space-y-6 bg-emerald-700 bg-primary/10">
