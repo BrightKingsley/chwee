@@ -39,6 +39,7 @@ import LinksLineIcon from "remixicon-react/LinksLineIcon";
 import UserLineIcon from "remixicon-react/UserLineIcon";
 import CloseLineIconIcon from "remixicon-react/CloseLineIcon";
 import Calendar2LineIcon from "remixicon-react/Calendar2LineIcon";
+import Home2LineIcon from "remixicon-react/Home2LineIcon";
 
 import NavLink from "../NavLink";
 import { AnimateInOut, Overlay } from "..";
@@ -54,6 +55,11 @@ const navLinks = [
   //   icon: <DashboardLineIconIcon className={iconClassNames} />,
   //   name: "dashboard",
   // },
+  {
+    link: `/`,
+    icon: <Home2LineIcon className={iconClassNames} />,
+    name: "home",
+  },
   {
     link: `${CHAT}/chats`,
     icon: <Message3LineIcon className={iconClassNames} />,
