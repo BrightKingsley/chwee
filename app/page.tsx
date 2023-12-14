@@ -106,8 +106,8 @@ export default async function Landing() {
         </div>
       </header>
       <section className="mx-14_" id="hero">
-        <div className="md:flex w-[80%] mx-auto">
-          <div className="md:flex-[2] text-center md:text-left space-y-10">
+        <div className="md:flex mx-auto">
+          <div className="md:flex-[2] md:pl-20 text-center md:text-left space-y-10">
             {/* <h1 className="text-5xl font-extrabold text-gray-800">
             <span className="text-primary">Connect</span> and transact in a fun
             and <span className="text-primary">dynamic</span> way!
@@ -259,22 +259,22 @@ export default async function Landing() {
             </h3>
             <div className="z-10 mt-6 h-fit w-fit md:w-fit">
               <div className="relative flex items-end justify-start w-full h-full -space-x-14">
-                <div className="rounded-md shrink-[4] overflow-clip">
+                <div className="rounded-md shrink-0 overflow-clip">
                   <Image
                     width={1080}
                     height={1080}
                     src="/images/landing/mobile-1.png"
                     alt=""
-                    className="!object-contain"
+                    className="!object-contain w-full h-full"
                   />
                 </div>
-                <div className="z-10 scale-110 rounded-md overflow-clip border-primary">
+                <div className="z-10 shrink-0 scale-110 rounded-md overflow-clip border-primary">
                   <Image
                     width={1080}
                     height={1080}
                     src="/images/landing/mobile-3.png"
                     alt=""
-                    className="!object-contain bg-pink-500"
+                    className="!object-contain bg-pink-500 w-full h-full"
                   />
                 </div>
               </div>
@@ -350,7 +350,7 @@ export default async function Landing() {
 
           <div className="px-6 pt-4 pb-12 space-y-10 bg-white rounded-2xl md:px-14 shrink-0">
             <div className="relative h-96">
-              <div className="border absolute h-[85%] left-10 z-20 rounded-lg image_here overflow-clip shadow-xl shadow-gray-400/20">
+              <div className="border absolute h-36 w-36 left-10 z-20 rounded-lg image_here overflow-clip shadow-xl shadow-gray-400/20">
                 <Image
                   width={860}
                   height={860}

@@ -52,7 +52,7 @@ export default function FeaturesSlide() {
             slidesPerView: 1.6,
           },
           640: {
-            slidesPerView: 2,
+            slidesPerView: 2.5,
           },
           // 768: {
           //   slidesPerView: 3,
