@@ -10,12 +10,9 @@ import type {
   InputStylesType,
   SwitchButtonStylesType,
 } from "@material-tailwind/react";
+import { PropsWithChildren } from "react";
 
-export function ThemeContextProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function ThemeContextProvider({ children }: PropsWithChildren) {
   const customTheme: {
     button: ButtonStyleTypes;
     iconButton: IconButtonStyleTypes;
