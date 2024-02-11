@@ -1,4 +1,4 @@
-"use client";
+	"use client";
 
 import React, { createContext, useState } from "react";
 import { Modal } from "@/app/components/client";

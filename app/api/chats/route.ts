@@ -31,6 +31,8 @@ export async function POST(request: NextRequest) {
 
     if (!members) throw new Error("Invalid Members Ids");
 
+    console.log({ members });
+
     const res = await createChat({ members });
 
     return NextResponse.json(res);
