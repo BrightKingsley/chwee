@@ -106,5 +106,6 @@ export function ThemeContextProvider({ children }: PropsWithChildren) {
     },
   };
 
+  // @ts-ignore
   return <ThemeProvider value={customTheme}>{children}</ThemeProvider>;
 }
