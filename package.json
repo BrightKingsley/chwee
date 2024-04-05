@@ -48,6 +48,7 @@
     "react-textarea-autosize": "^8.5.3",
     "remixicon-react": "^1.0.0",
     "server-only": "^0.0.1",
+    "sharp": "^0.33.3",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "swiper": "^10.3.1",
